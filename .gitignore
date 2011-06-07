@@ -1,0 +1,8 @@
+build/
+*suo
+_ReSharper*
+*.resharper*
+*.ReSharper*
+bin
+obj
+Bin
