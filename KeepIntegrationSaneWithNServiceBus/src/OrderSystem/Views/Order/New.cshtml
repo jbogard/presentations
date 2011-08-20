@@ -1,0 +1,12 @@
+﻿@model OrderSystem.Models.OrderForm
+
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>New</h2>
+
+@using (Html.BeginForm()) {
+    @Html.EditorForModel()
+    <button type="submit">Submit Order</button>
+}
