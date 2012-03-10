@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using NServiceBus;
 
 namespace OrderSystem
 {
@@ -35,6 +36,17 @@ namespace OrderSystem
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+
+            Bus = Configure.WithWeb()
+                .Log4Net()
+                .DefaultBuilder()
+                .XmlSerializer()
+                .MsmqTransport()
+                .UnicastBus()
+                .SendOnly();
+
         }
+
+        public static IBus Bus { get; set; }
     }
 }

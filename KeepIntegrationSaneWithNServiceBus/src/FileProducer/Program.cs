@@ -9,7 +9,7 @@ namespace FileProducer
 {
     class Program
     {
-        private static readonly string _connectionString = @"Data Source=.\SQLEXPRESS2008;Initial Catalog=KeepingIntegrationsSane;Integrated Security=SSPI;";
+        private static readonly string _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=KeepingIntegrationsSane;Integrated Security=SSPI;";
 
         static void Main()
         {
@@ -20,6 +20,8 @@ namespace FileProducer
             WriteContentsToFile(contents);
 
             MarkAsExported();
+
+            Console.ReadKey();
         }
 
         private static IEnumerable<string> GetOrdersProcessed()

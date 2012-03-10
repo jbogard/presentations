@@ -8,7 +8,7 @@ namespace FileConsumer
 {
     class Program
     {
-        private static readonly string _connectionString = @"Data Source=.\SQLEXPRESS2008;Initial Catalog=KeepingIntegrationsSane;Integrated Security=SSPI;";
+        private static readonly string _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=KeepingIntegrationsSane;Integrated Security=SSPI;";
 
         static void Main()
         {

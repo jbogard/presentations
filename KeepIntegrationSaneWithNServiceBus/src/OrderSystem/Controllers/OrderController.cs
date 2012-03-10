@@ -8,7 +8,7 @@ namespace OrderSystem.Controllers
 {
     public class OrderController : Controller
     {
-        private static readonly string _connectionString = @"Data Source=.\SQLEXPRESS2008;Initial Catalog=KeepingIntegrationsSane;Integrated Security=SSPI;";
+        private static readonly string _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=KeepingIntegrationsSane;Integrated Security=SSPI;";
 
         //
         // GET: /Order/
@@ -24,7 +24,7 @@ namespace OrderSystem.Controllers
             var order = new Order
             {
                 Name = form.Name,
-                Amount = form.Amount
+                Amount = form.Amount,
             };
 
             var orderSvc = new Orders.OrderServiceClient();
@@ -69,7 +69,7 @@ namespace OrderSystem.Controllers
                                 OrderId = (int) reader[0],
                                 Name = (string) reader[1],
                                 Amount = (decimal) reader[2],
-                                Success = (bool) reader[3]
+                                Success = (bool) reader[3],
                             };
 
                             return order;
