@@ -24,10 +24,5 @@ namespace CustomDsl.Ast
             Value = value;
             AsString = stringfiedValue + "(boolean)";
         }
-
-        public void AcceptVisitor(ICustomDslVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
     }
 }

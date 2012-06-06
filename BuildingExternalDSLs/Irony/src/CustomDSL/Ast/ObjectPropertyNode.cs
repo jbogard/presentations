@@ -2,14 +2,14 @@ using Irony.Interpreter.Ast;
 
 namespace CustomDsl.Ast
 {
-    public class NilNode : AstNode
+    public class ObjectPropertyNode : AstNode
     {
-        public object Value { get; private set; }
+        public string VariableName { get; private set; }
         public override void Init(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
-            AsString = "NULL";
-            Value = null;
+
+            VariableName = treeNode.ChildNodes[1].FirstChild.FindTokenAndGetText();
         }
     }
 }

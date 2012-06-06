@@ -27,10 +27,5 @@ namespace CustomDsl.Ast
             }
             AsString = Op + "(operator)";
         }
-        
-        public void AcceptVisitor(ICustomDslVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
     }
 }

@@ -48,9 +48,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CustomDSL\CustomDSL.csproj">
+    <ProjectReference Include="..\CustomDSL\CustomDsl.csproj">
       <Project>{3439128E-1FEA-4E5D-B870-0A2874C3919E}</Project>
-      <Name>CustomDSL</Name>
+      <Name>CustomDsl</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

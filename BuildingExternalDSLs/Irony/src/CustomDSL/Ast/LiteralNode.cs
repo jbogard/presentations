@@ -1,4 +1,6 @@
-﻿using Irony.Interpreter.Ast;
+﻿using System;
+using System.Globalization;
+using Irony.Interpreter.Ast;
 
 namespace CustomDsl.Ast
 {
@@ -13,11 +15,6 @@ namespace CustomDsl.Ast
             AsString = Value.ToString();
             
         }
-
-        public void AcceptVisitor(ICustomDslVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
     }
 
     public class StringNode : LiteralNode
@@ -27,6 +24,5 @@ namespace CustomDsl.Ast
 
     public class NumberNode : LiteralNode
     {
-        
     }
 }

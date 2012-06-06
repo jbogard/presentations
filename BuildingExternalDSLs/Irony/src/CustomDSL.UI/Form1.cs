@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using CustomDsl;
 using CustomDsl.Ast;
+using CustomDsl.ExpressionBuilding;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
@@ -28,15 +29,82 @@ namespace CustomDSL.UI
         private void btnEvaluate_Click(object sender, EventArgs e)
         {
             var tree = _parser.Parse(txtExpression.Text);
+
+            if (tree.HasErrors())
+            {
+                MessageBox.Show(tree.ParserMessages.First().Message, "Error parsing message", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                return;
+            }
+
+
             var rootNode = (AstNode)tree.Root.AstNode;
-            var visitor = new CustomDslCSharpExpressionVisitor();
-            visitor.Visit(rootNode);
+            var visitor = new CSharpExpressionBuilder();
+            var func = visitor.Build(rootNode);
 
-            var expression = visitor.GetCShaprExpression();
+            txtResult.Text = func().ToString();
+        }
 
-            var compiled = expression.Compile();
+        private void txtFirstName_TextChanged(object sender, EventArgs e)
+        {
+            Reset();
+        }
 
-            txtResult.Text = compiled().ToString();
+        private void txtLastName_TextChanged(object sender, EventArgs e)
+        {
+            Reset();
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            Reset();
+        }
+
+        private void Reset()
+        {
+            lblResult.BackColor = Color.Transparent;
+            lblResult.Text = string.Empty;
+        }
+
+        private void btnEvalRule_Click(object sender, EventArgs e)
+        {
+            var person = new Person
+            {
+                FirstName = txtFirstName.Text,
+                LastName = txtLastName.Text,
+                Age = (int) nudAge.Value
+            };
+
+            var tree = _parser.Parse(txtRule.Text);
+
+            if (tree.HasErrors())
+            {
+                MessageBox.Show(tree.ParserMessages.First().Message, "Error parsing message", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                return;
+            }
+
+            var rootNode = (AstNode)tree.Root.AstNode;
+            var visitor = new CSharpExpressionBuilder();
+            var func = visitor.Build<Person>(rootNode);
+
+            var result = func(person);
+
+            if (result is bool)
+            {
+                var evalResult = (bool) result;
+
+                if (evalResult)
+                {
+                    lblResult.Text = "Match!";
+                    lblResult.BackColor = Color.LawnGreen;
+                }
+                else
+                {
+                    lblResult.Text = "Not a match!";
+                    lblResult.BackColor = Color.Red;
+                }
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 using CustomDsl.Ast;
@@ -7,90 +7,87 @@ namespace CustomDsl
 {
     public class CustomDslGrammar : Grammar
     {
-        public CustomDslGrammar() : base(false)
+        public CustomDslGrammar()
+            : base(false)
         {
-            LanguageFlags = LanguageFlags.CreateAst;
 
-            // Terminals
-            var Number = new NumberLiteral("number", NumberOptions.AllowSign,typeof(NumberNode));
-            Number.DefaultFloatType = TypeCode.Decimal;
-            Number.AddSuffix("m", TypeCode.Decimal);
+            #region Terminals
 
-            var StringLiteral = new StringLiteral("string", "'", StringOptions.AllowsDoubledQuote,typeof(StringNode));
+            var Number = new NumberLiteral("number", NumberOptions.AllowSign, typeof (NumberNode))
+            {
+                DefaultFloatType = TypeCode.Decimal
+            };
 
-            var Dot = ToTerm(".");
+            var StringLiteral = new StringLiteral("string", "'", StringOptions.AllowsDoubledQuote, typeof (StringNode));
+
             var Comma = ToTerm(",");
             var Not = ToTerm("NOT");
             var LParen = ToTerm("(");
             var RParen = ToTerm(")");
 
-            var UnaryOperator = ToTerm("+") | "-" | "~";
+            var UnaryOperator = ToTerm("+") | "-" | Not;
 
             var BinaryOperator = ToTerm("+") | "-" | "*" | "/" | "%" //arithmetic
-                                  | "&" | "|" | "^" //bit
-                                  | "=" | ">" | "<" | ">=" | "<=" | "<>"
-                                  | "AND" | "OR" | "LIKE" | Not + "LIKE";
+                                 | "&" | "|" | "^" //bit
+                                 | "=" | ">" | "<" | ">=" | "<=" | "<>"
+                                 | "AND" | "OR";
 
-            var ID = TerminalFactory.CreateSqlExtIdentifier(this, "id");
+            #endregion
 
+            #region Non-terminals
 
-            // Non-terminals
-            var identifier = new NonTerminal("identifier", typeof(IdNode));
-
-            var date = new NonTerminal("date", typeof(DateNode));
-            var boolean = new NonTerminal("boolean", typeof(BooleanNode));
-            var nil = new NonTerminal("null", typeof(NilNode));
+            var date = new NonTerminal("date", typeof (DateNode));
+            var boolean = new NonTerminal("boolean", typeof (BooleanNode));
+            var nil = new NonTerminal("null", typeof (NilNode));
 
             var expression = new NonTerminal("expression");
-            var unaryExpression = new NonTerminal("unaryExpression", typeof(UnaryExpressionNode));
-            var binaryExpression = new NonTerminal("binaryExpression", typeof(BinaryExpressionNode));
-            var functionCall = new NonTerminal("functionCall", typeof(FunctionNode));
-            var term = new NonTerminal("term");
-            var tuple = new NonTerminal("tuple", typeof(TupleNode));
-            var nullCoalescingExpression = new NonTerminal("nullCoalescing", typeof(NullCoalescingNode));
+            var unaryExpression = new NonTerminal("unaryExpression", typeof (UnaryExpressionNode));
+            var binaryExpression = new NonTerminal("binaryExpression", typeof (BinaryExpressionNode));
+            var functionCall = new NonTerminal("functionCall", typeof (FunctionNode));
+            var terminal = new NonTerminal("term");
+            var tuple = new NonTerminal("tuple", typeof (TupleNode));
 
-            var logicFunction = new NonTerminal("logicFunction", typeof(FunctionNode));
-            var mathFunction = new NonTerminal("mathFunction", typeof(FunctionNode));
-            var stringFunction = new NonTerminal("stringFunction", typeof(FunctionNode));
+            var logicFunction = new NonTerminal("logicFunction", typeof (FunctionNode));
+            var mathFunction = new NonTerminal("mathFunction", typeof (FunctionNode));
+            var stringFunction = new NonTerminal("stringFunction", typeof (FunctionNode));
 
-            var iifFunction = new NonTerminal("iif", typeof(IifFunctionNode));
-            var isNullFunction = new NonTerminal("isNull", typeof(IsNullFunctionNode));
-            var betweenFunction = new NonTerminal("between", typeof(BetweenFunctionNode));
+            var iifFunction = new NonTerminal("iif", typeof (IifFunctionNode));
+            var icaseFunction = new NonTerminal("icase", typeof (IcaseFunctionNode));
+            var caseCondition = new NonTerminal("case", typeof (CaseConditionNode));
+            var caseConditionList = new NonTerminal("caselist", typeof (CaseConditionListNode));
 
-            var absFunction = new NonTerminal("abs", typeof(FunctionNode));
-            var ceilingFunction = new NonTerminal("ceiling", typeof(FunctionNode));
-            var floorFunction = new NonTerminal("floor", typeof(FunctionNode));
-            var powerFunction = new NonTerminal("power", typeof(FunctionNode));
-            var roundFunction = new NonTerminal("round", typeof(RoundFunctionNode));
+            var powerFunction = new NonTerminal("power", typeof (FunctionNode));
+            var minFunction = new NonTerminal("min", typeof (MinFunctionNode));
+            var maxFunction = new NonTerminal("max", typeof (MaxFunctionNode));
 
-            var substringFunction = new NonTerminal("substring", typeof(FunctionNode));
-            var concatFunction = new NonTerminal("concat", typeof(ConcatFunctionNode));
-            var leftFunction = new NonTerminal("left", typeof(FunctionNode));
-            var rightFunction = new NonTerminal("right", typeof(FunctionNode));
-            var containsFunction = new NonTerminal("contains", typeof(FunctionNode));
-            var lenFunction = new NonTerminal("len", typeof(FunctionNode));
-            var trimFunction = new NonTerminal("trim", typeof(TrimFunctionNode));
-            var trimEndFunction = new NonTerminal("trimEnd", typeof(TrimEndFunctionNode));
-            var trimStartFunction = new NonTerminal("trimStart", typeof(TrimStartFunctionNode));
-            var replaceFunction = new NonTerminal("replace", typeof(FunctionNode));
+            var substringFunction = new NonTerminal("substring", typeof (FunctionNode));
+            var concatFunction = new NonTerminal("concat", typeof (ConcatFunctionNode));
+            var leftFunction = new NonTerminal("left", typeof (FunctionNode));
+            var rightFunction = new NonTerminal("right", typeof (FunctionNode));
 
-            var field = new NonTerminal("field", typeof(SystemFieldNode));
             var fieldName = new NonTerminal("fieldName");
-            var systemFunction = new NonTerminal("systemFunction", typeof(SystemFunctionNode));
-            var expressionList = new NonTerminal("expressionList", typeof(ExpressionListNode));
+            var expressionList = new NonTerminal("expressionList", typeof (ExpressionListNode));
 
-            this.Root = expression;
+            var today = new NonTerminal("today", typeof (TodayNode));
+
+            var objectProperty = new NonTerminal("objectProperty", typeof (ObjectPropertyNode));
 
 
-            // Expression
-            expression.Rule = term
+            #endregion
+
+            #region Expression
+
+            expression.Rule = terminal
                               | unaryExpression
-                              | binaryExpression
-                              | nullCoalescingExpression;
+                              | binaryExpression;
+
 
             expressionList.Rule = MakePlusRule(expressionList, Comma, expression);
 
-            //Literals
+            #endregion
+
+            #region Literals
+
             date.Rule = ToTerm("Date") + LParen + StringLiteral + RParen;
 
             boolean.Rule = ToTerm("true")
@@ -99,92 +96,91 @@ namespace CustomDsl
 
             nil.Rule = ToTerm("null");
 
-            //Operations
-            term.Rule = identifier
-                        | StringLiteral
-                        | Number
-                        | date
-                        | boolean
-                        | nil
-                        | functionCall
-                        | tuple
-                        | field
+            #endregion
+
+            #region Terminals and Expressions
+
+            terminal.Rule = StringLiteral
+                            | Number
+                            | date
+                            | boolean
+                            | nil
+                            | functionCall
+                            | tuple
+                            | today
+                            | objectProperty
                 ;
 
-            tuple.Rule = "(" + expression + ")";
-            unaryExpression.Rule = UnaryOperator + term;
+            tuple.Rule = LParen + expression + RParen;
+            unaryExpression.Rule = UnaryOperator + expression;
 
-            binaryExpression.Rule = expression + BinaryOperator + expression 
-                                    | Not + expression;
+            binaryExpression.Rule = expression + BinaryOperator + expression;
 
+            #endregion
 
-            nullCoalescingExpression.Rule = expression + ToTerm("??") + expression;
+            #region Functions
 
-            //Functions
             functionCall.Rule = logicFunction
                                 | mathFunction
                                 | stringFunction
-                                | systemFunction
                 ;
 
             logicFunction.Rule = iifFunction
-                                 | isNullFunction
-                                 | betweenFunction
+                                 | icaseFunction
                 ;
 
-            mathFunction.Rule = absFunction
-                                | ceilingFunction
-                                | floorFunction
-                                | powerFunction
-                                | roundFunction
+            mathFunction.Rule = powerFunction
+                                | minFunction
+                                | maxFunction
                 ;
 
             stringFunction.Rule = substringFunction
                                   | concatFunction
                                   | leftFunction
                                   | rightFunction
-                                  | containsFunction
-                                  | lenFunction
-                                  | trimFunction
-                                  | trimStartFunction
-                                  | trimEndFunction
-                                  | replaceFunction
                 ;
 
-            //logic Functions
+            #endregion
+
+            #region Logic Functions
+
             iifFunction.Rule = ToTerm("IIF") + LParen + expression + Comma + expression + Comma + expression + RParen;
-            isNullFunction.Rule = ToTerm("ISNULL") + LParen + expression + RParen;
-            betweenFunction.Rule = ToTerm("BETWEEN") + LParen + expression + Comma + expression + Comma + expression +
-                                   RParen;
+            icaseFunction.Rule = ToTerm("ICASE") + LParen + caseConditionList + (Comma + expression).Q() + RParen;
+            caseCondition.Rule = expression + Comma + expression;
+            caseConditionList.Rule = MakePlusRule(caseConditionList, Comma, caseCondition);
 
-            //math Functions
-            absFunction.Rule = ToTerm("ABS") + LParen + expression + RParen;
-            ceilingFunction.Rule = ToTerm("CEILING") + LParen + expression + RParen;
-            floorFunction.Rule = ToTerm("FLOOR") + LParen + expression + RParen;
+            #endregion
+
+            #region Math Functions
+
             powerFunction.Rule = ToTerm("POWER") + LParen + expression + Comma + expression + RParen;
-            roundFunction.Rule = ToTerm("ROUND") + LParen + expression + Comma + expression + (Comma + expression).Q() + RParen;
+            minFunction.Rule = ToTerm("MIN") + LParen + expression + Comma + expression + RParen;
+            maxFunction.Rule = ToTerm("MAX") + LParen + expression + Comma + expression + RParen;
 
-            //string functions
-            substringFunction.Rule = ToTerm("SUBSTRING") + LParen + expression + Comma + expression + Comma + expression + RParen;
+            #endregion
+
+            #region String Functions
+
+            substringFunction.Rule = ToTerm("SUBSTRING") + LParen + expression + Comma + expression + Comma + expression +
+                                     RParen;
             concatFunction.Rule = ToTerm("CONCAT") + LParen + expression + Comma + expression + RParen;
             leftFunction.Rule = ToTerm("LEFT") + LParen + expression + Comma + expression + RParen;
             rightFunction.Rule = ToTerm("RIGHT") + LParen + expression + Comma + expression + RParen;
-            containsFunction.Rule = ToTerm("CONTAINS") + LParen + expression + Comma + expression + RParen;
-            lenFunction.Rule = ToTerm("LEN") + LParen + expression + RParen;
-            trimFunction.Rule = ToTerm("TRIM") + LParen + expression + RParen;
-            trimEndFunction.Rule = ToTerm("TRIMEND") + LParen + expression + RParen;
-            trimStartFunction.Rule = ToTerm("TRIMSTART") + LParen + expression + RParen;
-            replaceFunction.Rule = ToTerm("REPLACE") + LParen + expression + Comma + expression + Comma + expression + RParen;
 
-            field.Rule = ToTerm("${") + MakePlusRule(fieldName, Dot, fieldName) + "}";
-            systemFunction.Rule = ToTerm("#{") + identifier + LParen + MakeStarRule(expressionList, Comma, expression) + RParen + "}";
+            #endregion
 
-            fieldName.Rule = identifier;
+            #region Special Functions
 
-            identifier.Rule = ID;
+            today.Rule = ToTerm("#{TODAY}");
+            fieldName.Rule = TerminalFactory.CreateCSharpIdentifier("id");
+            objectProperty.Rule = ToTerm("$") + fieldName;
 
-            //Grammar Metadata
-            RegisterOperators(11, "??");
+            #endregion
+
+            #region Grammar Metadata
+
+            LanguageFlags = LanguageFlags.CreateAst;
+
             RegisterOperators(10, "*", "/", "%");
             RegisterOperators(9, "+", "-");
             RegisterOperators(8, "=", ">", "<", ">=", "<=", "<>", "!=", "!<", "!>");
@@ -193,10 +189,13 @@ namespace CustomDsl
             RegisterOperators(5, "AND");
             RegisterOperators(4, "OR", "LIKE", "IN");
 
-            MarkPunctuation(",", "(", ")", "}", "{", "${", "#{");
+            MarkPunctuation(",", "(", ")", "}", "{", "${", ".", "?", "#{");
 
-            MarkTransient(term, expression, functionCall, logicFunction, mathFunction, stringFunction);
+            MarkTransient(terminal, expression, functionCall, logicFunction, mathFunction, stringFunction);
 
+            #endregion
+
+            Root = expression;
         }
     }
 }

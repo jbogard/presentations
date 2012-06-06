@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
@@ -23,47 +22,16 @@ namespace CustomDsl.Ast
             {
                 var node = treeNode.ChildNodes[i];
 
-                if(node.AstNode != null)
+                if (node.AstNode != null)
                 {
                     AddChild("Arg", node);
-                    _args.Add((AstNode)node.AstNode);    
+                    _args.Add((AstNode)node.AstNode);
                 }
             }
         }
     }
 
-    public class IifFunctionNode : FunctionNode
-    {
-        
-    }
+    public class MinFunctionNode : FunctionNode { }
 
-    public class IsNullFunctionNode : FunctionNode
-    {
-        
-    }
-
-    public class BetweenFunctionNode : FunctionNode
-    {
-
-    }
-
-    public class ConcatFunctionNode : FunctionNode
-    {
-        
-    }
-
-    public class TrimFunctionNode : FunctionNode
-    {
-
-    }
-
-    public class TrimStartFunctionNode : FunctionNode
-    {
-        
-    }
-
-    public class TrimEndFunctionNode : FunctionNode
-    {
-
-    }
+    public class MaxFunctionNode : FunctionNode { }
 }

@@ -15,9 +15,5 @@ namespace CustomDsl.Ast
             Argument = (AstNode)treeNode.LastChild.AstNode;
 
         }
-        public void AcceptVisitor(ICustomDslVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
     }
 }

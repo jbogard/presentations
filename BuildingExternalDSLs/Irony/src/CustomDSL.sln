@@ -1,9 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "Main\Main.csproj", "{FEE21C5B-1FF1-4749-B708-4DA170E42424}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDSL", "CustomDSL\CustomDSL.csproj", "{3439128E-1FEA-4E5D-B870-0A2874C3919E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDsl", "CustomDSL\CustomDsl.csproj", "{3439128E-1FEA-4E5D-B870-0A2874C3919E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDSL.Tests", "CustomDSL.Tests\CustomDSL.Tests.csproj", "{FEA35376-199C-4FFE-9E77-29FD9F615B64}"
 EndProject
@@ -19,16 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Debug|x86.ActiveCfg = Debug|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Debug|x86.Build.0 = Debug|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Release|Any CPU.ActiveCfg = Release|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Release|Mixed Platforms.Build.0 = Release|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Release|x86.ActiveCfg = Release|x86
-		{FEE21C5B-1FF1-4749-B708-4DA170E42424}.Release|x86.Build.0 = Release|x86
 		{3439128E-1FEA-4E5D-B870-0A2874C3919E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3439128E-1FEA-4E5D-B870-0A2874C3919E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3439128E-1FEA-4E5D-B870-0A2874C3919E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

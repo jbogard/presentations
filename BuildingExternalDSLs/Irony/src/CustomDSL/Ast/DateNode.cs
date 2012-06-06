@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
@@ -11,13 +12,13 @@ namespace CustomDsl.Ast
         {
             base.Init(context, treeNode);
 
-            var date = new DateTime();
+            DateTime date;
             var cleanDate = GetCleanDate(treeNode);
 
-            if(!DateTime.TryParse(GetCleanDate(treeNode), out date))
+            if (!TryParseDate(cleanDate, out date))
             {
-                var message = string.Format("{0} is not a valid date",GetCleanDate(treeNode));
-                throw new AstException(this,message);
+                var message = string.Format("{0} is not a valid date", GetCleanDate(treeNode));
+                throw new AstException(this, message);
             }
 
             Value = date;
@@ -25,14 +26,15 @@ namespace CustomDsl.Ast
 
         }
 
+        private bool TryParseDate(string value, out DateTime date)
+        {
+            return DateTime.TryParse(value, CultureInfo.CurrentUICulture, DateTimeStyles.None, out date)
+                   || DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+        }
+
         private string GetCleanDate(ParseTreeNode treeNode)
         {
             return treeNode.LastChild.FindTokenAndGetText().Replace("\'", "");
-        }
-
-        public void AcceptVisitor(ICustomDslVisitor visitor)
-        {
-            visitor.Visit(this);
         }
     }
 }
