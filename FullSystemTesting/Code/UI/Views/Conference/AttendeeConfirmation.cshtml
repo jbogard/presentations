@@ -1,0 +1,12 @@
+﻿@model CodeCampServerLite.UI.Models.AttendeeEditModel
+
+@{
+    ViewBag.Title = "Registration Confirmation";
+}
+
+<h2>Registration Confirmation</h2>
+
+	Congratulations, 
+	@Html.DisplayFor(x => x.FirstName)&nbsp;@Html.DisplayFor(x => x.LastName) 
+	is successfully registered for 
+	@Html.DisplayFor(x => x.ConferenceName)

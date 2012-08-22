@@ -1,0 +1,42 @@
+﻿@using CodeCampServerLite.UI
+@using CodeCampServerLite.UI.Helpers
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="page">
+        @Html.EmbedCurrentPage(ViewContext)
+        <div id="header">
+            <div id="title">
+                <h1>My Code Camp Server Lite</h1>
+            </div>
+
+            <div id="logindisplay">
+                @Html.Action("RenderLogonControl", "Account", new { area = "Security" })
+            </div>
+
+            <div id="menucontainer">
+                <ul id="menu">
+                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("Conferences", "Index", "Conference", new { area = "" }, new { rel = SiteNav.Conferences })</li>
+                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div id="main">
+            @RenderBody()
+            <div id="footer">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

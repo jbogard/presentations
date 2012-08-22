@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--EXTERNAL_PROPERTIES: usdDatabaseVersion, CCNetLabel-->
+<project name="CodeCampServerLite" xmlns="http://nant.sf.net/schemas/nant.xsd" default="build">
+
+  	<!-- ******************** -->
+  	<!-- Master Build Targets -->
+  	<!-- ******************** -->
+  	<target name="build" depends="init, dropDatabase, createDatabase"/>
+
+  <!-- ************** -->
+	<!-- Initialization -->
+	<!-- ************** -->
+
+	<include buildfile="common.build"/>
+	<loadtasks assembly="lib/nantcontrib-0.85/bin/NAnt.Contrib.Tasks.dll" />
+  	<loadtasks assembly="lib\nant\Tarantino.Nant.Tasks.dll" />
+  <property name="nant.settings.currentframework" value="net-4.0" />
+
+
+  <!-- ***************** -->
+	<!-- Master Properties -->
+	<!-- ***************** -->
+	<property name="company.name" value=""/>
+
+	<!-- Version settings -->
+	<property name="svn.executable" value="lib/subversion/svn.exe" dynamic="true" if="${not property::exists('svn.executable')}" />
+	<property name="revisionnumber" value="9999" dynamic="true"/>
+	<property name="revisionnumber" value="${CCNetLabel}" if="${property::exists('CCNetLabel')}"/>
+	<property name="revisionnumber" value="${BUILD_NUMBER}" if="${property::exists('BUILD_NUMBER')}"/>
+	<property name="project.fullversion" value="1.0.${revisionnumber}.0" dynamic="true"/>
+	<property name="project.config" value="release"/>
+
+	<!-- Folder references -->
+  <property name="dir.root" value="${path::get-full-path('.')}"/>
+  <property name="dir.solution" value="src"/>
+	<property name="dir.ui" value="${dir.solution}/UI"/>
+	<property name="dir.build" value="build" dynamic="true"/>
+	<property name="dir.lib" value="lib"/>
+	<property name="dir.test" value="${dir.build}/${nant.settings.currentframework}-${project.config}"/>
+	<property name="dir.package" value="${dir.build}/package"/>
+	<property name="dir.results" value="${dir.build}/results"/>
+	<property name="dir.installerpackage" value="latestVersion" />
+
+	<property name="package.file.name" value="${dir.installerpackage}/${project::get-name()}Package.zip" />
+  
+
+	<!-- Compilation settings -->
+	<property name="file.solution" value="${dir.solution}/${project::get-name()}.sln"/>
+
+	<!-- Database migration settings -->
+	<property name="database.script.directory" value="${dir.solution}/Database" />
+  	<property name="database.server" value="localhost\sqlexpress" overwrite="false"/>
+	<property name="database.name" value="${project::get-name()}" overwrite="false"/>
+	<property name="database.integrated" value="true" overwrite="false" />
+	<property name="database.username" value="dbuser" overwrite="false"/>
+	<property name="database.password" value="P@ssword1" overwrite="false"/>
+
+	<!-- Testing settings -->
+	<property name="assembly.unittests" value="${project::get-name()}.UnitTests.dll"/>
+	<property name="assembly.integrationtests" value="${project::get-name()}.IntegrationTests.dll"/>
+	<property name="ui.port" value="8083"/>
+	<property name="ui.url" value="http://localhost:${ui.port}"/>
+	<property name="webout.txt" value="${dir.results}/webout.txt"/>
+	<property name="httpwait.txt" value="${dir.results}/httpwait.txt"/>
+
+  	<property name="svnargs.template" value="--username TODO --password TODO --no-auth-cache --non-interactive " />
+  	<property name="svnargs" value=" --non-interactive " />
+
+
+	<!-- ********************* -->
+	<!-- NUnit Testing Targets -->
+	<!-- ********************* -->
+	<target name="move-for-test">
+		<copy todir="${dir.test}" flatten="true">
+			<fileset basedir="${dir.solution}">
+				<include name="/**/bin/${project.config}/**" />
+				<include name="/**/UI/bin/**" />
+				<include name="*.config"/>
+				<include name="*.cfg.xml"/>
+			</fileset>
+		</copy>
+<property name="local.connection.string" value="server=${database.server};database=${database.name};Integrated Security=true;"/>
+    <xmlpoke file="${dir.test}/hibernate.cfg.xml"	xpath="//*/hbm:property[@name='connection.connection_string']"	value="${local.connection.string}">
+      <namespaces>
+        <namespace prefix="hbm" uri="urn:nhibernate-configuration-2.2"></namespace>
+      </namespaces>
+    </xmlpoke>
+
+		
+	</target>
+
+	<!-- ********************************** -->
+	<!-- Database Change Management Targets -->
+	<!-- ********************************** -->
+	<target name="reset-database" depends="dropDatabase, createDatabase,  move-for-test">
+		<nunit2 failonerror="true" verbose="true">
+			<formatter type="Plain" />
+			<test assemblyname="${dir.test}/${assembly.integrationtests}">
+				<categories>
+					<include name="SchemaExport"/>
+					<exclude name="*"/>
+				</categories>
+			</test>
+		</nunit2>
+	</target>
+
+  	<target name="create-versioned-database">
+    	<echo message="Creating Versioned Database"/>
+		<tstamp></tstamp>
+    	<manageSqlDatabase
+			action="Drop"
+			server="${database.server}"
+			integratedAuthentication="true"
+			database="${database.name}Versioned"
+			username=""
+			password="" />
+
+	    <manageSqlDatabase
+			scriptDirectory="${database.script.directory}"
+			action="Create"
+			server="${database.server}"
+			integratedAuthentication="true"
+			database="${database.name}Versioned"
+			username=""
+			password="" />
+
+  	</target>
+
+  	<!-- **************************** -->
+	<!-- Deployment Packaging Targets -->
+	<!-- **************************** -->
+	<target name="package">
+		<delete dir="${dir.package}" if="${directory::exists('${dir.package}')}" />
+		<mkdir dir="${dir.package}"/>
+
+		<copy todir="${dir.package}\website" includeemptydirs="false">
+			<fileset basedir="${dir.solution}\UI">
+				<include name="images\**"/>
+		        <include name="css\**"/>
+        		<exclude name="obj\**"/>
+        		<exclude name="CodeTemplates\**"/>
+        		<exclude name="**\*.user"/>
+        		<exclude name="**\*.dtd"/>
+        		<exclude name="**\*.tt"/>
+        		<exclude name="**\*.cs"/>
+				<exclude name="**\*.csproj"/>
+				<include name="**\**"/>
+			</fileset>
+		</copy>
+
+    <copy todir="${dir.package}\website\Prince" includeemptydirs="false" overwrite="true">
+      <fileset basedir="lib\Prince">
+        <include name="**\**"/>
+      </fileset>
+    </copy>
+
+    <xmlpoke file="${dir.package}\website\web.config"  
+             xpath="/configuration/appSettings/add[@key = 'PrincePathToExe']/@value" 
+             value="Prince/Engine/bin/prince.exe" />
+
+
+    <copy todir="${dir.package}\database" includeemptydirs="false">
+			<fileset basedir="${dir.solution}\Database">
+				<include name="**\*.sql"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${dir.package}\tests\tools" includeemptydirs="false">
+			<fileset basedir="lib">
+				<include name="cassini\**\*.*"/>
+				<include name="nunit\**\*.*"/>
+				<include name="gallio\**\*.*"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${dir.package}\tests" flatten="true">
+			<fileset basedir="${dir.solution}">
+				<include name="/**/bin/${project.config}/**" />
+				<include name="*.config"/>
+				<include name="*.cfg.xml"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${dir.package}\nant" includeemptydirs="false">
+			<fileset basedir="${nant::get-base-directory()}">
+		        <exclude name="**\*.pdb"/>
+		        <exclude name="**\*.xml"/>
+			<include name="**" />
+			</fileset>
+		</copy>
+
+		<copy todir="${dir.package}">
+			<fileset basedir="deployment">
+				<include name="**" />
+			</fileset>
+		</copy>
+
+		<delete file="${dir.installerpackage}/${project::get-name()}Package.exe" />
+		<exec  program="lib\7zip\7za.exe" workingdir="${dir.package}" commandline=" a -mx=9 -r -sfx ..\..\${dir.installerpackage}/${project::get-name()}Package.exe *.*" verbose="true" />
+  	</target>
+</project>
