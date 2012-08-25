@@ -43,7 +43,7 @@ properties {
 }
 
 task default -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, CopyForTest, UnitTest, IntegrationTest, DataLoader
-task ci -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, CopyForTest, UnitTest, IntegrationTest, Package
+task ci -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, CopyForTest, UnitTest, IntegrationTest
 task testdata -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, CopyForTest, DataLoader
 
 FormatTaskName (("*"*25) + " {0, -25} " + ("*"*25))
@@ -130,25 +130,8 @@ task Package -depends Compile {
         copy_website_files "$source_dir\$source" "$package_dir\$dest"
     }
         
-    foreach($lib in $libsToPackage)
-    {    
-        $source = $lib.Source
-        $dest = $lib.Destination
-        copy_files "$source_dir\$source\bin\$projectConfig" "$package_dir\$dest"
-    }
-    	
-    copy_files "$lib_dir\tinoBatchJobs" "$package_dir\agents"
-	copy_files_with_include "$source_dir\UI\bin" "$package_dir\agents" "*.dll"
-	
-	Get-ChildItem "$source_dir\*" -include ("*.config", "*.xml") | copy-item -Destination "$package_dir\agents"
-	
-    copy_files "$source_dir\DependencyResolution\bin\$projectConfig" "$package_dir\agents"
-    copy_files "$source_dir\Infrastructure\bin\$projectConfig" "$package_dir\agents"
-    copy_files "$base_dir\scripts" "$package_dir\LoyaltyLabs"
-    copy_files "$source_dir\Infrastructure\Database" "$package_dir\database"
     copy_files "$lib_dir\nant" "$package_dir\nant" ("*.pdb", "*.xml")
     copy_files "$lib_dir\tarantinodbmigrate" "$package_dir\dbmigrate"
-    copy_files "$base_dir\deployment" "$package_dir"
 	
 	zip_directory $package_dir $package_file 
 }
