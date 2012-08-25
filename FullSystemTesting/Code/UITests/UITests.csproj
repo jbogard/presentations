@@ -97,8 +97,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConferencePageTester.cs" />
+    <Compile Include="ConferencePageTesterAfter.cs" />
     <Compile Include="ConferencePageTesterBefore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UI\UI.csproj">
