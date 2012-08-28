@@ -25,7 +25,7 @@ properties {
 	
 	$databaseName = $projectName
 	$databaseServer = "localhost\sqlexpress"
-	$databaseScripts = "$source_dir\Infrastructure\Database"
+	$databaseScripts = "$source_dir\Core\Infrastructure\Database"
 	$hibernateConfig = "$source_dir\hibernate.cfg.xml"
 	$schemaDatabaseName = $databaseName + "_schema"
 	
@@ -42,8 +42,8 @@ properties {
 	$nunitExe = "$lib_dir\NUnit-2.5.10.11092\bin2\net-2.0\nunit-console-x86.exe"
 }
 
-task default -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, CopyForTest, UnitTest, IntegrationTest, DataLoader
-task ci -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, CopyForTest, UnitTest, IntegrationTest
+task default -depends Init, CommonAssemblyInfo, UpdateDatabase, Compile, CopyForTest, UnitTest, IntegrationTest, DataLoader
+task ci -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, Package
 task testdata -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, CopyForTest, DataLoader
 
 FormatTaskName (("*"*25) + " {0, -25} " + ("*"*25))
@@ -69,6 +69,16 @@ task RebuildDatabase {
 
     exec { 
 		& $lib_dir\tarantinodbmigrate\DatabaseDeployer.exe Rebuild $databaseServer $databaseName $databaseScripts 
+	}
+}
+
+task UpdateDatabase {
+	write-host ("Database Server: " + $databaseServer) -ForegroundColor Green
+	write-host ("Database Name: " + $databaseName) -ForegroundColor Green
+	write-host ("Database Scripts: " + $databaseScripts) -ForegroundColor Green
+
+    exec { 
+		& $lib_dir\tarantinodbmigrate\DatabaseDeployer.exe Update $databaseServer $databaseName $databaseScripts 
 	}
 }
 

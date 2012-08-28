@@ -12,7 +12,8 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
 		{
 			var attendee = new Attendee("Joe", "Schmoe")
 			{
-				Email = "foo@foo.com"
+				Email = "foo@foo.com",
+                State = "TX"
 			};
 
 			SaveEntities(attendee);
@@ -22,6 +23,7 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
 			loaded.FirstName.ShouldEqual(attendee.FirstName);
 			loaded.LastName.ShouldEqual(attendee.LastName);
 			loaded.Email.ShouldEqual(attendee.Email);
+			loaded.State.ShouldEqual(attendee.State);
 		}
 	}
 }

@@ -13,6 +13,7 @@ namespace CodeCampServerLite.Core.Domain.Model
     	public virtual string FirstName { get; protected set; }
         public virtual string LastName { get; protected set; }
     	public virtual string Email { get; set; }
+        public virtual string State { get; set; }
         public virtual Conference Conference { get; protected set; }
 
         public virtual void ChangeName(string firstName, string lastName)

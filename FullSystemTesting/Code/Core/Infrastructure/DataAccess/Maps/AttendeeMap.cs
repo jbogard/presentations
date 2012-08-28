@@ -9,6 +9,7 @@ namespace CodeCampServerLite.Infrastructure.DataAccess.Maps
 			Map(x => x.FirstName);
 			Map(x => x.LastName);
 			Map(x => x.Email);
+			Map(x => x.State);
 
 			References(x => x.Conference);
 		}
