@@ -1,0 +1,35 @@
+﻿@model Polyglot.Cart.ShoppingCart
+
+@{
+    ViewBag.Title = "Checkout";
+}
+
+<h2>Checkout</h2>
+
+<h3>Cart total: @Model.Total.ToString("c")</h3>
+
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+    </tr>
+    @foreach (var lineItem in Model.Items)
+    {
+        <tr>
+            <td>@Html.ActionLink(lineItem.Value.ProductName, "Show", "Product", new { lineItem.Value.ProductID}, new {})</td>
+            <td>@lineItem.Value.Quantity</td>
+            <td>@lineItem.Value.ListPrice.ToString("c")</td>
+            <td>@lineItem.Value.Subtotal.ToString("c")</td>
+        </tr>
+    }        
+</table>
+<br/>
+@using (Html.BeginForm())
+{
+    @Html.Label("Name")
+    @Html.TextBox("Name")
+
+    <input type="submit" />
+}

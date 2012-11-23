@@ -1,0 +1,11 @@
+﻿@model Polyglot.Products.Models.Product
+
+@{
+    ViewBag.Title = "View Product";
+}
+
+<h2>View @Model.Name</h2>
+
+<h3>@Model.ListPrice.ToString("c")</h3>
+<p>@Model.ProductModel.ProductModelProductDescriptionCultures.First().ProductDescription.Description</p>
+<p>@Html.ActionLink("Add to Cart", "AddItem", "Cart", new{ Model.ProductID}, new {})</p>
