@@ -183,7 +183,6 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -309,7 +308,7 @@
     <Content Include="Views\Cart\Widget.cshtml" />
     <Content Include="Views\Product\Show.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
-    <Content Include="Views\Order\Checkout.cshtml" />
+    <Content Include="Views\Product\Widget.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -321,6 +320,10 @@
     <ProjectReference Include="..\Polyglot.Cart\Polyglot.Cart.csproj">
       <Project>{2CD1D236-2773-44E1-A755-24CF5E0DEF3B}</Project>
       <Name>Polyglot.Cart</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Polyglot.Orders\Polyglot.Orders.csproj">
+      <Project>{2ACF678A-35DA-435E-87CF-0F0E136612B2}</Project>
+      <Name>Polyglot.Orders</Name>
     </ProjectReference>
     <ProjectReference Include="..\Polyglot.Products\Polyglot.Products.csproj">
       <Project>{57fef7cb-4733-4f2a-aa10-7078f872f46b}</Project>

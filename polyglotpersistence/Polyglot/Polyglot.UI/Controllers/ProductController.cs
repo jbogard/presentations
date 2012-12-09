@@ -57,5 +57,17 @@ namespace Polyglot.UI.Controllers
             }
         }
 
+        public ActionResult Widget(int productId)
+        {
+            using (var context = new AdventureWorks2012Context())
+            {
+                var product = context.Products
+                    .Include("ProductModel.ProductModelProductDescriptionCultures.ProductDescription")
+                    .Single(c => c.ProductID == productId);
+
+                return PartialView(product);
+            }
+        }
+
     }
 }
