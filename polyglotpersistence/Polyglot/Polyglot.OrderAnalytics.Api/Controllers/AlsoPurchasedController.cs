@@ -22,8 +22,9 @@ namespace Polyglot.OrderAnalytics.Api.Controllers
 
             var queryText =
                 string.Format(
-                    "g.v({0}).bothE('PRODUCT_ALSO_BOUGHT_WITH').sort{{a,b -> b.Count <=> a.Count}}_()[0..2].bothV().filter{{it.id != {0}}}"
-                    , node.Reference.Id);
+                    "g.v({0}).bothE('{1}').sort{{a,b -> b.Count <=> a.Count}}_()[0..2].bothV().filter{{it.id != {0}}}"
+                    , node.Reference.Id
+                    , AlsoBoughtWith.TypeKey);
 
             var result = client.ExecuteGetAllNodesGremlin<Product>(queryText, null);
 
