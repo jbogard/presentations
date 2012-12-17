@@ -43,7 +43,6 @@ namespace Polyglot.OrderAnalytics
                     );
                 client.ExecuteScalarGremlin(addMissingEdgesQuery, null);
 
-                //g.v(772, 773, 774)_().bothE().filter{it.inVertex.id == 771 || it.outVertex.id == 771}.sideEffect{it.Count++}
                 var incrementCountQuery = string.Format(
                     "g.v({0})_().bothE('{1}').filter{{it.inVertex.id == {2} || it.outVertex.id == {2}}}.sideEffect{{it.Count++}}",
                     otherNodesJoined,
