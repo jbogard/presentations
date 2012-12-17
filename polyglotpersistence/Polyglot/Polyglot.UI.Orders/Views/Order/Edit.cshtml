@@ -1,0 +1,42 @@
+﻿@model Polyglot.UI.Orders.Models.OrderRequestForm
+
+@{
+    ViewBag.Title = "Check out";
+}
+
+<h2>Check out</h2>
+
+<h3>Cart total: @Model.Total.ToString("c")</h3>
+
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+    </tr>
+    @foreach (var lineItem in Model.Items)
+    {
+    <tr>
+        <td>@lineItem.ProductName</td>
+        <td>@lineItem.Quantity</td>
+        <td>@lineItem.ListPrice.ToString("c")</td>
+        <td>@lineItem.Subtotal.ToString("c")</td>
+    </tr>
+    }        
+</table>
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Customer Information</legend>
+        <p>
+            @Html.LabelFor(m => m.CustomerFirstName)
+            @Html.EditorFor(m => m.CustomerFirstName)
+        </p>
+        <p>
+            @Html.LabelFor(m => m.CustomerLastName)
+            @Html.EditorFor(m => m.CustomerLastName)
+        </p>
+    </fieldset>
+    <input type="submit"/>
+}

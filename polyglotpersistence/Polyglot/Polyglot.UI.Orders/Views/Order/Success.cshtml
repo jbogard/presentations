@@ -1,0 +1,9 @@
+﻿@model Polyglot.UI.Orders.Models.OrderConfirmModel
+
+@{
+    ViewBag.Title = "Confirm";
+}
+
+<h2>Thank you for your order!</h2>
+
+@Html.ActionLink("Check status", "Show", new { id = Model.OrderRequestId })

@@ -1,0 +1,12 @@
+﻿@model Polyglot.Products.Models.ProductCategory
+
+@{
+    ViewBag.Title = "View Products";
+}
+
+<h2>@Model.Name</h2>
+
+@foreach (var subcategory in Model.ProductSubcategories)
+{
+    <p>@Html.ActionLink(subcategory.Name, "List", "Product", new { subcategory.ProductSubcategoryID }, new {})</p>
+}

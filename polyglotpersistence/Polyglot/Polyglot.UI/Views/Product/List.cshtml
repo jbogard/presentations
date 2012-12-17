@@ -1,0 +1,14 @@
+﻿@model Polyglot.Products.Models.ProductSubcategory
+
+@{
+    ViewBag.Title = "View Subcategory";
+}
+
+<h2>@Model.Name</h2>
+
+@foreach (var product in Model.Products)
+{
+    <p>@Html.ActionLink(product.Name, "Show", "Product", new {product.ProductID}, new {}) - @product.ListPrice.ToString("c")
+       @Html.ActionLink("[Add to Cart]", "AddItem", "Cart", new {product.ProductID}, new {})
+    </p>
+}

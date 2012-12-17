@@ -1,0 +1,30 @@
+﻿@model Polyglot.Cart.ShoppingCart
+
+@{
+    ViewBag.Title = "View Cart";
+}
+
+<h2>View Cart</h2>
+
+<h3>Cart total: @Model.Total.ToString("c")</h3>
+
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+    </tr>
+    @foreach (var lineItem in Model.Items)
+    {
+    <tr>
+        <td>@Html.ActionLink(lineItem.Value.ProductName, "Show", "Product", new { lineItem.Value.ProductID}, new {})</td>
+        <td>@lineItem.Value.Quantity</td>
+        <td>@lineItem.Value.ListPrice.ToString("c")</td>
+        <td>@lineItem.Value.Subtotal.ToString("c")</td>
+    </tr>
+    }        
+</table>
+<p>
+    @Html.ActionLink("Checkout", "Checkout")
+</p>
