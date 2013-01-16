@@ -1,0 +1,15 @@
+﻿@model CodeCampServerLite.UI.Models.AttendeeEditModel
+
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>Register</h2>
+
+    @using (Html.BeginForm("Register", "Conference"))
+    {
+        @Html.EditorForModel()
+        @Html.EditorFor(x => x.ConferenceId)
+
+        <input type="submit" value="Register" />
+    }

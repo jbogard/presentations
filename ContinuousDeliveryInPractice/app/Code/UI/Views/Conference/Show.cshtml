@@ -1,0 +1,49 @@
+﻿@model CodeCampServerLite.UI.Models.ConferenceShowModel
+
+@{
+	ViewBag.Title = Model.Name;
+}
+
+	<h2>@Html.DisplayFor(m => m.Name)</h2>
+
+	<p>
+		@Html.ActionLink("Register for this Conference", "Register", new { confname = Model.Name })
+	</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Speaker</th>
+				<th>Title</th>
+			</tr>
+		</thead>
+    <tbody>
+            @foreach (var session in Model.Sessions)
+            {
+                <tr>
+                    <td>@session.SpeakerFirstName @session.SpeakerLastName</td>
+                    <td>@session.Title</td>
+                </tr>
+            }
+
+        </tbody>
+	</table>
+
+	<br />
+
+    <script type="text/javascript">
+    function HideAttendeeLoadButton() {
+        $('#showAttendees').hide();
+    }
+    </script>
+
+    @using(Ajax.BeginForm("Show", "Attendee", 
+            new { confname = Model.Name },
+            new AjaxOptions { 
+                UpdateTargetId = "attendees", 
+                OnSuccess = "HideAttendeeLoadButton" },
+            new { method = "get" }))
+    {
+	    <button id="showAttendees">Show Attendees</button>
+    }
+	<div id="attendees"></div>

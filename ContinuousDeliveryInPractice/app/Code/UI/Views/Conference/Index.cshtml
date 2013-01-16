@@ -1,0 +1,45 @@
+﻿@using CodeCampServerLite.UI
+@model CodeCampServerLite.UI.Models.ConferenceListModel[]
+
+@{
+	ViewBag.Title = "Conferences";
+}
+
+<h2>Conferences</h2>
+
+
+    @if ((Model != null) && Model.Any())
+		{
+    <table>
+			<thead>
+				<tr>
+					<th>Edit</th>
+					<th>Conference Name</th>
+					<th>Session Count</th>
+					<th>Attendee Count</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var conference in Model)
+		 {
+				<tr>
+							<td>
+								@Html.ActionLink("Edit", "Edit", new { confname = conference.Name }, new {rel = SiteNav.EditPrefix + " " + conference.Name})
+							</td>
+							<td>@Html.ActionLink(conference.Name, "Show", new { confname = conference.Name },new {rel = SiteNav.ShowPrefix + " " + conference.Name})</td>
+						<td>@conference.SessionCount</td>
+						<td>@conference.AttendeeCount</td>
+				</tr>
+			}
+			</tbody>
+    </table>
+    }
+    
+    <form action="@Url.Action("Index")" method="get">
+        <label for="minSessions">Minimum Session Count:</label>
+        <input id="minSessions" name="minSessions" type="text" />
+        <input type="submit" />
+    </form>
+	
+	<h2>Other Formats</h2>
+	@Html.ActionLink("Show XML", "Index", "ConferenceXml")

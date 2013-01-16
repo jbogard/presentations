@@ -1,0 +1,9 @@
+﻿@model CodeCampServerLite.UI.Areas.Security.Models.RenderLogonControlModel
+
+@if(Model.IsAuthenticated) {
+    <text>Welcome <b>@Model.Name</b>!
+    [ @Html.ActionLink("Log Off", "LogOff", "Account") ]</text>
+}
+else {
+    @:[ @Html.ActionLink("Log On", "LogOn", "Account") ]
+}

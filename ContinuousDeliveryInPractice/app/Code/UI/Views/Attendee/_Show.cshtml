@@ -1,0 +1,19 @@
+﻿@model CodeCampServerLite.UI.Models.ConferenceShowModel.AttendeeModel[]
+
+  <table>
+		<thead>
+			<tr>
+				<th>Attendee</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<body>
+	  @foreach (var attendee in Model)
+    {
+			<tr>
+				<td>@Html.Encode(attendee.FirstName)&nbsp;@Html.Encode(attendee.LastName)</td>
+				<td>@Html.Encode(attendee.Email)</td>
+			</tr>
+    }
+		</body>
+	</table>
