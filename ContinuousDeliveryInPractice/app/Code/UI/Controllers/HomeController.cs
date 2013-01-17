@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CodeCampServerLite.Core.Domain.Model;
 
 namespace CodeCampServerLite.UI.Controllers
 {
@@ -29,7 +30,7 @@ namespace CodeCampServerLite.UI.Controllers
         [ChildActionOnly]
         public PartialViewResult Version()
         {
-            var version = GetType().Assembly.GetName().Version;
+            var version = typeof(Conference).Assembly.GetName().Version;
 
             return PartialView(version);
         }

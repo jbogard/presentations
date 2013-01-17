@@ -84,6 +84,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="BootStrapper.cs" />
     <Compile Include="Core\Domain\IConferenceRepository.cs" />
     <Compile Include="Core\Domain\IRepository.cs" />
