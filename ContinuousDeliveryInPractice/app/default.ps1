@@ -28,8 +28,11 @@ properties {
 	$databaseScripts = "$source_dir\Core\Infrastructure\Database"
 	$hibernateConfig = "$source_dir\hibernate.cfg.xml"
 	$schemaDatabaseName = $databaseName + "_schema"
+    $devDatabaseName = $databaseName + "_dev"
+    $testDatabaseName = $databaseName + "_test"
 	
-	$connection_string = "server=$databaseserver;database=$databasename;Integrated Security=true;"
+	$dev_connection_string = "server=$databaseserver;database=$devDatabasename;Integrated Security=true;"
+	$test_connection_string = "server=$databaseserver;database=$testDatabasename;Integrated Security=true;"
 	
 	$cassini_app = 'C:\Program Files (x86)\Common Files\Microsoft Shared\DevServer\10.0\WebDev.WebServer40.EXE'
 	$port = 1234
@@ -42,7 +45,7 @@ properties {
 	$nunitExe = "$lib_dir\NUnit-2.5.10.11092\bin2\net-2.0\nunit-console-x86.exe"
 }
 
-task default -depends Init, CommonAssemblyInfo, UpdateLocalDatabases, Compile, CopyForTest, UnitTest, IntegrationTest
+task default -depends Init, UpdateLocalDatabases, Compile, CopyForTest, UnitTest, IntegrationTest
 task ci -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, Package
 
 task Init {
@@ -79,8 +82,6 @@ task UpdateDatabase {
 }
 
 task UpdateLocalDatabases {
-    $devDatabaseName = $databaseName + "_dev"
-    $testDatabaseName = $databaseName + "_test"
 
 	write-host ("Database Server: $databaseServer") -ForegroundColor Green
 	write-host ("Database Name(s): $devDatabaseName, $testDatabaseName") -ForegroundColor Green
@@ -111,6 +112,8 @@ task CopyForTest -depends Compile {
 
     $webFolders = [string[]][object[]] "UI"
     copy_and_flatten_web_projects $source_dir $test_dir $webFolders
+
+    poke-xml "$test_dir\hibernate.cfg.xml" "//*/hbm:property[@name='connection.connection_string']" $test_connection_string @{"hbm" = "urn:nhibernate-configuration-2.2"}
 }
 
 task UnitTest -depends CopyForTest {
