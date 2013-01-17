@@ -43,10 +43,6 @@ namespace UI
             AutoMapperBootstrapper.Initialize();
 
             ControllerBuilder.Current.SetControllerFactory(new StructureMapControllerFactory());
-
-            var dataLoader = ObjectFactory.GetInstance<IDummyDataLoader>();
-
-            dataLoader.Load();
         }
     }
 }
