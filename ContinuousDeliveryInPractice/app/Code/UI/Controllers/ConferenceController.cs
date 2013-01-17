@@ -40,6 +40,7 @@ namespace CodeCampServerLite.UI.Controllers
             var conf = _repository.GetById(form.Id);
 
             conf.ChangeName(form.Name);
+            conf.Location = form.Location;
 
             foreach (var attendeeEditModel in form.Attendees)
             {

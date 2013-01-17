@@ -21,6 +21,7 @@ namespace CodeCampServerLite.Core.Domain.Model
     	protected Conference() { }
 
     	public virtual string Name { get; protected set; }
+    	public virtual string Location { get; set; }
     	public virtual int AttendeeCount { get; protected set; }
     	public virtual int SessionCount { get; protected set; }
 

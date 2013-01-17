@@ -11,7 +11,10 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
         [Test]
         public void Should_map_all_event_fields_correctly()
         {
-            var newEvent = new Conference("Some event");
+            var newEvent = new Conference("Some event")
+            {
+                Location = "Copenhagen"
+            };
 
         	SaveEntities(newEvent);
 
@@ -20,6 +23,7 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
             var savedEvent = newSession.Load<Conference>(newEvent.Id);
 
             savedEvent.Name.ShouldEqual(newEvent.Name);
+            savedEvent.Location.ShouldEqual(newEvent.Location);
         }
 
     	[Test]
