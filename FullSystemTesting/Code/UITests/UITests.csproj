@@ -53,6 +53,11 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.SHDocVw, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\..\..\ContinuousDeliveryInPractice\app\lib\Interop.SHDocVw.dll</HintPath>
+    </Reference>
     <Reference Include="MvcContrib.TestHelper, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvcContrib.Mvc3.TestHelper-ci.3.0.100.0\lib\MvcContrib.TestHelper.dll</HintPath>
@@ -99,7 +104,6 @@
     <Compile Include="ConferencePageTester.cs" />
     <Compile Include="ConferencePageTesterBefore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UI\UI.csproj">

@@ -145,6 +145,10 @@ task Package -depends Compile {
     }
         
     copy_files "$lib_dir\tarantinodbmigrate" "$package_dir\dbmigrate"
+    copy_files "$databaseScripts" "$package_dir\scripts"
+    copy_files "$base_dir\psakev4" "$package_dir\psakev4"
+    Copy-Item "deploy.ps1" "$package_dir"
+    Copy-Item "deploy.bat" "$package_dir"
 	
 	zip_directory $package_dir $package_file 
 }

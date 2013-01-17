@@ -12,7 +12,6 @@
 
 <body>
     <div class="page">
-        @Html.EmbedCurrentPage(ViewContext)
         <div id="header">
             <div id="title">
                 <h1>My Code Camp Server Lite</h1>
@@ -25,7 +24,7 @@
             <div id="menucontainer">
                 <ul id="menu">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("Conferences", "Index", "Conference", new { area = "" }, new { rel = SiteNav.Conferences })</li>
+                    <li>@Html.ActionLink("Conferences", "Index", "Conference", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
                 </ul>
 

@@ -23,9 +23,9 @@
 		 {
 				<tr>
 							<td>
-								@Html.ActionLink("Edit", "Edit", new { confname = conference.Name }, new { rel = "Edit " + conference.Name })
+								@Html.ActionLink("Edit", "Edit", new { confname = conference.Name }, null)
 							</td>
-							<td>@Html.ActionLink(conference.Name, "Show", new { confname = conference.Name }, new { rel = "Show " + conference.Name })</td>
+							<td>@Html.ActionLink(conference.Name, "Show", new { confname = conference.Name }, null)</td>
 						<td>@conference.SessionCount</td>
 						<td>@conference.AttendeeCount</td>
 				</tr>

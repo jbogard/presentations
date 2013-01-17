@@ -1,7 +1,7 @@
 <hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
   <session-factory>
     <property name="connection.driver_class">NHibernate.Driver.SqlClientDriver</property>
-    <property name="connection.connection_string">server=.\sqlexpress;database=CodeCampServerLite_test;Integrated Security=true;</property>
+    <property name="connection.connection_string">server=.\sqlexpress;database=CodeCampServerLite_dev;Integrated Security=true;</property>
     <property name="show_sql">false</property>
     <property name="dialect">NHibernate.Dialect.MsSql2005Dialect</property>
     <property name="cache.provider_class">NHibernate.Caches.SysCache.SysCacheProvider,NHibernate.Caches.SysCache</property>

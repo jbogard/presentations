@@ -6,6 +6,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{47EEA786-1BB7-4BA6-B72F-966392D1AA40}"
 	ProjectSection(SolutionItems) = preProject
 		..\default.ps1 = ..\default.ps1
+		..\deploy.ps1 = ..\deploy.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{64330F63-44B3-4C98-8400-5697CB3CDD9F}"

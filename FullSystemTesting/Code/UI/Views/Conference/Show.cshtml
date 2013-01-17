@@ -18,16 +18,12 @@
 			</tr>
 		</thead>
     <tbody>
-    @{
-        int i = 0;
-    }
             @foreach (var session in Model.Sessions)
             {
                 <tr>
-                    <td>@Html.DisplayFor(m => m.Sessions[i].SpeakerFirstName) @session.SpeakerLastName</td>
+                    <td>@session.SpeakerFirstName @session.SpeakerLastName</td>
                     <td>@session.Title</td>
                 </tr>
-                i++;
                 }
 
         </tbody>
