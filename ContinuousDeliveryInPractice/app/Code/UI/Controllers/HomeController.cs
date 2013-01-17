@@ -26,5 +26,12 @@ namespace CodeCampServerLite.UI.Controllers
             throw new Exception("Custom message");
         }
 
+        [ChildActionOnly]
+        public PartialViewResult Version()
+        {
+            var version = GetType().Assembly.GetName().Version;
+
+            return PartialView(version);
+        }
     }
 }

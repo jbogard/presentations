@@ -35,6 +35,7 @@
             <div id="main">
                 @RenderBody()
                 <div id="footer">
+                    @Html.Action("Version", "Home", new { area = "" })
                 </div>
             </div>
         </div>
