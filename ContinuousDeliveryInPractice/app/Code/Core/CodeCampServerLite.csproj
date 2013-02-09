@@ -141,6 +141,7 @@
     <Content Include="Infrastructure\Database\Update\0001_InitialSchema.sql" />
     <Content Include="Infrastructure\Database\Update\0002_AddStateToAttendee.sql" />
     <Content Include="Infrastructure\Database\Update\0003_AddLocationToConference.sql" />
+    <Content Include="Infrastructure\Database\Update\0004_AddDateToConference.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

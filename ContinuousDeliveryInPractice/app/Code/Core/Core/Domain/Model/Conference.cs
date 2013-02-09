@@ -24,6 +24,7 @@ namespace CodeCampServerLite.Core.Domain.Model
     	public virtual string Location { get; set; }
     	public virtual int AttendeeCount { get; protected set; }
     	public virtual int SessionCount { get; protected set; }
+    	public virtual DateTime? Date { get; set; }
 
         public virtual void ChangeName(string name)
         {

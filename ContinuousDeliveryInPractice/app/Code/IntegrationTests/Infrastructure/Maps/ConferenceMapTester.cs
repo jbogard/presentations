@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using CodeCampServerLite.Core.Domain.Model;
 using Should;
@@ -11,9 +12,12 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
         [Test]
         public void Should_map_all_event_fields_correctly()
         {
+            var dateTime = new DateTime(2013, 10, 1);
+
             var newEvent = new Conference("Some event")
             {
-                Location = "Copenhagen"
+                Location = "Copenhagen",
+                Date = dateTime
             };
 
         	SaveEntities(newEvent);
@@ -24,6 +28,7 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
 
             savedEvent.Name.ShouldEqual(newEvent.Name);
             savedEvent.Location.ShouldEqual(newEvent.Location);
+            savedEvent.Date.ShouldEqual(dateTime);
         }
 
     	[Test]
