@@ -1,0 +1,41 @@
+Messaging
+
+Topics
+
+Styles
+
+Sync/async
+Durable/non-durable
+
+Patterns
+
+One-way
+Request/Response
+Pub/sub
+
+Types
+
+Commands/events
+
+
+
+Starbucks?
+
+Correlation IDs
+
+Conversation patterns
+
+Idempotency
+
+Goal: building a restaurant?
+
+n-tier
+
+scaling up orders
+- multiple people doing same job
+- different people doing different jobs
+
+credit card?
+
+multiple stores
+read-only menu

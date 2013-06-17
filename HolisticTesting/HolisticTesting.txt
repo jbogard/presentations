@@ -1,0 +1,24 @@
+General testing
+- Ratios and numbers
+- Naming
+- Levels of testing
+- Behavioral vs. simple style
+- xUnit vs. NUnit
+- Too many assertions
+- Too many Acts
+
+Unit testing (in -process)
+- Dealing with static dependencies
+- Peers vs. dependencies
+- When to mock
+
+Integration testing
+- Isolating the container
+- Isolating the database (RavenDB)
+- Isolating the database (SQL Server) - rollback vs. delete
+
+Full-system testing
+- Building a seam (commands, queries, handlers etc)
+- UI testing 
+- Fixture building
+- Services testing
