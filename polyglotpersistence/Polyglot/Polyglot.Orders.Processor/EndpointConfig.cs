@@ -15,7 +15,7 @@ namespace Polyglot.Orders.Processor
             DocumentStore = new DocumentStore
             {
                 DefaultDatabase = "Polyglot.UI.Orders",
-                Url = "http://localhost:8082"
+                Url = "http://localhost:8080"
             };
             DocumentStore.Initialize();
 	    }
