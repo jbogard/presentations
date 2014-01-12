@@ -10,6 +10,8 @@ namespace CodeCampServerLite.UITests
     public class ConferencePageTesterBefore
     {
         [Test]
+
+
         public void Should_be_able_to_edit_conference()
         {
             using (var ie = new IE("http://localhost:8084"))
@@ -28,9 +30,10 @@ namespace CodeCampServerLite.UITests
 
                 ie.Url.ShouldEqual("http://localhost:8084/Conference");
 
-
                 ie.ContainsText("CodeMashFoo").ShouldBeTrue();
             }
         }
+
+
     }
 }

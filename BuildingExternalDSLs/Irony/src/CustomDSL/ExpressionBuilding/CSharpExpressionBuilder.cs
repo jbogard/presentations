@@ -77,6 +77,10 @@ namespace CustomDsl.ExpressionBuilding
 
         public Func<T, object> Build<T>(AstNode rootNode)
         {
+            Expression<Func<object, int>> foo = o => 1;
+            Func<object, int> compile = foo.Compile();
+            compile(null);
+
             _expressionContext = Expression.Parameter(typeof(T), "object");
             _type = typeof (T);
             var expr = InnerBuild(rootNode);
@@ -257,7 +261,8 @@ namespace CustomDsl.ExpressionBuilding
 
         private Expression Build(ObjectPropertyNode node)
         {
-            var mi = _type.GetProperty(node.VariableName, BindingFlags.Public | BindingFlags.Instance).GetGetMethod();
+            var mi = _type.GetProperty(node.VariableName, BindingFlags.Public | BindingFlags.Instance)
+                .GetGetMethod();
             var contextCall = Expression.Call(_expressionContext, mi);
             return contextCall;
         }

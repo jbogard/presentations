@@ -28,7 +28,7 @@ namespace CustomDSL.UI
 
         private void btnEvaluate_Click(object sender, EventArgs e)
         {
-            var tree = _parser.Parse(txtExpression.Text);
+            ParseTree tree = _parser.Parse(txtExpression.Text);
 
             if (tree.HasErrors())
             {
@@ -40,7 +40,7 @@ namespace CustomDSL.UI
 
             var rootNode = (AstNode)tree.Root.AstNode;
             var visitor = new CSharpExpressionBuilder();
-            var func = visitor.Build(rootNode);
+            Func<object> func = visitor.Build(rootNode);
 
             txtResult.Text = func().ToString();
         }
