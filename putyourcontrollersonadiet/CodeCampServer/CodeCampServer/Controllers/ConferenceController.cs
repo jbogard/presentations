@@ -1,6 +1,8 @@
 namespace CodeCampServerLite.Controllers
 {
+    using System;
     using System.Linq;
+    using System.Web.Http.OData.Query;
     using System.Web.Mvc;
     using AutoMapper.QueryableExtensions;
     using Core.Domain.Model;
@@ -14,6 +16,7 @@ namespace CodeCampServerLite.Controllers
     public interface IMediator
     {
         TResponse Request<TResponse>(IQuery<TResponse> query);
+        TResult Send<TResult>(ICommand<TResult> query);
     }
 
     public class Mediator : IMediator
@@ -56,14 +59,22 @@ namespace CodeCampServerLite.Controllers
         TResponse Handle(TQuery query);
     }
 
+    public interface ICommand<out TResult> { }
+
+    public interface ICommandHandler<in TCommand, out TResult>
+        where TCommand : ICommand<TResult>
+    {
+        TResult Handle(TCommand command);
+    }
+
     public class ShowQuery
         : IQuery<ConferenceShowModel>
     {
         public string EventName { get; set; }
     }
 
-public class ShowQueryHandler 
-    : IQueryHandler<ShowQuery, ConferenceShowModel>
+    public class ShowQueryHandler
+        : IQueryHandler<ShowQuery, ConferenceShowModel>
     {
         private readonly ISession _session;
 
@@ -138,14 +149,40 @@ public class ShowQueryHandler
         }
     }
 
+    public class EditHandler
+        : ICommandHandler<ConferenceEditModel, Conference>
+    {
+        private readonly ISession _session;
+
+        public EditHandler(ISession session)
+        {
+            _session = session;
+        }
+
+        public Conference Handle(ConferenceEditModel command)
+        {
+            var conf = _session.Get<Conference>(command.Id);
+
+            conf.ChangeName(command.Name);
+
+            foreach (var attendeeEditModel in command.Attendees)
+            {
+                var attendee = conf.GetAttendee(attendeeEditModel.Id);
+
+                attendee.ChangeName(attendeeEditModel.FirstName, attendeeEditModel.LastName);
+                attendee.Email = attendeeEditModel.Email;
+            }
+
+            return conf;
+        }
+    }
+
 public class ConferenceController : Controller
 {
-    private readonly ISession _session;
     private readonly IMediator _mediator;
 
-    public ConferenceController(ISession session, IMediator mediator)
+    public ConferenceController(IMediator mediator)
     {
-        _session = session;
         _mediator = mediator;
     }
 
@@ -170,28 +207,12 @@ public class ConferenceController : Controller
         return View(model);
     }
 
+    [HttpPost]
+    public ActionResult Edit(ConferenceEditModel form)
+    {
+        var conf = _mediator.Send(form);
 
-        [HttpPost]
-        public ActionResult Edit(ConferenceEditModel form)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(form);
-            }
-
-            var conf = _session.Get<Conference>(form.Id);
-
-            conf.ChangeName(form.Name);
-
-            foreach (var attendeeEditModel in form.Attendees)
-            {
-                var attendee = conf.GetAttendee(attendeeEditModel.Id);
-
-                attendee.ChangeName(attendeeEditModel.FirstName, attendeeEditModel.LastName);
-                attendee.Email = attendeeEditModel.Email;
-            }
-
-            return this.RedirectToAction(c => c.Index(null), "Default");
-        }
+        return this.RedirectToActionJson(c => c.Show(new ShowQuery { EventName = conf.Name }), "Default");
     }
+}
 }

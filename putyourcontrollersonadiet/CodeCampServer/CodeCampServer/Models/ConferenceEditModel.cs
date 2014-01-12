@@ -2,7 +2,10 @@ using System;
 
 namespace CodeCampServerLite.Models
 {
-    public class ConferenceEditModel
+    using Controllers;
+    using Core.Domain.Model;
+
+    public class ConferenceEditModel : ICommand<Conference>
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

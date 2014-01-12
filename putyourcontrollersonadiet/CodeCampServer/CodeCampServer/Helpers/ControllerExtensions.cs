@@ -19,6 +19,11 @@ namespace CodeCampServerLite.Helpers
 			return RedirectToAction<TController>((Controller)controller, action, routeName);
 		}
 
+		public static RedirectToRouteResult RedirectToActionJson<TController>(this TController controller, Expression<Action<TController>> action, string routeName) where TController : Controller
+		{
+			return RedirectToAction<TController>((Controller)controller, action, routeName);
+		}
+
 		public static RedirectToRouteResult RedirectToAction<TController>(this Controller controller, Expression<Action<TController>> action, string routeName) where TController : Controller
 		{
 			if (controller == null)
