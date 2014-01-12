@@ -8,6 +8,11 @@ using NHibernate.Dialect;
 
 namespace CodeCampServerLite.Infrastructure.DataAccess
 {
+    using FluentNHibernate.Cfg.Db;
+    using NHibernate.Bytecode;
+    using NHibernate.Caches.SysCache;
+    using NHibernate.Tool.hbm2ddl;
+
     public class NHibernateSessionSource : ISessionSource
     {
         private readonly object _factorySyncRoot = new object();
@@ -29,11 +34,15 @@ namespace CodeCampServerLite.Infrastructure.DataAccess
 
         public Configuration AssembleConfiguration()
         {
-            var configuration = new Configuration();
-
-            configuration.Configure();
-
-            return Fluently.Configure(configuration)
+            return Fluently.Configure()
+                .Cache(csb => csb.ProviderClass<SysCacheProvider>().UseQueryCache())
+                .Database(() =>
+                {
+                    var config = MsSqlConfiguration.MsSql2008;
+                    config.ConnectionString(cse => cse.FromConnectionStringWithKey("App"));
+                    return config;
+                })
+                .ProxyFactoryFactory<DefaultProxyFactoryFactory>()
                 .Mappings(cfg =>
                 {
                     cfg.FluentMappings.AddFromAssemblyOf<Entity>();
@@ -44,6 +53,16 @@ namespace CodeCampServerLite.Infrastructure.DataAccess
         public ISession CreateSession()
         {
             return _sessionFactory.OpenSession();
+        }
+
+        public ISessionFactory GetSessionFactory()
+        {
+            return _sessionFactory;
+        }
+
+        public Configuration GetConfiguration()
+        {
+            return _configuration;
         }
 
         public void BuildSchema()

@@ -1,17 +1,16 @@
 ﻿using MvcContrib.TestHelper.Ui;
 using MvcContrib.TestHelper.WatiN;
-using NUnit.Framework;
 using WatiN.Core;
 
 namespace CodeCampServerLite.UITests
 {
-    [RequiresSTA]
-    public class WebTestBase
-    {
-        private InputTesterFactoryRegistry _factoryRegistry;
+    using System;
 
-        [SetUp]
-        public void Setup()
+    public class WebTestBase : IDisposable
+    {
+        private readonly InputTesterFactoryRegistry _factoryRegistry;
+
+        public WebTestBase()
         {
             Browser = new WatinDriver(new IE("http://localhost:8084"), "http://localhost:8084");
             _factoryRegistry = new InputTesterFactoryRegistry();
@@ -24,8 +23,7 @@ namespace CodeCampServerLite.UITests
             return new InputForm<T>(Browser, _factoryRegistry);
         }
 
-        [TearDown]
-        public void TearDown()
+        public void Dispose()
         {
             Browser.Dispose();
             Browser = null;

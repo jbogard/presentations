@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4BD39664-6EB1-4AD6-ADE3-E03F0D6F1355}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{47EEA786-1BB7-4BA6-B72F-966392D1AA40}"
 	ProjectSection(SolutionItems) = preProject
 		..\default.ps1 = ..\default.ps1
-		..\deploy.ps1 = ..\deploy.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{64330F63-44B3-4C98-8400-5697CB3CDD9F}"
@@ -25,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITests", "UITests\UITests.csproj", "{F7CB62BE-CA9E-48D9-BEFC-B409E4CFCA87}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{802CE2AD-D0D1-400B-8775-156FB44BF418}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseMigration", "DatabaseMigration\DatabaseMigration.csproj", "{18AE1B63-304E-45E4-ABB5-03AD753A7440}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +55,10 @@ Global
 		{802CE2AD-D0D1-400B-8775-156FB44BF418}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{802CE2AD-D0D1-400B-8775-156FB44BF418}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{802CE2AD-D0D1-400B-8775-156FB44BF418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18AE1B63-304E-45E4-ABB5-03AD753A7440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18AE1B63-304E-45E4-ABB5-03AD753A7440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18AE1B63-304E-45E4-ABB5-03AD753A7440}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18AE1B63-304E-45E4-ABB5-03AD753A7440}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

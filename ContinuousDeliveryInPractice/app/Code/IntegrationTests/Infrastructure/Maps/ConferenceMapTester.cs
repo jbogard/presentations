@@ -1,15 +1,14 @@
-using System;
-using System.Linq;
-using CodeCampServerLite.Core.Domain.Model;
-using Should;
-using NUnit.Framework;
-
 namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
 {
-    [TestFixture]
+    using System;
+    using System.Linq;
+    using Core.Domain.Model;
+    using Should;
+    using Xunit;
+
     public class ConferenceMapTester : IntegrationTestBase
     {
-        [Test]
+        [Fact]
         public void Should_map_all_event_fields_correctly()
         {
             var dateTime = new DateTime(2013, 10, 1);
@@ -20,7 +19,7 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
                 Date = dateTime
             };
 
-        	SaveEntities(newEvent);
+            SaveEntities(newEvent);
 
             var newSession = SessionSource.CreateSession();
 
@@ -31,37 +30,37 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
             savedEvent.Date.ShouldEqual(dateTime);
         }
 
-    	[Test]
-    	public void Should_cascade_session()
-    	{
-			var newEvent = new Conference("Some event");
-    		var session = new Session("Foo", "Bar", new Speaker("Joe", "Schmoe"));
+        [Fact]
+        public void Should_cascade_session()
+        {
+            var newEvent = new Conference("Some event");
+            var session = new Session("Foo", "Bar", new Speaker("Joe", "Schmoe"));
 
-			newEvent.AddSession(session);
+            newEvent.AddSession(session);
 
-    		SaveEntities(newEvent);
+            SaveEntities(newEvent);
 
-    		var loaded = SessionSource.CreateSession().Load<Conference>(newEvent.Id);
+            var loaded = SessionSource.CreateSession().Load<Conference>(newEvent.Id);
 
-    	    loaded.SessionCount.ShouldEqual(1);
-    		loaded.GetSessions().Count().ShouldEqual(1);
-    		loaded.GetSessions().ElementAt(0).Conference.ShouldEqual(loaded);
-    	}
+            loaded.SessionCount.ShouldEqual(1);
+            loaded.GetSessions().Count().ShouldEqual(1);
+            loaded.GetSessions().ElementAt(0).Conference.ShouldEqual(loaded);
+        }
 
-    	[Test]
-    	public void Should_cascade_attendee()
-    	{
-    		var attendee = new Attendee("Joe", "Schmoe");
-			var newEvent = new Conference("Some event");
-			
-			attendee.RegisterFor(newEvent);
+        [Fact]
+        public void Should_cascade_attendee()
+        {
+            var attendee = new Attendee("Joe", "Schmoe");
+            var newEvent = new Conference("Some event");
 
-    		SaveEntities(newEvent);
+            attendee.RegisterFor(newEvent);
 
-			var loaded = SessionSource.CreateSession().Load<Conference>(newEvent.Id);
+            SaveEntities(newEvent);
 
-    		loaded.GetAttendees().Count().ShouldEqual(1);
-    		loaded.GetAttendees().ElementAt(0).Conference.ShouldEqual(loaded);
-		}
+            var loaded = SessionSource.CreateSession().Load<Conference>(newEvent.Id);
+
+            loaded.GetAttendees().Count().ShouldEqual(1);
+            loaded.GetAttendees().ElementAt(0).Conference.ShouldEqual(loaded);
+        }
     }
 }

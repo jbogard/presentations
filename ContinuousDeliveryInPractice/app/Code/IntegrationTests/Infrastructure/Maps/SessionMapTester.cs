@@ -1,40 +1,39 @@
-using System.Linq;
-using CodeCampServerLite.Core.Domain.Model;
-using Should;
-using NUnit.Framework;
-
 namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
 {
-	[TestFixture]
-	public class SessionMapTester : IntegrationTestBase
-	{
-		[Test]
-		public void Should_map_session_fields()
-		{
-			var speaker = new Speaker("Joe", "Schmoe");
-			var session = new Session("Foo", new string('a', 5000), speaker);
+    using System.Linq;
+    using Core.Domain.Model;
+    using Should;
+    using Xunit;
 
-			SaveEntities(session);
+    public class SessionMapTester : IntegrationTestBase
+    {
+        [Fact]
+        public void Should_map_session_fields()
+        {
+            var speaker = new Speaker("Joe", "Schmoe");
+            var session = new Session("Foo", new string('a', 5000), speaker);
 
-			var loaded = SessionSource.CreateSession().Load<Session>(session.Id);
+            SaveEntities(session);
 
-			loaded.Title.ShouldEqual(session.Title);
-			loaded.Abstract.ShouldEqual(session.Abstract);
-		}
+            var loaded = SessionSource.CreateSession().Load<Session>(session.Id);
 
-		[Test]
-		public void Should_cascade_to_speaker()
-		{
-			var speaker = new Speaker("Joe", "Schmoe");
-			var session = new Session("Foo", "Bar", speaker);
+            loaded.Title.ShouldEqual(session.Title);
+            loaded.Abstract.ShouldEqual(session.Abstract);
+        }
 
-			SaveEntities(session);
+        [Fact]
+        public void Should_cascade_to_speaker()
+        {
+            var speaker = new Speaker("Joe", "Schmoe");
+            var session = new Session("Foo", "Bar", speaker);
 
-			var loaded = SessionSource.CreateSession().Load<Session>(session.Id);
+            SaveEntities(session);
 
-			loaded.Speaker.ShouldEqual(speaker);
+            var loaded = SessionSource.CreateSession().Load<Session>(session.Id);
 
-			loaded.Speaker.GetSessions().Count().ShouldEqual(1);
-		}
-	}
+            loaded.Speaker.ShouldEqual(speaker);
+
+            loaded.Speaker.GetSessions().Count().ShouldEqual(1);
+        }
+    }
 }

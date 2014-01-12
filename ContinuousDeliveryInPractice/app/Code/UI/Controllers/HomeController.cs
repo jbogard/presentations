@@ -7,6 +7,9 @@ using CodeCampServerLite.Core.Domain.Model;
 
 namespace CodeCampServerLite.UI.Controllers
 {
+    using Helpers;
+    using StructureMap;
+
     [HandleError]
     public class HomeController : Controller
     {
@@ -26,6 +29,15 @@ namespace CodeCampServerLite.UI.Controllers
         {
             throw new Exception("Custom message");
         }
+
+
+        public void Reset()
+        {
+            var loader = ObjectFactory.GetInstance<IDummyDataLoader>();
+
+            loader.Load();
+        }
+
 
         [ChildActionOnly]
         public PartialViewResult Version()

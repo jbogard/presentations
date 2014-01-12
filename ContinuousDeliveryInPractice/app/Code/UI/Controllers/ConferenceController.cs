@@ -8,6 +8,9 @@ using CodeCampServerLite.UI.Models;
 
 namespace CodeCampServerLite.UI.Controllers
 {
+    using Helpers;
+    using StructureMap;
+
     public class ConferenceController : DefaultController
     {
         private readonly IConferenceRepository _repository;

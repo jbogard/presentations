@@ -1,312 +1,291 @@
-# required parameters :
-# 	$databaseName
 
-$framework = '4.0x86'
 
+
+$script:project_config = "Release"
 properties {
-	$projectName = "CodeCampServerLite"
-	
-	$unitTestAssembly = "$projectName.UnitTests.dll"
-	$integrationTestAssembly = "$projectName.IntegrationTests.dll"
-	
-	$projectConfig = "release"
-	
-	$base_dir = resolve-path .\
-	$source_dir = "$base_dir\Code"
-	
+	$project_name = "CodeCampServerLite"
+	if(-not $version)
+    {
+        $version = "0.0.0.1"
+    }
+
+	$ReleaseNumber =  if ($env:BUILD_NUMBER) {"1.0.$env:BUILD_NUMBER.0"} else {$version}
+	$OctopusEnvironment =  $env:OCTOPUS_ENVIRONMENT
+	$base_dir = resolve-path .
 	$build_dir = "$base_dir\build"
-	$test_dir = "$build_dir\net-$framework-$projectConfig"
-	$lib_dir = "$base_dir\lib"
-	$results_dir = "$build_dir\results"
-	$package_dir = "$build_dir\package"	
-	$package_file = "$base_dir\latestVersion\$projectName`Package.exe"
+	$package_dir = "$build_dir\latestVersion"
+	$package_file = "$package_dir\" + $project_name + "_Package.zip"
+	$source_dir = "$base_dir\Code"
+	$test_dir = "$build_dir\test"
+	$result_dir = "$build_dir\results"
+
+    $db_server = if ($env:db_server) { $env:db_server } else { ".\SqlExpress" }
 	
-	$nunitPath = "$lib_dir\nunit"
+	$test_assembly_patterns_unit = @("*UnitTests.dll")
+	$test_assembly_patterns_integration = @("*IntegrationTests.dll")
+	$test_assembly_patterns_full = @("*FullSystemTests.dll")
+
+	$cassini_exe = 'C:\Program Files (x86)\Common Files\microsoft shared\DevServer\11.0\WebDev.WebServer40.EXE'
+	$port = 2627
+
+    $db_name = if ($env:db_name) { $env:db_name } else { $project_name }
+    $db_scripts_dir = "$source_dir\DatabaseMigration\Databases\$project_name"
+
+    $roundhouse_dir = "$base_dir\tools\roundhouse"
+    $roundhouse_output_dir = "$roundhouse_dir\output"
+    $roundhouse_exe_path = "$roundhouse_dir\rh.exe"
+    $roundhouse_local_backup_folder = "$base_dir\database_backups"
 	
-	$databaseName = $projectName
-	$databaseServer = "localhost\sqlexpress"
-	$databaseScripts = "$source_dir\Core\Infrastructure\Database"
-	$hibernateConfig = "$source_dir\hibernate.cfg.xml"
-	$schemaDatabaseName = $databaseName + "_schema"
-    $devDatabaseName = $databaseName + "_dev"
-    $testDatabaseName = $databaseName + "_test"
+	$octopus_API_URL = if ($env:octopus_API_URL) { $env:octopus_API_URL } else { "http://jimmybogard-pc:8082/api" }
+	$octopus_API_key = if ($env:octopus_API_key) { $env:octopus_API_key } else { "KUQOV8HXGQ8JCPXCTOWAJE8LZ0" } 
+	$octopus_project = "CodeCampServerLite"
+	$octopus_nuget_repo = "C:\Nugets"
+
+    $all_database_info = @{
+        "$db_name"="$db_scripts_dir"
+    }
 	
-	$dev_connection_string = "server=$databaseserver;database=$devDatabasename;Integrated Security=true;"
-	$test_connection_string = "server=$databaseserver;database=$testDatabasename;Integrated Security=true;"
-	
-	$cassini_app = 'C:\Program Files (x86)\Common Files\Microsoft Shared\DevServer\10.0\WebDev.WebServer40.EXE'
-	$port = 1234
-        
-    $webApplicationsToPackage =
-    (
-        @{Source = "UI"; Destination = "website"}
-    )
-    
-	$nunitExe = "$lib_dir\NUnit-2.5.10.11092\bin2\net-2.0\nunit-console-x86.exe"
 }
 
-task default -depends Init, UpdateLocalDatabases, Compile, CopyForTest, UnitTest, IntegrationTest
-task ci -depends Init, CommonAssemblyInfo, RebuildDatabase, Compile, Package
+#These are aliases for other build tasks. They typically are named after the camelcase letters (rad = Rebuild All Databases)
+#aliases should be all lowercase, conventionally
+#please list all aliases in the help task
+task default -depends InitialPrivateBuild
+task dev -depends DeveloperBuild
+task ci -depends IntegrationBuild
+task uad -depends UpdateAllDatabases
+task rad -depends RebuildAllDatabases
+task tq -depends RunIntegrationTestsQuickly
+task tt -depends RunIntegrationTestsThroughly
+task unit -depends RunAllUnitTests
 
-task Init {
-    delete_directory $build_dir
-    create_directory $test_dir
-    create_directory $results_dir
-	create_directory $build_dir
+task help {
+	Write-Help-Header
+	Write-Help-Section-Header "Comprehensive Building"
+	Write-Help-For-Alias "(default)" "Intended for first build or when you want a fresh, clean local copy"
+	Write-Help-For-Alias "dev" "Optimized for local dev; Most noteably UPDATES databases instead of REBUILDING"
+	Write-Help-For-Alias "ci" "Continuous Integration build (long and thorough) with packaging"
+	Write-Help-Section-Header "Database Maintenance"
+	Write-Help-For-Alias "uad" "Update All the Databases to the latest version (all db used for the app, that is)"
+	Write-Help-For-Alias "rad" "Rebuild All the Databases to the latest version from scratch (useful while working on the schema)"
+	Write-Help-Section-Header "Running Tests"
+	Write-Help-For-Alias "unit" "All unit tests"
+	Write-Help-For-Alias "tq" "Unit and Test Integration Quickly, aka, UPDATE databases before testing"
+	Write-Help-For-Alias "tt" "Unit and Test Integration Thoroughly, aka, REBUILD databases before testing (useful while working on the schema)"
+	Write-Help-Footer
+	exit 0
+}
+
+#These are the actual build tasks. They should be Pascal case by convention
+task InitialPrivateBuild -depends Clean, Compile, RebuildAllDatabases, RunAllUnitTests, RunIntegrationTestsThroughly , WarnSlowBuild
+
+task DeveloperBuild -depends SetDebugBuild, Clean, Compile, UpdateAllDatabases, RunAllUnitTests, RunIntegrationTestsQuickly
+
+task IntegrationBuild -depends SetReleaseBuild, CommonAssemblyInfo, Clean, Compile, RebuildAllDatabases, RunAllUnitTests, RunIntegrationTestsThroughly, GenerateNugetPackage, CreateOctopusRelease
+
+task SetDebugBuild {
+    $script:project_config = "Debug"
+}
+
+task SetReleaseBuild {
+    $script:project_config = "Release"
+}
+
+task ConfigureLocalIIS {
+    exec { & C:\Windows\System32\inetsrv\appcmd.exe "unlock" "config" "-section:system.webServer/security/authentication/windowsAuthentication" }
+    exec { & C:\Windows\System32\inetsrv\appcmd.exe "unlock" "config" "-section:system.webServer/security/authorization" }
+    exec { & "c:\Program Files (x86)\IIS Express\appcmd" "unlock" "config" "-section:system.webServer/security/authentication/windowsAuthentication" }
+    exec { & "c:\Program Files (x86)\IIS Express\appcmd" "unlock" "config" "-section:system.webServer/security/authorization" }
+}
+
+task RebuildAllDatabases {
+    $all_database_info.GetEnumerator() | %{ 
+		Write-Host $_.Key
+		deploy-database "Rebuild" $db_server $_.Key $_.Value
+	}
+}
+
+task UpdateAllDatabases {
+    $all_database_info.GetEnumerator() | %{ deploy-database "Update" $db_server $_.Key $_.Value}
+}
+
+task RebuildAllTestDatabases {
+    $all_database_info.GetEnumerator() | %{deploy-database "Rebuild" $db_server ($_.Key + "_Test") $_.Value}
+}
+
+task UpdateAllTestDatabases {
+    $all_database_info.GetEnumerator() | %{deploy-database "Update" $db_server ($_.Key + "_Test") $_.Value}
+}
+
+task RebuildAllComparisonDatabases {
+    $all_database_info.GetEnumerator() | %{ deploy-database "Rebuild" $db_server ($_.Key + "_Comp") $_.Value}
+}
+
+task ConfigureIis {
+    Import-Module WebAdministration
+    New-Item 'IIS:\Sites\Default Web Site\$project_name' -physicalPath "$source_dir\UI" -type Application -force
+    exit 0
 }
 
 task CommonAssemblyInfo {
-    $version = (Get-Date).ToString("yyyy.MM.dd.HHmm")
-		
-    create-commonAssemblyInfo "$version" $projectName "$source_dir\CommonAssemblyInfo.cs"
+    create-commonAssemblyInfo "$ReleaseNumber" $project_name "$source_dir\CommonAssemblyInfo.cs"
 }
 
-task RebuildDatabase {
-	write-host ("Database Server: " + $databaseServer) -ForegroundColor Green
-	write-host ("Database Name: " + $databaseName) -ForegroundColor Green
-	write-host ("Database Scripts: " + $databaseScripts) -ForegroundColor Green
-
-    exec { 
-		& $lib_dir\tarantinodbmigrate\DatabaseDeployer.exe Rebuild $databaseServer $databaseName $databaseScripts 
-	}
+task CopyAssembliesForTest -Depends Compile {
+    copy_all_assemblies_for_test $test_dir
 }
 
-task UpdateDatabase {
-	write-host ("Database Server: " + $databaseServer) -ForegroundColor Green
-	write-host ("Database Name: " + $databaseName) -ForegroundColor Green
-	write-host ("Database Scripts: " + $databaseScripts) -ForegroundColor Green
-
-    exec { 
-		& $lib_dir\tarantinodbmigrate\DatabaseDeployer.exe Update $databaseServer $databaseName $databaseScripts 
-	}
+task RunIntegrationTestsThroughly -Depends CopyAssembliesForTest, RebuildAllTestDatabases {
+    $test_assembly_patterns_integration | %{ run_tests $_ }
 }
 
-task UpdateLocalDatabases {
-
-	write-host ("Database Server: $databaseServer") -ForegroundColor Green
-	write-host ("Database Name(s): $devDatabaseName, $testDatabaseName") -ForegroundColor Green
-	write-host ("Database Scripts: $databaseScripts") -ForegroundColor Green
-
-    exec { 
-		& $lib_dir\tarantinodbmigrate\DatabaseDeployer.exe Update $databaseServer $devDatabaseName $databaseScripts 
-		& $lib_dir\tarantinodbmigrate\DatabaseDeployer.exe Rebuild $databaseServer $testDatabaseName $databaseScripts 
-	}
+task RunIntegrationTestsQuickly -Depends CopyAssembliesForTest, UpdateAllTestDatabases {
+    $test_assembly_patterns_integration | %{ run_tests $_ }
 }
 
-task Compile -depends Init {
-	write-host ("Config: " + $projectConfig) -ForegroundColor Green
-	write-host ("Clean Project: " + $source_dir + "\" + $projectName + ".sln") -ForegroundColor Green
-	write-host ("Build Project: " + $source_dir + "\" + $projectName + ".sln") -ForegroundColor Green
-
-    exec { msbuild /t:clean /v:q /nologo /p:Configuration=$projectConfig $source_dir\$projectName.sln }
-    exec { msbuild /t:build /v:q /nologo /p:Configuration=$projectConfig $source_dir\$projectName.sln }
+task RunAllUnitTests -Depends CopyAssembliesForTest {
+    $test_assembly_patterns_unit | %{ run_tests $_ }
 }
 
-task CopyForTest -depends Compile {
-	write-host ("Copy Assembiles: " + $test_dir) -ForegroundColor Green
+task Compile -depends Clean, CommonAssemblyInfo { 
+    exec { & $source_dir\.nuget\nuget.exe restore $source_dir\$project_name.sln }
+    exec { msbuild.exe /t:build /v:q /p:Configuration=$project_config /nologo $source_dir\$project_name.sln }
+}
+
+task Clean {
+    delete_file $package_file
+    delete_directory $build_dir
+    create_directory $test_dir 
+    create_directory $result_dir
 	
-	create_directory $test_dir
-	
-    $excludeFolders = [string[]][object[]] "_*", "Api", "UI", "packages", ".nuget"
-    copy_and_flatten_library_projects $source_dir $test_dir $excludeFolders $projectConfig
-
-    $webFolders = [string[]][object[]] "UI"
-    copy_and_flatten_web_projects $source_dir $test_dir $webFolders
-
-    poke-xml "$test_dir\hibernate.cfg.xml" "//*/hbm:property[@name='connection.connection_string']" $test_connection_string @{"hbm" = "urn:nhibernate-configuration-2.2"}
+    exec { msbuild /t:clean /v:q /p:Configuration=$project_config $source_dir\$project_name.sln }
 }
 
-task UnitTest -depends CopyForTest {
-	write-host ("Unit Tests: " + $test_dir + "\" + $unitTestAssembly) -ForegroundColor Green
-	write-host ("Unit Tests Result File: " + $results_dir + "\" + $unitTestAssembly + ".xml") -ForegroundColor Green
-
-	exec {
-		& $nunitExe $test_dir\$unitTestAssembly /noshadow /nologo /nodots /xml=$results_dir\$unitTestAssembly.xml
-	}
+task WarnSlowBuild {
+	Write-Host ""
+	Write-Host "Warning: " -foregroundcolor Yellow -nonewline;
+	Write-Host "The default build you just ran is primarily intended for initial "
+	Write-Host "environment setup. While developing you most likely want the quicker dev"
+	Write-Host "build task. For a full list of common build tasks, run: "
+	Write-Host " > build.bat help"
 }
 
-task IntegrationTest -depends CopyForTest {
-	write-host ("Integration Tests: " + $test_dir + "\" + $integrationTestAssembly) -ForegroundColor Green
-	write-host ("Integration Tests Result File: " + $results_dir + "\" + $integrationTestAssembly + ".xml") -ForegroundColor Green
-
-	exec {
-		& $nunitExe $test_dir\$integrationTestAssembly /noshadow  /nologo /nodots /xml=$results_dir\$integrationTestAssembly.xml
-	}
-
+task GenerateNugetPackage{
+    exec { msbuild.exe $source_dir\$project_name.sln /t:build /p:RunOctoPack=true /v:q /p:Configuration=$project_config /nologo /p:OctoPackPackageVersion=$ReleaseNumber /p:OctoPackPublishPackageToFileShare=$octopus_nuget_repo }
 }
 
-task Package -depends Compile {
-# -depends Compile
+task CreateOctopusRelease {
+    $strPath = "$source_dir\UI\bin\CodeCampServerLite.UI.dll"
+ 	
+    exec { octo.exe create-release --project=$octopus_project --server=$octopus_API_URL --apiKey=$octopus_API_key --packageversion=$ReleaseNumber --version=$ReleaseNumber --deployto=$OctopusEnvironment --force=true --waitfordeployment}
+}
+# -------------------------------------------------------------------------------------------------------------
+# generalized functions added by Headspring for Help Section
+# --------------------------------------------------------------------------------------------------------------
 
-    delete_directory $package_dir
-    
-    foreach($application in $webApplicationsToPackage)
-    {    
-        $source = $application.Source
-        $dest = $application.Destination
-        copy_website_files "$source_dir\$source" "$package_dir\$dest"
+function Write-Help-Header($description) {
+	Write-Host ""
+	Write-Host "********************************" -foregroundcolor DarkGreen -nonewline;
+	Write-Host " HELP " -foregroundcolor Green  -nonewline; 
+	Write-Host "********************************"  -foregroundcolor DarkGreen
+	Write-Host ""
+	Write-Host "This build script has the following common build " -nonewline;
+	Write-Host "task " -foregroundcolor Green -nonewline;
+	Write-Host "aliases set up:"
+}
+
+function Write-Help-Footer($description) {
+	Write-Host ""
+	Write-Host " For a complete list of build tasks, view default.ps1."
+	Write-Host ""
+	Write-Host "**********************************************************************" -foregroundcolor DarkGreen
+}
+
+function Write-Help-Section-Header($description) {
+	Write-Host ""
+	Write-Host " $description" -foregroundcolor DarkGreen
+}
+
+function Write-Help-For-Alias($alias,$description) {
+	Write-Host "  > " -nonewline;
+	Write-Host "$alias" -foregroundcolor Green -nonewline; 
+	Write-Host " = " -nonewline; 
+	Write-Host "$description"
+}
+
+# -------------------------------------------------------------------------------------------------------------
+# generalized functions 
+# --------------------------------------------------------------------------------------------------------------
+function deploy-database($action,$server,$db_name,$scripts_dir,$env) {
+    $roundhouse_version_file = "$source_dir\UI\bin\CodeCampServerLite.UI.dll"
+
+    if (!$env) {
+        $env = "LOCAL"
+        Write-Host "RoundhousE environment variable is not specified... defaulting to 'LOCAL'"
+    } else {
+        Write-Host "Executing RoundhousE for environment:" $env
     }
         
-    copy_files "$lib_dir\tarantinodbmigrate" "$package_dir\dbmigrate"
-    copy_files "$databaseScripts" "$package_dir\scripts"
-    copy_files "$base_dir\psakev4" "$package_dir\psakev4"
-    Copy-Item "deploy.ps1" "$package_dir"
-    Copy-Item "deploy.bat" "$package_dir"
-	
-	zip_directory $package_dir $package_file 
-}
-
-task dbmigration -depends CopyForTest {
-    delete_file "$databaseScripts\_New_Script.sql"
-	exec { & $nunitExe $test_dir\$integrationTestAssembly /include=SchemaExport /noshadow  /nologo /nodots }
-}
-
-#************************************************************************
-
-function global:copy_website_files($source,$destination){
-    Write-Host "Copy Website Files $source to $destination"
-    
-    $exclude = @('*.user','*.dtd','*.tt','*.cs','*.csproj','*.orig', '*.log') 
-    copy_files $source $destination $exclude $false
-	delete_directory "$destination\obj"
-}
-
-function global:copy_files($source, $destination, $exclude=@(), $includeEmptyDirs=$true){
-    Write-Host "Copy Files $source to $destination"
-
-    create_directory $destination
-    $childItems = Get-ChildItem $source -Recurse -Exclude $exclude
-    
-    foreach($childItem in $childItems)
-    {
-        if (($childItem.psIsContainer -eq $true) -and ($includeEmptyDirs -eq $false))
-        {
-            $subItems = Get-ChildItem $childItem.FullName -Recurse -Exclude $exclude | Where { $_.psIsContainer -eq $false }
-                        
-            if ($subItems -eq $null)
-            {
-                continue
-            }
-        }
-        
-        $dest =  Join-Path $destination $childItem.FullName.Substring($source.length)
-        Copy-Item $childItem.FullName -Destination $dest
+    if ($action -eq "Update"){
+        exec { &$roundhouse_exe_path -s $server -d "$db_name"  --commandtimeout=300 -f $scripts_dir --env $env --silent -o $roundhouse_output_dir }
     }
-    
-}
-
-function global:copy_files_with_include($source,$destination, [string[]] $include){
-    Write-Host "Copy Files $source to $destination"
-
-    create_directory $destination
-    Get-ChildItem $source -Recurse -Include $include | Copy-Item -Destination {Join-Path $destination $_.FullName.Substring($source.length)} 
-}
-
-function global:copy_and_flatten_library_projects([string]$sourceDir, [string]$destination, [string[]]$excludeFromSource, [string]$projectConfig)
-{
-	$targetSrcDirs = Get-ChildItem -Path $sourceDir -Exclude $excludeFromSource | Where { $_.psIsContainer -eq $true }
-	
-	foreach($targetSrcDir in $targetSrcDirs)
-	{
-		Write-Host "Copy and Flatten Library $targetSrcDir\bin\$projectConfig\* to $destination"
-	
-		Get-ChildItem -Path "$targetSrcDir\bin\$projectConfig\*" | Where { $_.psIsContainer -eq $false } | Copy-Item -dest $destination -force
-	}
-}
-function global:copy_and_flatten_web_projects([string]$sourceDir, [string]$destination, [string[]]$webFolders)
-{
-    foreach($webFolder in $webFolders)
-    {
-    	Write-Host "Copy and Flatten Web $source_dir\$webFolder\bin\* to $destination"
-    	Get-ChildItem -Path "$source_dir\$webFolder\bin\*" | Copy-Item -dest $destination -force
+    if ($action -eq "Rebuild"){
+        exec { &$roundhouse_exe_path -s $server -d "$db_name" --commandtimeout=300 --env $env --silent -drop -o $roundhouse_output_dir }
+        exec { &$roundhouse_exe_path -s $server -d "$db_name" --commandtimeout=300 -f $scripts_dir -env $env -vf $roundhouse_version_file --silent --simple -o $roundhouse_output_dir }
     }
 }
 
-function global:copy_and_flatten_with_include([string]$sourceDir, [string]$destination, [string[]]$include)
-{
-    foreach($webFolder in $webFolders)
-    {
-    	Write-Host "Copy and Flatten With Include $source_dir to $destination include $include"
-    	Get-ChildItem -Path "$sourceDir" -Recurse -Include $include | Copy-Item -dest $destination -force
-    }
+function run_tests([string]$pattern) {
+    
+    $items = Get-ChildItem -Path $test_dir $pattern
+    $items | %{ run_xunit $_.Name }
 }
 
-function global:delete_directory($directory_name)
-{
-  write-host ("Deleting Directory: " + $directory_name) -ForegroundColor Green
+function global:delete_file($file) {
+    if($file) { remove-item $file -force -ErrorAction SilentlyContinue | out-null } 
+}
+
+function global:delete_directory($directory_name) {
   rd $directory_name -recurse -force  -ErrorAction SilentlyContinue | out-null
 }
 
-function global:create_directory($directory_name)
-{
-  write-host ("Creating Directory: " + $directory_name) -ForegroundColor Green
+function global:create_directory($directory_name) {
   mkdir $directory_name  -ErrorAction SilentlyContinue  | out-null
 }
 
-function global:create-commonAssemblyInfo($version,$applicationName,$filename)
-{
-  write-host ("Version: " + $version) -ForegroundColor Green
-  write-host ("Project Name: " + $projectName) -ForegroundColor Green
+function global:run_xunit ($test_assembly) {
+	$assembly_to_test = $test_dir + "\" + $test_assembly
+	$results_output = $result_dir + "\" + $test_assembly + ".xml"
+    write-host "Running XUnit Tests in: " $test_assembly
+    exec { & tools\xunit\xunit.console.clr4.exe $assembly_to_test /silent /nunit $results_output }
+}
 
-"using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
+function global:Copy_and_flatten ($source,$include,$dest) {
+	Get-ChildItem $source -include $include -r | cp -dest $dest
+}
 
-//------------------------------------------------------------------------------
-// <auto-generated>
-//     This code was generated by a tool.
-//     Runtime Version:2.0.50727.4927
+function global:copy_all_assemblies_for_test($destination){
+	$bin_dir_match_pattern = "$source_dir\**\bin\$project_config"
+	create_directory $destination
+	Copy_and_flatten $bin_dir_match_pattern @("*.exe","*.dll","*.config","*.pdb","*.sql","*.xlsx","*.csv","*.xml") $destination
+}
+
+function global:create-commonAssemblyInfo($version,$applicationName,$filename) {
+"using System.Reflection;
+
+// Version information for an assembly consists of the following four values:
 //
-//     Changes to this file may cause incorrect behavior and will be lost if
-//     the code is regenerated.
-// </auto-generated>
-//------------------------------------------------------------------------------
-
-[assembly: ComVisibleAttribute(false)]
-[assembly: AssemblyVersionAttribute(""$version"")]
-[assembly: AssemblyFileVersionAttribute(""$version"")]
-[assembly: AssemblyCopyrightAttribute(""Copyright 2011"")]
-[assembly: AssemblyProductAttribute(""$projectName"")]
-[assembly: AssemblyCompanyAttribute("""")]
-[assembly: AssemblyConfigurationAttribute(""release"")]
-[assembly: AssemblyInformationalVersionAttribute(""$version"")]"  | out-file $filename -encoding "ASCII"    
+//      Year                    (Expressed as YYYY)
+//      Major Release           (i.e. New Project / Namespace added to Solution or New File / Class added to Project)
+//      Minor Release           (i.e. Fixes or Feature changes)
+//      Build Date & Revsion    (Expressed as MMDD)
+//
+[assembly: AssemblyCompany(""Jimmy Bogard"")]
+[assembly: AssemblyCopyright(""Copyright © Jimmy Bogard 2014"")]
+[assembly: AssemblyTrademark("""")]
+[assembly: AssemblyCulture("""")]
+[assembly: AssemblyVersion(""$version"")]
+[assembly: AssemblyFileVersion(""$version"")]" | out-file $filename -encoding "utf8"
 }
 
-function global:zip_directory($directory, $file) {
-    write-host "Zipping folder: " $directory
-    delete_file $file
-    cd $directory
-    & "$lib_dir\7zip\7za.exe" a -r -sfx $file
-    cd $base_dir
-}
 
-function script:poke-xml($filePath, $xpath, $value, $namespaces = @{}) {
-    [xml] $fileXml = Get-Content $filePath
-    
-    if($namespaces -ne $null -and $namespaces.Count -gt 0) {
-        $ns = New-Object Xml.XmlNamespaceManager $fileXml.NameTable
-        $namespaces.GetEnumerator() | %{ $ns.AddNamespace($_.Key,$_.Value) }
-        $node = $fileXml.SelectSingleNode($xpath,$ns)
-    } else {
-        $node = $fileXml.SelectSingleNode($xpath)
-    }
-    
-    Assert ($node -ne $null) "could not find node @ $xpath"
-        
-    if($node.NodeType -eq "Element") {
-        $node.InnerText = $value
-    } else {
-        $node.Value = $value
-    }
-
-    $fileXml.Save($filePath) 
-} 
-
-function global:delete_file($file) {
-    if(Test-Path $file)
-    {
-       write-host ("Deleting File: " + $file) -ForegroundColor Green
-
-        remove-item $file -force -ErrorAction SilentlyContinue | out-null
-    } 
-}

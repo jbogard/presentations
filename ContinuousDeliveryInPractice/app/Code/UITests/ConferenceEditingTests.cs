@@ -1,18 +1,14 @@
-﻿using System;
-using System.Threading;
-using CodeCampServerLite.UI;
-using CodeCampServerLite.UI.Controllers;
-using CodeCampServerLite.UI.Models;
-using MvcContrib.TestHelper.Ui;
-using NUnit.Framework;
-using Should;
-
-namespace CodeCampServerLite.UITests
+﻿namespace CodeCampServerLite.UITests
 {
-    [TestFixture]
+    using MvcContrib.TestHelper.Ui;
+    using UI;
+    using UI.Controllers;
+    using UI.Models;
+    using Xunit;
+
     public class ConferenceEditingTests : WebTestBase
     {
-        [Test]
+        [Fact]
         public void Should_be_able_to_edit_conference_name()
         {
             Browser.ClickLink(SiteNav.Conferences);
