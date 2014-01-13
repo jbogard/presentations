@@ -172,12 +172,6 @@ task WarnSlowBuild {
 task GenerateNugetPackage{
     exec { msbuild.exe $source_dir\$project_name.sln /t:build /p:RunOctoPack=true /v:q /p:Configuration=$project_config /nologo /p:OctoPackPackageVersion=$ReleaseNumber /p:OctoPackPublishPackageToFileShare=$package_dir }
 }
-
-task CreateOctopusRelease {
-    $strPath = "$source_dir\UI\bin\CodeCampServerLite.UI.dll"
- 	
-    exec { octo.exe create-release --project=$octopus_project --server=$octopus_API_URL --apiKey=$octopus_API_key --packageversion=$ReleaseNumber --version=$ReleaseNumber --deployto=$OctopusEnvironment --force=true --waitfordeployment}
-}
 # -------------------------------------------------------------------------------------------------------------
 # generalized functions added by Headspring for Help Section
 # --------------------------------------------------------------------------------------------------------------
