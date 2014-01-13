@@ -8,7 +8,7 @@ namespace CodeCampServerLite.UnitTests.UI
 
     public class RouteTests
     {
-        public RouteTests()
+        static RouteTests()
         {
             MvcApplication.RegisterRoutes(RouteTable.Routes);
         }
