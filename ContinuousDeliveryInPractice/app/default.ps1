@@ -14,7 +14,6 @@ properties {
 	$base_dir = resolve-path .
 	$build_dir = "$base_dir\build"
 	$package_dir = "$build_dir\latestVersion"
-	$package_file = "$package_dir\" + $project_name + "_Package.zip"
 	$source_dir = "$base_dir\Code"
 	$test_dir = "$build_dir\test"
 	$result_dir = "$build_dir\results"
@@ -171,7 +170,7 @@ task WarnSlowBuild {
 }
 
 task GenerateNugetPackage{
-    exec { msbuild.exe $source_dir\$project_name.sln /t:build /p:RunOctoPack=true /v:q /p:Configuration=$project_config /nologo /p:OctoPackPackageVersion=$ReleaseNumber }
+    exec { msbuild.exe $source_dir\$project_name.sln /t:build /p:RunOctoPack=true /v:q /p:Configuration=$project_config /nologo /p:OctoPackPackageVersion=$ReleaseNumber /p:OctoPackPublishPackageToFileShare=$package_dir }
 }
 
 task CreateOctopusRelease {
