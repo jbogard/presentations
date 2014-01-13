@@ -1,4 +1,4 @@
-﻿$roundhouse_version_file = ".\CodeCampServerLite.DatabaseMigration.dll"
+﻿$roundhouse_version_file = ".\DatabaseMigration.dll"
 $roundhouse_exe_path = ".\rh.exe"
 $scripts_dir = ".\Databases\CodeCampServerLite"
 $roundhouse_output_dir = ".\output"
