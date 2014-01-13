@@ -81,7 +81,7 @@ task InitialPrivateBuild -depends Clean, Compile, RebuildAllDatabases, RunAllUni
 
 task DeveloperBuild -depends SetDebugBuild, Clean, Compile, UpdateAllDatabases, RunAllUnitTests, RunIntegrationTestsQuickly
 
-task IntegrationBuild -depends SetReleaseBuild, CommonAssemblyInfo, Clean, Compile, RebuildAllDatabases, RunAllUnitTests, RunIntegrationTestsThroughly #, GenerateNugetPackage, CreateOctopusRelease
+task IntegrationBuild -depends SetReleaseBuild, CommonAssemblyInfo, Clean, Compile, RebuildAllDatabases, RunAllUnitTests, RunIntegrationTestsThroughly, GenerateNugetPackage #, CreateOctopusRelease
 
 task SetDebugBuild {
     $script:project_config = "Debug"
@@ -171,7 +171,7 @@ task WarnSlowBuild {
 }
 
 task GenerateNugetPackage{
-    exec { msbuild.exe $source_dir\$project_name.sln /t:build /p:RunOctoPack=true /v:q /p:Configuration=$project_config /nologo /p:OctoPackPackageVersion=$ReleaseNumber /p:OctoPackPublishPackageToFileShare=$octopus_nuget_repo }
+    exec { msbuild.exe $source_dir\$project_name.sln /t:build /p:RunOctoPack=true /v:q /p:Configuration=$project_config /nologo /p:OctoPackPackageVersion=$ReleaseNumber }
 }
 
 task CreateOctopusRelease {

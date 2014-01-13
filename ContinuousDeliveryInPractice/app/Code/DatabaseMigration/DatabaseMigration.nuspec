@@ -1,0 +1,14 @@
+<package>
+  <metadata>
+    <id>DatabaseMigration</id>
+    <version>$version$</version>
+    <authors>Jimmy Bogard</authors>
+    <owners>Jimmy Bogard</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<description>Database Migration</description>
+  </metadata>
+  <files>
+    <file src="**\*.sql" />
+    <file src="bin\Release\*.*" />
+  </files>
+</package>
