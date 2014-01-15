@@ -80,7 +80,7 @@ task InitialPrivateBuild -depends Clean, Compile, RebuildAllDatabases, RunAllUni
 
 task DeveloperBuild -depends SetDebugBuild, Clean, Compile, UpdateAllDatabases, RunAllUnitTests, RunIntegrationTestsQuickly
 
-task IntegrationBuild -depends SetReleaseBuild, CommonAssemblyInfo, Clean, Compile, RebuildAllDatabases, RunAllUnitTests, RunIntegrationTestsThroughly, GenerateNugetPackage #, CreateOctopusRelease
+task IntegrationBuild -depends SetReleaseBuild, CommonAssemblyInfo, Clean, Compile, RebuildAllDatabases, RunAllUnitTests, RunIntegrationTestsThroughly, GenerateNugetPackage
 
 task SetDebugBuild {
     $script:project_config = "Debug"
@@ -88,13 +88,6 @@ task SetDebugBuild {
 
 task SetReleaseBuild {
     $script:project_config = "Release"
-}
-
-task ConfigureLocalIIS {
-    exec { & C:\Windows\System32\inetsrv\appcmd.exe "unlock" "config" "-section:system.webServer/security/authentication/windowsAuthentication" }
-    exec { & C:\Windows\System32\inetsrv\appcmd.exe "unlock" "config" "-section:system.webServer/security/authorization" }
-    exec { & "c:\Program Files (x86)\IIS Express\appcmd" "unlock" "config" "-section:system.webServer/security/authentication/windowsAuthentication" }
-    exec { & "c:\Program Files (x86)\IIS Express\appcmd" "unlock" "config" "-section:system.webServer/security/authorization" }
 }
 
 task RebuildAllDatabases {
@@ -118,12 +111,6 @@ task UpdateAllTestDatabases {
 
 task RebuildAllComparisonDatabases {
     $all_database_info.GetEnumerator() | %{ deploy-database "Rebuild" $db_server ($_.Key + "_Comp") $_.Value}
-}
-
-task ConfigureIis {
-    Import-Module WebAdministration
-    New-Item 'IIS:\Sites\Default Web Site\$project_name' -physicalPath "$source_dir\UI" -type Application -force
-    exit 0
 }
 
 task CommonAssemblyInfo {

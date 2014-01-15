@@ -44,7 +44,7 @@ namespace CodeCampServerLite.UI.Controllers
 
             conf.ChangeName(form.Name);
             conf.Location = form.Location;
-            conf.Date = form.Date;
+            conf.Date = DateTime.Today;
 
             foreach (var attendeeEditModel in form.Attendees)
             {
