@@ -7,6 +7,7 @@ namespace CodeCampServerLite.UI.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
+        public string City { get; set; }
         public DateTime Date { get; set; }
 
         public AttendeeEditModel[] Attendees { get; set; }
