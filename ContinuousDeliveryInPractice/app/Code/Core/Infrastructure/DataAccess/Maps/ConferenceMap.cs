@@ -12,6 +12,7 @@ namespace CodeCampServerLite.Infrastructure.DataAccess.Maps
             Map(x => x.AttendeeCount);
             Map(x => x.Location);
             Map(x => x.City);
+            Map(x => x.Sponsor);
             Map(x => x.Date);
 
 

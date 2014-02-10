@@ -23,6 +23,7 @@ namespace CodeCampServerLite.Core.Domain.Model
     	public virtual string Name { get; protected set; }
     	public virtual string Location { get; set; }
     	public virtual string City { get; set; }
+        public virtual string Sponsor { get; set; }
     	public virtual int AttendeeCount { get; protected set; }
     	public virtual int SessionCount { get; protected set; }
     	public virtual DateTime? Date { get; set; }
