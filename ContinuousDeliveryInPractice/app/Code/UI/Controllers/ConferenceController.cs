@@ -47,6 +47,7 @@ namespace CodeCampServerLite.UI.Controllers
             conf.City = form.City;
             conf.Sponsor = form.Sponsor;
             conf.Date = DateTime.Today;
+            conf.Description = form.Description;
 
             foreach (var attendeeEditModel in form.Attendees)
             {

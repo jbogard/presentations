@@ -16,7 +16,8 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
             var newEvent = new Conference("Some event")
             {
                 Location = "Copenhagen",
-                Date = dateTime
+                Date = dateTime,
+                Description = "blah blah blah"
             };
 
             SaveEntities(newEvent);
@@ -28,6 +29,7 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure.Maps
             savedEvent.Name.ShouldEqual(newEvent.Name);
             savedEvent.Location.ShouldEqual(newEvent.Location);
             savedEvent.Date.ShouldEqual(dateTime);
+            savedEvent.Description.ShouldEqual(newEvent.Description);
         }
 
         [Fact]

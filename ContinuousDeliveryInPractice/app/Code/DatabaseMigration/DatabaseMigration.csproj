@@ -54,7 +54,10 @@
     <Content Include="Databases\CodeCampServerLite\up\0003_AddLocationToConference.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Databases\CodeCampServerLite\up\0006_AddSponsorToConference.sql">
+    <Content Include="Databases\CodeCampServerLite\up\0006_AddSponsorToConference - Copy.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Databases\CodeCampServerLite\up\0007_AddDescriptionToConference.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Databases\CodeCampServerLite\up\0005_AddCityToConference.sql">
