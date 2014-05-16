@@ -15,6 +15,7 @@ namespace CodeCampServerLite.Infrastructure.DataAccess.Maps
             Map(x => x.Sponsor);
             Map(x => x.Date);
             Map(x => x.Description);
+            Map(x => x.Color);
 
 
         	HasMany(x => x.GetSessions())

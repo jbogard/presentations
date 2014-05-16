@@ -10,6 +10,7 @@ namespace CodeCampServerLite.UI.Models
         public string City { get; set; }
         public string Sponsor { get; set; }
         public string Description { get; set; }
+        public string Color { get; set; }
         public DateTime Date { get; set; }
 
         public AttendeeEditModel[] Attendees { get; set; }

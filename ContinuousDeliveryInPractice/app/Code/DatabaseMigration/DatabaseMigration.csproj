@@ -57,6 +57,9 @@
     <Content Include="Databases\CodeCampServerLite\up\0006_AddSponsorToConference.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Databases\CodeCampServerLite\up\0008_AddColorToConference.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Databases\CodeCampServerLite\up\0007_AddDescriptionToConference.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
