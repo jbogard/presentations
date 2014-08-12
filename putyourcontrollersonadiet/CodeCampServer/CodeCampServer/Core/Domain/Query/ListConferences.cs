@@ -16,7 +16,7 @@ namespace CodeCampServerLite.Core.Domain.Query
 			_minSessions = minSessions ?? 0;
 		}
 
-		public override Conference[] Execute(INHibernateQueryable<Conference> queryProvider)
+		public override Conference[] Execute(IQueryable<Conference> queryProvider)
 		{
 			return (from conf in queryProvider
 				   where conf.SessionCount >= _minSessions

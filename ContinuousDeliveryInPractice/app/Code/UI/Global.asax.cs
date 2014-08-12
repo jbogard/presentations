@@ -6,6 +6,9 @@ using StructureMap;
 
 namespace UI
 {
+    using CodeCampServerLite.UI;
+    using CodeCampServerLite.UI.App_Start;
+
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
@@ -38,11 +41,10 @@ namespace UI
 			RegisterGlobalFilters(GlobalFilters.Filters);
 			RegisterRoutes(RouteTable.Routes);
 
-            BootStrapper.Bootstrap();
-
             AutoMapperBootstrapper.Initialize();
 
-            ControllerBuilder.Current.SetControllerFactory(new StructureMapControllerFactory());
+            StructuremapMvc.Start();
+            ControllerBuilder.Current.SetControllerFactory(new StructureMapControllerFactory(IoC.Container));
         }
     }
 }

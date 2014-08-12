@@ -17,13 +17,13 @@ namespace CodeCampServerLite.UI.Helpers
 
         private static void context_BeginRequest(object sender, EventArgs e)
         {
-            var instance = ObjectFactory.GetInstance<ITransactionBoundary>();
+            var instance = IoC.Container.GetInstance<ITransactionBoundary>();
             instance.Begin();
         }
 
         private static void context_EndRequest(object sender, EventArgs e)
         {
-            var instance = ObjectFactory.GetInstance<ITransactionBoundary>();
+            var instance = IoC.Container.GetInstance<ITransactionBoundary>();
             try
             {
                 instance.Commit();

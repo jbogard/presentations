@@ -7,6 +7,7 @@ using NHibernate.Linq;
 
 namespace CodeCampServerLite.Infrastructure.DataAccess.Repositories
 {
+    using System.Linq;
     using Core.Domain;
     using Core.Domain.Model;
 
@@ -37,9 +38,9 @@ namespace CodeCampServerLite.Infrastructure.DataAccess.Repositories
             return criteria.List<T>();
         }
 
-        public INHibernateQueryable<T> Query()
+        public IQueryable<T> Query()
         {
-            return Session.Linq<T>();
+            return Session.Query<T>();
         }
 
         public void Delete(T entity)

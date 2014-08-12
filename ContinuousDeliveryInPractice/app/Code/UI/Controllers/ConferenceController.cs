@@ -8,37 +8,93 @@ using CodeCampServerLite.UI.Models;
 
 namespace CodeCampServerLite.UI.Controllers
 {
-    using Helpers;
-    using StructureMap;
+    using AutoMapper.QueryableExtensions;
+    using MediatR;
+    using NHibernate;
+    using NHibernate.Hql.Ast.ANTLR;
+    using NHibernate.Linq;
 
-    public class ConferenceController : DefaultController
+    public class ConferenceIndexQuery : IRequest<ConferenceListModel[]>
+    {
+        public int MinSessions { get; set; }
+    }
+
+    public class ConferenceIndexQueryHandler
+        : IRequestHandler<ConferenceIndexQuery, ConferenceListModel[]>
+    {
+        private readonly ISession _session;
+        private readonly IMediator _mediator;
+
+        public ConferenceIndexQueryHandler(ISession session, IMediator mediator)
+        {
+            _session = session;
+            _mediator = mediator;
+        }
+
+        public ConferenceListModel[] Handle(ConferenceIndexQuery message)
+        {
+            var conferences = (from conf in _session.Query<Conference>()
+                               where conf.SessionCount >= message.MinSessions
+                               select conf).Project().To<ConferenceListModel>()
+                       .ToArray();
+
+            return conferences;
+        }
+    }
+
+    public class ConferenceEditQuery : IRequest<ConferenceEditModel>
+    {
+        public string ConferenceName { get; set; }
+    }
+
+    public class ConferenceEditQueryHandler : IRequestHandler<ConferenceEditQuery, ConferenceEditModel>
+    {
+        private readonly IConferenceRepository _conferenceRepository;
+
+        public ConferenceEditQueryHandler(IConferenceRepository conferenceRepository)
+        {
+            _conferenceRepository = conferenceRepository;
+        }
+
+        public ConferenceEditModel Handle(ConferenceEditQuery message)
+        {
+            var conf = _conferenceRepository.GetByName(message.ConferenceName);
+
+            var model = Mapper.Map<Conference, ConferenceEditModel>(conf);
+
+            return model;
+        }
+    }
+
+    public class LoggingHandler<TRequest, TResponse>
+        : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    {
+        private readonly IRequestHandler<TRequest, TResponse> _inner;
+
+        public LoggingHandler(IRequestHandler<TRequest, TResponse> inner)
+        {
+            _inner = inner;
+        }
+
+        public TResponse Handle(TRequest message)
+        {
+            Console.WriteLine("Before");
+            var result = _inner.Handle(message);
+            Console.WriteLine("After");
+            return result;
+        }
+    }
+
+    public class ConferenceEditHandler : RequestHandler<ConferenceEditModel>
     {
         private readonly IConferenceRepository _repository;
 
-        public ConferenceController(IConferenceRepository repository)
+        public ConferenceEditHandler(IConferenceRepository repository)
         {
             _repository = repository;
         }
 
-        public ActionResult Index(int minSessions = 0)
-        {
-            var conferences = (from conf in _repository.Query()
-                       where conf.SessionCount >= minSessions
-                       select conf).ToArray();
-
-            return AutoMapView<ConferenceListModel[]>(conferences, View());
-        }
-
-
-        public ActionResult Edit(string confname)
-        {
-            var conf = _repository.GetByName(confname);
-
-            return AutoMapView<ConferenceEditModel>(conf, View());
-        }
-
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Save(ConferenceEditModel form)
+        protected override void HandleCore(ConferenceEditModel form)
         {
             var conf = _repository.GetById(form.Id);
 
@@ -58,6 +114,49 @@ namespace CodeCampServerLite.UI.Controllers
                 attendee.Email = attendeeEditModel.Email;
             }
 
+        }
+    }
+
+    public class ConferenceController : Controller
+    {
+        private readonly IConferenceRepository _repository;
+        private readonly IMediator _mediator;
+
+        public ConferenceController(
+            IConferenceRepository repository,
+            IMediator mediator
+            )
+        {
+            _repository = repository;
+            _mediator = mediator;
+        }
+
+        public ActionResult Index(int minSessions = 0)
+        {
+            var conferences = _mediator.Send(new ConferenceIndexQuery
+            {
+                MinSessions = minSessions
+            });
+
+            return View(conferences);
+        }
+
+
+        public ActionResult Edit(string confname)
+        {
+            var model = _mediator.Send(new ConferenceEditQuery
+            {
+                ConferenceName = confname
+            });
+
+            return View(model);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult Save(ConferenceEditModel form)
+        {
+            _mediator.Send(form);
+
             return RedirectToRoute("Default", new { controller = "Conference", action = "Index" });
         }
 
@@ -66,7 +165,9 @@ namespace CodeCampServerLite.UI.Controllers
         {
             var conf = _repository.GetByName(confname);
 
-            return AutoMapView<ConferenceShowModel>(conf, View());
+            var model = Mapper.Map<Conference, ConferenceShowModel>(conf);
+
+            return View(model);
         }
 
         public ActionResult Register(string confname)

@@ -3,18 +3,20 @@ using NHibernate.Linq;
 
 namespace CodeCampServerLite.Core.Domain
 {
-	public interface IQuery
+    using System.Linq;
+
+    public interface IQuery
 	{
-		object Execute(INHibernateQueryable queryProvider);
+		object Execute(IQueryable queryProvider);
 	}
 
 	public abstract class Query<TEntity, TResult> : IQuery
 	{
-		public abstract TResult Execute(INHibernateQueryable<TEntity> queryProvider);
+		public abstract TResult Execute(IQueryable<TEntity> queryProvider);
 		
-		object IQuery.Execute(INHibernateQueryable queryProvider)
+		object IQuery.Execute(IQueryable queryProvider)
 		{
-			return Execute((INHibernateQueryable<TEntity>) queryProvider);
+            return Execute((IQueryable<TEntity>)queryProvider);
 		}
 	}
 }

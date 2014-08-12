@@ -5,6 +5,7 @@ using StructureMap.Configuration.DSL;
 namespace CodeCampServerLite.Infrastructure.IoC
 {
     using NHibernate.Cfg;
+    using StructureMap.Web;
 
     public class NHibernateRegistry : Registry
     {
@@ -15,12 +16,13 @@ namespace CodeCampServerLite.Infrastructure.IoC
             ForSingletonOf<Configuration>().Use(ctx => ctx.GetInstance<ISessionSource>().GetConfiguration());
 
             For<ISession>().Use(c =>
-            {
-                var transaction = (NHibernateTransactionBoundary)c.GetInstance<ITransactionBoundary>();
-                return transaction.CurrentSession;
-            });
+                ((NHibernateTransactionBoundary)c.GetInstance<ITransactionBoundary>()).CurrentSession
+            );
 
-            For<ITransactionBoundary>().HybridHttpOrThreadLocalScoped().Use<NHibernateTransactionBoundary>();
+            For<ITransactionBoundary>()
+                .HybridHttpOrThreadLocalScoped()
+                .Use<NHibernateTransactionBoundary>()
+                ;
         }
     }
 }

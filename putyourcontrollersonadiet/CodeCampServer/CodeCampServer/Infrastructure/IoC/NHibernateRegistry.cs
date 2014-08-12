@@ -6,6 +6,7 @@ namespace CodeCampServerLite.Infrastructure.IoC
 {
     using DataAccess;
     using NHibernate.Cfg;
+    using StructureMap.Web;
 
     public class NHibernateRegistry : Registry
     {
@@ -15,10 +16,8 @@ namespace CodeCampServerLite.Infrastructure.IoC
             For<ISessionFactory>().Singleton().Use(c => c.GetInstance<Configuration>().BuildSessionFactory());
 
             For<ISession>().HybridHttpOrThreadLocalScoped().Use(c =>
-            {
-                var sessionFactory = c.GetInstance<ISessionFactory>();
-                return sessionFactory.OpenSession();
-            });
+                c.GetInstance<ISessionFactory>().OpenSession()
+            );
         }
     }
 }

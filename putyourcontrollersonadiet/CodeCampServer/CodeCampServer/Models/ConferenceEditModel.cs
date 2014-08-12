@@ -5,7 +5,7 @@ namespace CodeCampServerLite.Models
     using Controllers;
     using Core.Domain.Model;
 
-    public class ConferenceEditModel : ICommand<Conference>
+    public class ConferenceEditModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

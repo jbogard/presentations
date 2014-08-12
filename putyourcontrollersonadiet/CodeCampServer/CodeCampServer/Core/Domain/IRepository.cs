@@ -5,6 +5,7 @@ using NHibernate.Linq;
 
 namespace CodeCampServerLite.Core.Domain
 {
+    using System.Linq;
     using Model;
 
     public interface IRepository<T> where T : Entity
@@ -12,7 +13,7 @@ namespace CodeCampServerLite.Core.Domain
         T GetById(Guid id);
         void Save(T entity);
         IEnumerable<T> GetAll();
-        INHibernateQueryable<T> Query();
+        IQueryable<T> Query();
         void Delete(T entity);
     }
 }

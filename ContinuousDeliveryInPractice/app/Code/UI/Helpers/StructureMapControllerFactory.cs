@@ -3,16 +3,23 @@ using StructureMap;
 
 namespace CodeCampServerLite.UI.Helpers
 {
-	public class StructureMapControllerFactory : DefaultControllerFactory
-	{
-		protected override IController GetControllerInstance(System.Web.Routing.RequestContext requestContext, System.Type controllerType)
-		{
-			if (controllerType == null)
-				return null;
+    public class StructureMapControllerFactory : DefaultControllerFactory
+    {
+        private readonly IContainer _container;
 
-			object controller = ObjectFactory.GetInstance(controllerType);
+        public StructureMapControllerFactory(IContainer container)
+        {
+            _container = container;
+        }
 
-			return (IController)controller;
-		}
-	}
+        protected override IController GetControllerInstance(System.Web.Routing.RequestContext requestContext, System.Type controllerType)
+        {
+            if (controllerType == null)
+                return null;
+
+            object controller = _container.GetInstance(controllerType);
+
+            return (IController)controller;
+        }
+    }
 }

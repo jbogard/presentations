@@ -18,7 +18,7 @@ namespace CodeCampServerLite.Infrastructure.DataAccess.Repositories
 
         public Conference GetByName(string eventName)
         {
-            return Session.Linq<Conference>().FirstOrDefault(e => e.Name == eventName);
+            return Session.Query<Conference>().FirstOrDefault(e => e.Name == eventName);
         }
     }
 }

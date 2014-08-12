@@ -9,16 +9,17 @@ namespace CodeCampServerLite.IntegrationTests.Infrastructure
     using NHibernate;
     using NHibernate.Transform;
     using StructureMap;
+    using UI;
 
     public abstract class IntegrationTestBase
     {
         protected IntegrationTestBase()
         {
-            BootStrapper.Bootstrap();
+            //BootStrapper.Bootstrap();
 
-            var deleter = new DatabaseDeleter(ObjectFactory.GetInstance<ISessionFactory>());
+            var deleter = new DatabaseDeleter(IoC.Container.GetInstance<ISessionFactory>());
             deleter.DeleteAllData();
-            SessionSource = ObjectFactory.GetInstance<ISessionSource>();
+            SessionSource = IoC.Container.GetInstance<ISessionSource>();
         }
 
         protected ISessionSource SessionSource { get; private set; }

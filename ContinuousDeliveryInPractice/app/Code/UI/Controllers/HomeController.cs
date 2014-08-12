@@ -33,7 +33,7 @@ namespace CodeCampServerLite.UI.Controllers
 
         public void Reset()
         {
-            var loader = ObjectFactory.GetInstance<IDummyDataLoader>();
+            var loader = IoC.Container.GetInstance<IDummyDataLoader>();
 
             loader.Load();
         }

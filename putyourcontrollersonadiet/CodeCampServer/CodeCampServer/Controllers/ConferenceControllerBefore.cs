@@ -10,16 +10,17 @@ namespace CodeCampServerLite.Controllers
 {
     using Models;
 
-    public class ConferenceControllerBefore : DefaultController
+    public class ConferenceController : DefaultController
     {
 		private readonly IConferenceRepository _repository;
 
-		public ConferenceControllerBefore()
-		{
-			_repository = new ConferenceRepository(Sessions.Current);
-		}
+        public ConferenceController(IConferenceRepository repository)
+        {
+            _repository = repository;
+            //_repository = new ConferenceRepository(Sessions.Current);
+        }
 
-		public ActionResult Index(int? minSessions)
+        public ActionResult Index(int? minSessions)
 		{
 			minSessions = minSessions ?? 0;
 

@@ -2,7 +2,9 @@ using System;
 
 namespace CodeCampServerLite.UI.Models
 {
-    public class ConferenceEditModel
+    using MediatR;
+
+    public class ConferenceEditModel : IRequest
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
