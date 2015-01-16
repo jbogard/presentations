@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "Instructors";
+}
+
+<h2>Instructors</h2>
+<div id="instructors"></div>
+<div id="courses"></div>
+<div id="students"></div>
+@section scripts{
+    <script type="text/javascript">
+        var root = 'http://private-15052-contosouniversityapi.apiary-mock.com';
+        var renderCollectionJsonTable = function(data, target) {
+            var $target = $('#' + target);
+            $target.html('');
+
+            var $table = $('<table>').addClass('table');
+            var hasAddedHeader = false;
+            var hasLinks = false;
+
+            $.each(data.collection.items, function (idx, item) {
+
+                if (item.links) {
+                    hasLinks = true;
+                }
+
+                if (!hasAddedHeader) {
+                    var $headerRow = $('<tr>');
+                    $.each(item.data, function(idx2, datum) {
+                        $('<th>').text(datum.prompt).appendTo($headerRow);
+                    });
+                    if (hasLinks) {
+                        $('<th>').appendTo($headerRow);
+                    }
+
+                    $headerRow.appendTo($table);
+                    hasAddedHeader = true;
+                }
+
+                var row = $('<tr>');
+                $.each(item.data, function (idx2, datum) {
+                    var $cell = $('<td>');
+                    if (datum.value) {
+                        $cell.text(datum.value);
+                    }
+                    $cell.appendTo(row);
+                });
+
+                if (hasLinks) {
+                    var $linkCell = $('<td>');
+                    $.each(item.links, function (idx2, link) {
+                        var $link = $('<a>')
+                            .attr('rel', link.rel)
+                            .attr('href', '#')
+                            .text(link.prompt + ' ');
+                        $link.click(function () {
+                            fetchCollection(link.href, link.rel);
+                            return false;
+                        });
+                        $link.appendTo($linkCell);
+                    });
+                    $linkCell.appendTo(row);
+                }
+
+                row.appendTo($table);
+            });
+
+            $table.appendTo($target);
+        };
+
+        var fetchCollection = function(relativeUrl, target) {
+            $.getJSON(root + relativeUrl)
+                .done(function (data) {
+                    renderCollectionJsonTable(data, target);
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    var err = textStatus + ", " + error;
+                    console.log("Request Failed: " + err);
+                });
+        };
+
+        $(function () {
+            fetchCollection('/instructors', 'instructors');
+        });
+    </script>
+}
