@@ -31,7 +31,6 @@
                     if (hasLinks) {
                         $('<th>').appendTo($headerRow);
                     }
-
                     $headerRow.appendTo($table);
                     hasAddedHeader = true;
                 }
@@ -44,14 +43,10 @@
                     }
                     $cell.appendTo(row);
                 });
-
                 if (hasLinks) {
                     var $linkCell = $('<td>');
                     $.each(item.links, function (idx2, link) {
-                        var $link = $('<a>')
-                            .attr('rel', link.rel)
-                            .attr('href', '#')
-                            .text(link.prompt + ' ');
+                        var $link = $('<a>').attr('rel', link.rel).attr('href', '#').text(link.prompt + ' ');
                         $link.click(function () {
                             fetchCollection(link.href, link.rel);
                             return false;
@@ -60,7 +55,6 @@
                     });
                     $linkCell.appendTo(row);
                 }
-
                 row.appendTo($table);
             });
 
