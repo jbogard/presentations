@@ -54,22 +54,17 @@ namespace ContosoUniversity.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CourseID,Title,Credits,DepartmentID")]Course course)
+        public ActionResult Create(
+            [Bind(Include = "CourseID,Title,Credits,DepartmentID")]
+            Course course)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    db.Courses.Add(course);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
+                db.Courses.Add(course);
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            }
+
             PopulateDepartmentsDropDownList(course.DepartmentID);
             return View(course);
         }
@@ -91,21 +86,15 @@ namespace ContosoUniversity.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CourseID,Title,Credits,DepartmentID")]Course course)
+        public ActionResult Edit(
+            [Bind(Include = "CourseID,Title,Credits,DepartmentID")]
+            Course course)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    db.Entry(course).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-            }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.)
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                db.Entry(course).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
             PopulateDepartmentsDropDownList(course.DepartmentID);
             return View(course);

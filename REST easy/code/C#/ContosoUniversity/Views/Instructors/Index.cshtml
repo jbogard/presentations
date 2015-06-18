@@ -43,6 +43,7 @@
                     }
                     $cell.appendTo(row);
                 });
+
                 if (hasLinks) {
                     var $linkCell = $('<td>');
                     $.each(item.links, function (idx2, link) {
@@ -55,6 +56,7 @@
                     });
                     $linkCell.appendTo(row);
                 }
+
                 row.appendTo($table);
             });
 
