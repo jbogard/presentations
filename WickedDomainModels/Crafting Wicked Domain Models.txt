@@ -21,6 +21,23 @@ Our domain
 - Members can claim offers
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Refactorings:
 - Encapsulate collection
 -- For member -> offer
@@ -39,3 +56,17 @@ Refactorings:
 -- Offer Expiration Type - sliding/absolute
 -- Create enumeration classes
 -- Calculate based on double dispatch w/ offer type
+
+
+
+
+
+
+
+
+
+
+
+
+
+

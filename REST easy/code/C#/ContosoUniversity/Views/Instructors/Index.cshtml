@@ -6,9 +6,11 @@
 <div id="instructors"></div>
 <div id="courses"></div>
 <div id="students"></div>
+<div id="content"></div>
 @section scripts{
+    <script src="@Url.Content("~/Scripts/react-0.13.3.js")"></script>
+    <script src="@Url.Content("~/Scripts/CollectionJsonTable.jsx")"></script>
     <script type="text/javascript">
-        var root = 'http://private-15052-contosouniversityapi.apiary-mock.com';
         var renderCollectionJsonTable = function(data, target) {
             var $target = $('#' + target);
             $target.html('');
@@ -49,7 +51,7 @@
                     $.each(item.links, function (idx2, link) {
                         var $link = $('<a>').attr('rel', link.rel).attr('href', '#').text(link.prompt + ' ');
                         $link.click(function () {
-                            fetchCollection(link.href, link.rel);
+                            FetchCollection(link.href, link.rel);
                             return false;
                         });
                         $link.appendTo($linkCell);
@@ -63,19 +65,8 @@
             $table.appendTo($target);
         };
 
-        var fetchCollection = function(relativeUrl, target) {
-            $.getJSON(root + relativeUrl)
-                .done(function (data) {
-                    renderCollectionJsonTable(data, target);
-                })
-                .fail(function (jqxhr, textStatus, error) {
-                    var err = textStatus + ", " + error;
-                    console.log("Request Failed: " + err);
-                });
-        };
-
         $(function () {
-            fetchCollection('/instructors', 'instructors');
+            FetchCollection('/instructors', 'instructors');
         });
     </script>
 }

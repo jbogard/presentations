@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head><link rel="stylesheet" type="text/css" href="description/Combined.css,0:HeaderFooterSprite,0:Header.NonMtps,1:LinkList;/Areas/Centers/Themes/StandardDevCenter/Content:0,/Areas/Epx/Themes/Base/Content:1&amp;amp;hashKey=C9973DA951AE6202C9B348379A1BE49D" xmlns="http://www.w3.org/1999/xhtml" />
+<link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+<link rel="stylesheet" type="text/css" href="description/04f9c26e-88fd-4dfd-b715-9733d17420b6Combined.css,0:HeaderFooterSprite,0:Footer.NonMtps,1:LinkList;/Areas/Centers/Themes/StandardDevCenter/Content:0,/Areas/Epx/Themes/Base/Content:1&amp;amp;hashKey=F576C687BC536B84D6E5B3246EE39B49" xmlns="http://www.w3.org/1999/xhtml" />
+<link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>ASP.NET MVC Application Using Entity Framework Code First</title>
+        <link href="description/Galleries.css" type="text/css" rel="Stylesheet" /><link href="description/Layout.css" type="text/css" rel="Stylesheet" /><link href="description/Brand.css" type="text/css" rel="Stylesheet" />
+        <link href="description/iframedescription.css" rel="Stylesheet" type="text/css" />
+        <script src="description/offline.js" type="text/javascript"></script>
+        <style type="text/css">
+            #projectInfo {
+                overflow: auto;
+            }
+            #longDesc {
+                clear:both;
+                margin: 25px 0 10px 0;
+            }
+
+            #SampleIndexList{
+                margin-left: 15px;
+            }
+        </style>
+    </head>
+<body>
+    <div id="offlineDescription">
+        <h1>ASP.NET MVC Application Using Entity Framework Code First</h1>
+        <br/>
+        <div id="projectInfo">
+            <div class="section">
+                    <div class="itemBarLong tagsContainer">
+                        <label for="Technologies">Technologies</label>
+                        <div id="Technologies">
+                            ADO.NET Entity Framework, ASP.NET, ASP.NET MVC, Entity Framework
+                        </div>
+                    </div>
+                    <div class="itemBarLong tagsContainer">
+                        <label for="Topics">Topics</label>
+                        <div id="Topics">
+                            Repository Pattern, Concurrency, Unit of Work Pattern, Code First, ASP.NET Code Sample Downloads
+                        </div>
+                    </div>
+                <div class="itemBarLong">
+                    <label for="Platforms">Platforms</label>
+                    <div id="Platforms">
+                        Web
+                    </div>
+                </div>
+                <div class="itemBarLong">
+                    <label for="Requirements">Requirements</label>
+                    <div id="Requirements">
+                        
+                    </div>
+                </div>
+                <div class="itemBar">
+                    <label for="LastUpdated">Primary language</label>
+                    <div id="LastUpdated">en-US</div>
+                </div>
+                <div class="itemBar">
+                    <label for="LastUpdated">Updated</label>
+                    <div id="LastUpdated">4/16/2014</div>
+                </div>
+                <div class="itemBarLong">
+                    <label for="License">License</label>
+                    <div id="License">
+                        <a href="license.rtf">Apache License, Version 2.0</a></div>
+                </div>
+                <div class="itemBar">
+                    <div class="viewonlinecont">
+                        <a data-link="online" href="http://code.msdn.microsoft.com/ASPNET-MVC-Application-b01a9fe8">View this sample online</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                   
+<script type="text/javascript">
+    function initializePage() {
+        var otherTabClass = 'otherTab';
+        var hiddenPreClass = 'hidden';
+
+        var htmlDecode = function(encodedData) {
+            var decodedData = "";
+            if (encodedData) {
+                var div = document.createElement('div');
+                div.innerHTML = encodedData;
+                decodedData = div.firstChild.nodeValue.replace( /\\r\\n/ig , '\r\n');
+            }
+            return decodedData;
+        };
+                
+        Galleries.iterateElem(Galleries.findElem(null, 'div', 'scriptcode'), function (index, scriptBlock) {
+            var titleElem = Galleries.findElem(scriptBlock, 'div', 'title')[0];
+            var labelElems = Galleries.findElem(titleElem, 'span');
+            if (labelElems.length == 0) {
+                labelElems = titleElem;
+            }
+            var languageSpans = Galleries.findElem(scriptBlock, 'span', 'hidden');
+            var pres = Galleries.findElem(scriptBlock, 'pre');
+            if (languageSpans.length > 0 && pres.length > 1) {
+                Galleries.iterateElem(labelElems, function(index, elem) {
+                    var codePre = pres[index];
+                    var labelSpan = elem;
+                    var languageSpan = languageSpans[index];
+                            
+                    elem.code = codePre.innerHTML.replace( /(\r(\n)?)|((\r)?\n)/ig , '\\r\\n');
+                            
+                    codePre.className = codePre.className.replace(hiddenPreClass, '');
+                            
+                    languageSpan.parentNode.removeChild(languageSpan);
+                });
+
+                pres = Galleries.findElem(scriptBlock, 'pre');
+                Galleries.iterateElem(labelElems, function(index, elem) {
+                    var codePre = pres[index];
+                    var labelSpan = elem;
+                    if (index == 0) {
+                        scriptBlock.activeTab = 0;
+                    }
+                    else {
+                        labelSpan.className += otherTabClass;
+                        codePre.className += hiddenPreClass;
+                    }
+                    Galleries.attachEventHandler(labelSpan, 'click', function(e) {
+                        var activeTab = scriptBlock.activeTab;
+                        labelElems[activeTab].className += otherTabClass;
+                        pres[activeTab].className += hiddenPreClass;
+
+                        codePre.className = codePre.className.replace(hiddenPreClass, '');
+                        labelSpan.className = labelSpan.className.replace(otherTabClass, '');
+                        scriptBlock.activeTab = index;
+                    });
+                });
+
+                var preview = Galleries.findElem(scriptBlock, 'div', 'preview');
+                if (preview.length == 0) {
+                    preview.push(pres[pres.length - 1]);
+                }
+                Galleries.iterateElem(preview, function(index, elem) {
+                    elem.parentNode.removeChild(elem);
+                });
+
+                if (window.clipboardData && clipboardData.setData) {
+                    var copyLink = document.createElement('a');
+                    copyLink.href = 'javascript:void(0);';
+                    copyLink.className = 'copyCode';
+                    copyLink.innerHTML = 'Copy code';
+                    Galleries.attachEventHandler(copyLink, 'click', function (e) {
+                        clipboardData.setData("Text", htmlDecode(labelElems[scriptBlock.activeTab].code));
+                        return false;
+                    });
+                    scriptBlock.insertBefore(copyLink, scriptBlock.childNodes[0]);
+                }
+            }
+        });
+    }
+
+    Galleries.onWindowLoad(function(){
+        initializePage();
+    });
+
+</script>
+<div id="longDesc">
+    
+<h1>Introduction</h1>
+<p>A Visual Studio 2013 project which shows how to use the Entity Framework 6 in an ASP.NET&nbsp;MVC 5 web application project, using the Code First development approach.</p>
+<p>The previous version that uses EF 5 and MVC 4 in a Visual Studio 2012 project is
+<a href="http://archive.msdn.microsoft.com/aspnetmvcsamples/Release/ProjectReleases.aspx?ReleaseId=6024">
+available to download</a>.</p>
+<p>The code illustrates the following topics:</p>
+<ul>
+<li>Creating a data model using data annotations attributes, and fluent API for database mapping.
+</li><li>Performing basic CRUD operations. </li><li>Filtering, ordering, and grouping data. </li><li>Working with related data. </li><li>Implementing connection resiliency </li><li>Using command interception </li><li>Writing async code </li><li>Handling concurrency. </li><li>Implementing table-per-hierarchy inheritance. </li><li>Performing raw SQL queries. </li><li>Performing no-tracking queries. </li><li>Working with proxy classes. </li><li>Disabling automatic detection of changes. </li><li>Disabling validation when saving changes. </li></ul>
+<p>A tutorial series describes how to build the sample application from scratch. There is an
+<a href="http://www.asp.net/mvc/tutorials/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application">
+EF 6 MVC 5 VS 2013 tutorial series</a> and an <a href="http://www.asp.net/mvc/tutorials/getting-started-with-ef-5-using-mvc-4/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application">
+EF 5 MVC 4 VS 2012 tutorial series</a>.</p>
+<h1>Getting Started</h1>
+<p>To build and run this sample, you must have Visual Studio 2013 or Visual Studio 2013 Express for Web installed.</p>
+<p>In most cases you can run the application by following these steps:</p>
+<ol>
+<li>Download and extract the .zip file. </li><li>Open the solution file in Visual Studio. </li><li>Build the solution, which automatically installs the missing NuGet packages. </li><li>Open the Package Manager Console, and run the update-database command to create the database.
+</li><li>Run the application. </li></ol>
+<p>If you have any problems with those instructions, follow these longer instructions.</p>
+<ol>
+<li>Download the .zip file. </li><li>In File Explorer, right-click the&nbsp;.zip file and click Properties, then in the Properties window click Unblock.
+</li><li>Unzip the file. </li><li>Double-click the .sln file to launch Visual Studio. </li><li>From the Tools menu, click Library Package Manager, then Package Manager Console.
+</li><li>In the Package Manager Console (PMC), click Restore. </li><li>Exit Visual Studio. </li><li>Restart Visual Studio, opening the solution file you closed in the previous step.
+</li><li>In the Package Manager Console (PMC), enter the Update-Database command. (If you get the following error:<br>
+&quot;<em>The term 'Update-Database' is not recognized as the name of a cmdlet, function, script file, or operable program</em>&quot;, exit and restart Visual Studio.)
+</li><li>Each migration will run, then the seed method will run. You can now&nbsp;run the application.
+</li></ol>
+<h1>Running the Sample</h1>
+<p>To run the sample, hit F5 or choose the Debug | Start Debugging menu command. You will see the home page which includes a menu bar. (In a narrow browser window you'll have to click the symbol at the top right of the page in order to see the menu.)</p>
+<p>From this page you can select any of the tabs to perform various actions such as display a list of students, add new students, display a list of instructors, and so forth.</p>
+<p><img id="109835" src="description/StudentPagingSearch.png" alt="" width="606" height="623"></p>
+<p>&nbsp;</p>
+<p><img id="109836" src="description/InstructorEditWithCourses.png" alt="" width="604" height="750"></p>
+<h1>Source Code Overview</h1>
+<p>The <em>ContosoUniversity</em> folder includes the following folders and files</p>
+<ul>
+<li><em>App_Data</em> folder - Holds the SQL Server&nbsp;Compact database file. </li><li><em>Content</em> - Holds CSS files. </li><li>Controllers - Holds controller classes. </li><li><em>DAL</em> folder - The data access layer.&nbsp; Holds the context, initializer, repository, and unit of work classes.
+</li><li><em>Logging</em> folder - Holds code that does logging. </li><li><em>Migrations</em> folder - Holds EF Code First migrations code, including the Seed method.
+</li><li><em>Models</em> folder - Holds model classes. </li><li><em>Properties</em> or <em>MyProject</em> folder - Project properties. </li><li><em>Scripts</em> folder - Script files. </li><li><em>ViewModels</em> folder -&nbsp;Holds view model classes.&nbsp; </li><li><em>Views</em>&nbsp;folder - Holds view classes. </li><li>Visual Studio project file (.csproj or .vbproj). </li><li><em>packages.config</em> - Specifies NuGet packages included in the project. </li><li><em>Global.asax</em> file - Includes database initializer code. </li><li>Web.config file -&nbsp;Includes the connection string to the database. </li></ul>
+
+</div>
+
+
+    </div>
+</body>
+</html>

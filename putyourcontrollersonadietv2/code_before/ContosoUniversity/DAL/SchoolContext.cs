@@ -4,6 +4,9 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace ContosoUniversity.DAL
 {
+    using System;
+    using System.Data;
+
     public class SchoolContext : DbContext
     {
         public DbSet<Course> Courses { get; set; }
@@ -24,6 +27,69 @@ namespace ContosoUniversity.DAL
                     .MapRightKey("InstructorID")
                     .ToTable("CourseInstructor"));
             modelBuilder.Entity<Department>().MapToStoredProcedures();
+        }
+
+        private DbContextTransaction _currentTransaction;
+
+        public void BeginTransaction()
+        {
+            try
+            {
+                if (_currentTransaction != null)
+                {
+                    return;
+                }
+
+                _currentTransaction = Database.BeginTransaction(IsolationLevel.ReadCommitted);
+            }
+            catch (Exception)
+            {
+                // todo: log transaction exception
+                throw;
+            }
+        }
+
+        public void CloseTransaction()
+        {
+            CloseTransaction(exception: null);
+        }
+
+        public void CloseTransaction(Exception exception)
+        {
+            try
+            {
+                if (_currentTransaction != null && exception != null)
+                {
+                    // todo: log exception
+                    _currentTransaction.Rollback();
+                    return;
+                }
+
+                SaveChanges();
+
+                if (_currentTransaction != null)
+                {
+                    _currentTransaction.Commit();
+                }
+            }
+            catch (Exception)
+            {
+                // todo: log exception
+                if (_currentTransaction != null && _currentTransaction.UnderlyingTransaction.Connection != null)
+                {
+                    _currentTransaction.Rollback();
+                }
+
+                throw;
+            }
+            finally
+            {
+                if (_currentTransaction != null)
+                {
+                    _currentTransaction.Dispose();
+                    _currentTransaction = null;
+                }
+            }
         }
     }
 }

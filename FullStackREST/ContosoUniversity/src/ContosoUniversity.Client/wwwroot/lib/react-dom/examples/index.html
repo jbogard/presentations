@@ -1,0 +1,50 @@
+<html>
+<head>
+  <title>react-dom examples</title>
+</head>
+<body>
+  <div id="optional-options"></div>
+  <div id="class-attribute"></div>
+  <div id="nested-data"></div>
+
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.10.0/react-with-addons.min.js"></script>
+  <script src="../react-dom.js"></script>
+  <script>
+    // Optional `options`
+    OptionalOptions = React.createClass({
+      render: function() {
+        return DOM.div('OptionalOptions')
+      }
+    })
+
+    container = document.getElementById('optional-options')
+    React.renderComponent(OptionalOptions(), container)
+
+    // `class` attribute
+    ClassAttribute = React.createClass({
+      render: function() {
+        return DOM.div({ class: 'class-attribute' }, 'ClassAttribute')
+      }
+    })
+
+    container = document.getElementById('class-attribute')
+    React.renderComponent(ClassAttribute(), container)
+
+    // Nested `data` attributes
+    NestedData = React.createClass({
+      render: function() {
+        return DOM.div({
+          data: {
+            foo: { bar: 'baz' },
+            much: { much: 'fun' },
+            state: ['selected', 'opened']
+          }
+        }, 'NestedData');
+      }
+    })
+
+    container = document.getElementById('nested-data')
+    React.renderComponent(NestedData(), container)
+  </script>
+</body>
+</html>

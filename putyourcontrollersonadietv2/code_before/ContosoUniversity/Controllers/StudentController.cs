@@ -1,48 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using ContosoUniversity.Models;
-using ContosoUniversity.DAL;
-using PagedList;
-using System.Data.Entity.Infrastructure;
-
-namespace ContosoUniversity.Controllers
+﻿namespace ContosoUniversity.Controllers
 {
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
+    using System.Linq;
+    using System.Net;
+    using System.Web.Mvc;
+    using DAL;
+    using Helpers;
+    using Models;
+    using PagedList;
+    using ViewModels;
+
     public class StudentController : Controller
     {
-        private SchoolContext db = new SchoolContext();
+        private readonly SchoolContext db;
+
+        public StudentController(SchoolContext db)
+        {
+            this.db = db;
+        }
 
         // GET: /Student/
-        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public ViewResult Index(StudentIndexQuery query)
         {
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-
-            if (searchString != null)
+            var model = new StudentIndexResult
             {
-                page = 1;
+                CurrentSort = query.SortOrder,
+                NameSortParm = String.IsNullOrEmpty(query.SortOrder) ? "name_desc" : "",
+                DateSortParm = query.SortOrder == "Date" ? "date_desc" : "Date",
+            };
+
+            if (query.SearchString != null)
+            {
+                query.Page = 1;
             }
             else
             {
-                searchString = currentFilter;
+                query.SearchString = query.CurrentFilter;
             }
 
-            ViewBag.CurrentFilter = searchString;
+            model.CurrentFilter = query.SearchString;
+            model.SearchString = query.SearchString;
 
             var students = from s in db.Students
                            select s;
-            if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrEmpty(query.SearchString))
             {
-                students = students.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
-                                       || s.FirstMidName.ToUpper().Contains(searchString.ToUpper()));
+                students = students.Where(s => s.LastName.Contains(query.SearchString)
+                                               || s.FirstMidName.Contains(query.SearchString));
             }
-            switch (sortOrder)
+            switch (query.SortOrder)
             {
                 case "name_desc":
                     students = students.OrderByDescending(s => s.LastName);
@@ -53,16 +61,17 @@ namespace ContosoUniversity.Controllers
                 case "date_desc":
                     students = students.OrderByDescending(s => s.EnrollmentDate);
                     break;
-                default:  // Name ascending 
+                default: // Name ascending 
                     students = students.OrderBy(s => s.LastName);
                     break;
             }
 
             int pageSize = 3;
-            int pageNumber = (page ?? 1);
-            return View(students.ToPagedList(pageNumber, pageSize));
-        }
+            int pageNumber = (query.Page ?? 1);
+            model.Results = students.ProjectToPagedList<StudentIndexModel>(pageNumber, pageSize);
 
+            return View(model);
+        }
         // GET: /Student/Details/5
         public ActionResult Details(int? id)
         {
@@ -91,21 +100,9 @@ namespace ContosoUniversity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "LastName, FirstMidName, EnrollmentDate")]Student student)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    db.Students.Add(student);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-            }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-            }
-            return View(student);
+            db.Students.Add(student);
+            db.SaveChanges();
+            return this.RedirectToActionJson("Index");
         }
 
         // GET: /Student/Edit/5
@@ -130,21 +127,9 @@ namespace ContosoUniversity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID, LastName, FirstMidName, EnrollmentDate")]Student student)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    db.Entry(student).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-            }
-            catch (RetryLimitExceededException /* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-            }
-            return View(student);
+            db.Entry(student).State = EntityState.Modified;
+            db.SaveChanges();
+            return this.RedirectToActionJson("Index");
         }
         // GET: /Student/Delete/5
         public ActionResult Delete(int? id, bool? saveChangesError = false)
@@ -170,27 +155,11 @@ namespace ContosoUniversity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id)
         {
-            try
-            {
-                Student student = db.Students.Find(id);
-                db.Students.Remove(student);
-                db.SaveChanges();
-            }
-            catch (RetryLimitExceededException/* dex */)
-            {
-                //Log the error (uncomment dex variable name and add a line here to write a log.
-                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
-            }
-            return RedirectToAction("Index");
-        }
+            Student student = db.Students.Find(id);
+            db.Students.Remove(student);
+            db.SaveChanges();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return this.RedirectToActionJson("Index");
         }
     }
 }

@@ -28,8 +28,8 @@ namespace ContosoUniversity.App_Start {
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 	using ContosoUniversity.DependencyResolution;
-
-    using StructureMap;
+	using Helpers;
+	using StructureMap;
     
 	public static class StructuremapMvc {
         #region Public Properties
@@ -49,6 +49,7 @@ namespace ContosoUniversity.App_Start {
             StructureMapDependencyScope = new StructureMapDependencyScope(container);
             DependencyResolver.SetResolver(StructureMapDependencyScope);
             DynamicModuleUtility.RegisterModule(typeof(StructureMapScopeModule));
+            AutoMapperBootstrapper.Initialize(container);
         }
 
         #endregion

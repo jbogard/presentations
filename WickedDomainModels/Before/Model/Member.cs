@@ -2,17 +2,39 @@ using System.Collections.Generic;
 
 namespace Before.Model
 {
-	public class Member : Entity
+    using System;
+    using Services;
+
+    public class Member : Entity
 	{
-		public Member()
+	    private ICollection<Offer> _assignedOffers;
+
+	    public Member()
 		{
-			AssignedOffers = new List<Offer>();
+            _assignedOffers = new List<Offer>();
 		}
 
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Email { get; set; }
-		public ICollection<Offer> AssignedOffers { get; set; }
-		public int NumberOfActiveOffers { get; set; }
-	}
+
+		public IEnumerable<Offer> AssignedOffers => _assignedOffers;
+
+	    public int NumberOfActiveOffers { get; private set; }
+
+	    public Offer AssignOffer(OfferType offerType,
+            IOfferValueCalculator offerValueCalulator)
+	    {
+            var value = offerValueCalulator.CalculateValue(this, offerType);
+
+	        var dateExpiring = offerType.ExpirationType.GetDateExpiring(offerType);
+
+            var offer = new Offer(this, offerType, dateExpiring, value);
+
+            _assignedOffers.Add(offer);
+            NumberOfActiveOffers++;
+
+            return offer;
+        }
+    }
 }

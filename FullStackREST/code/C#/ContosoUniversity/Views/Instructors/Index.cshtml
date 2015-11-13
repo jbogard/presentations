@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Instructors";
+}
+
+<h2>Instructors</h2>
+<div id="content"></div>
+@section scripts{
+    <script src="@Url.Content("~/Scripts/react-0.14.2.js")"></script>
+    <script src="@Url.Content("~/Scripts/react-dom-0.14.2.js")"></script>
+    <script src="@Url.Content("~/Scripts/InstructorInfo.jsx")"></script>
+    @{
+        var href = Url.Action("Index", "Instructor", new { httproute = "" });
+    }
+    <script>
+        React.render(
+            React.createElement(InstructorsInfo, {href: '@href'}),
+            document.getElementById("content")
+        );
+    </script>
+}

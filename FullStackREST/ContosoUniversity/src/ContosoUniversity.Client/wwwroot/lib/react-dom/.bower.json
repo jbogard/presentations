@@ -1,0 +1,41 @@
+{
+  "name": "react-dom",
+  "main": "react-dom.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/EtienneLem/react-dom",
+  "authors": [
+    "Etienne Lemay <etienne@heliom.ca>"
+  ],
+  "description": "DOM is a `React.DOM` wrapper with — subjectively — more sanity and awesome helpers",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "react",
+    "dom"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "devDependencies": {
+    "jasmine-node": "2.0.0-beta4",
+    "react": "0.10.0",
+    "uglify-js": "2.4.13",
+    "colors": "0.6.2"
+  },
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.0",
+    "commit": "a3c786dd76927f87fc3bf42d22fe0e0707c8b92e"
+  },
+  "_source": "git://github.com/EtienneLem/react-dom.git",
+  "_target": "~0.1.0",
+  "_originalSource": "react-dom",
+  "_direct": true
+}

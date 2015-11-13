@@ -48,36 +48,7 @@ namespace Before.Services
 			var member = _memberRepository.GetById(memberId);
 			var offerType = _offerTypeRepository.GetById(offerTypeId);
 
-			var value = _offerValueCalculator
-				.CalculateValue(member, offerType);
-
-			DateTime dateExpiring;
-
-			switch (offerType.ExpirationType)
-			{
-				case ExpirationType.Assignment:
-					dateExpiring = DateTime.Now.AddDays(offerType.DaysValid);
-					break;
-				case ExpirationType.Fixed:
-					if (offerType.BeginDate != null)
-						dateExpiring =
-							offerType.BeginDate.Value.AddDays(offerType.DaysValid);
-					else
-						throw new InvalidOperationException();
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-
-			var offer = new Offer
-			{
-				MemberAssigned = member,
-				Type = offerType,
-				Value = value,
-				DateExpiring = dateExpiring
-			};
-			member.AssignedOffers.Add(offer);
-			member.NumberOfActiveOffers++;
+            var offer = member.AssignOffer(offerType, _offerValueCalculator);
 
 			_offerRepository.Save(offer);
 		}
