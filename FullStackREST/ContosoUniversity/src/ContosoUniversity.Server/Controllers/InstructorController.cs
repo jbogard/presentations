@@ -1,4 +1,7 @@
-﻿namespace ContosoUniversity.Server.Controllers
+﻿using ContosoUniversity.Server.Models;
+using Microsoft.ApplicationInsights.AspNet.Extensions;
+
+namespace ContosoUniversity.Server.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +9,18 @@
     using System.Threading.Tasks;
     using CollectionJson;
     using Microsoft.AspNet.Mvc;
+    using Microsoft.Data.Entity;
+    using System.Linq;
 
     [Route("api/instructor")]
     public class InstructorController : Controller
     {
-        private SchoolContext db = new SchoolContext();
+        private readonly SchoolContext db;
+
+        public InstructorController(SchoolContext db)
+        {
+            this.db = db;
+        }
 
         [Route("")]
         [HttpGet]
@@ -21,13 +31,13 @@
             {
                 Collection =
                 {
-                    Href = new Uri(Url.Action("Index")),
+                    Href = new Uri(Url.Action("Index", "Instructor", null, Request.GetUri().Scheme, null)),
                     Version = "1.0"
                 }
             };
             foreach (var item in instructors.Select(i => new Item
             {
-                Href = Url.Link<InstructorController>(c => c.Details(i.ID)),
+                Href = new Uri(Url.Action("Details", "Instructor", new { id=i.ID }, Request.GetUri().Scheme, null)),
                 Data = new List<Data>
                 {
                     new Data
@@ -52,40 +62,39 @@
                     {
                         Name = "office",
                         Prompt = "Office",
-                        Value = i.OfficeAssignment == null ? null : i.OfficeAssignment.Location
+                        Value = i.OfficeAssignment?.Location
                     },
                 },
                 Links = new List<Link>
                 {
-                    new Link { Href = new Uri(Url.Link<InstructorController>(c => c.Courses(i.ID)) + "/courses"), Prompt = "Courses", Rel = "courses" }
+                    new Link { Href = new Uri(Url.Action("Courses", "Instructor", new { id=i.ID }, Request.GetUri().Scheme, null)), Prompt = "Courses", Rel = "courses" }
                 }
             }))
             {
                 doc.Collection.Items.Add(item);
             }
 
-            return doc.ToHttpResponseMessage();
+            return doc;
         }
 
         [Route("{id}")]
         [HttpGet]
-        public HttpResponseMessage Details(int id)
+        public ActionResult Details(int id)
         {
-            return new HttpResponseMessage(HttpStatusCode.NotFound);
+            return HttpNotFound();
         }
 
         [Route("{id}/courses")]
         [HttpGet]
-        public async Task<HttpResponseMessage> Courses(int id)
+        public async Task<ReadDocument> Courses(int id)
         {
-            var instructor = await db.Instructors.Where(i => i.ID == id).Include(i => i.Courses).SingleAsync();
-            var courses = instructor.Courses;
+            var courses = await db.CourseInstructors.Where(i => i.InstructorID == id).Include(ci => ci.Course).ThenInclude(c => c.Department).ToListAsync();
 
             var doc = new ReadDocument
             {
                 Collection =
                 {
-                    Href = new Uri(Url.Link<InstructorController>(c => c.Courses(id)) + "/courses"),
+                    Href = new Uri(Url.Action("Courses", "Instructor", new {id}, Request.GetUri().Scheme, null)),
                     Version = "1.0"
                 }
             };
@@ -95,14 +104,14 @@
                 Data = new List<Data>
                 {
                     new Data { Name = "number", Prompt = "Number", Value = c.CourseID.ToString() },
-                    new Data { Name = "title", Prompt = "Title", Value = c.Title },
-                    new Data { Name = "dept", Prompt = "Department", Value = c.Department.Name }
+                    new Data { Name = "title", Prompt = "Title", Value = c.Course.Title },
+                    new Data { Name = "dept", Prompt = "Department", Value = c.Course.Department?.Name }
                 },
                 Links = new List<Link>
                 {
                     new Link
                     {
-                        Href = new Uri(string.Format(Url.Link<InstructorController>(x => x.Index()) + "{0}/courses/{1}/students", id, c.CourseID)),
+                        Href = new Uri(Url.Action("Students", "Instructor", new { id, courseId = c.CourseID}, Request.GetUri().Scheme, null)),
                         Prompt = "Students",
                         Rel = "students"
                     }
@@ -112,21 +121,21 @@
                 doc.Collection.Items.Add(item);
             }
 
-            return doc.ToHttpResponseMessage();
+            return doc;
         }
 
         [Route("{id}/courses/{courseId}/students")]
         [HttpGet]
-        public async Task<HttpResponseMessage> Students(int id, int courseId)
+        public async Task<ReadDocument> Students(int id, int courseId)
         {
-            var course = await db.Courses.Where(c => c.CourseID == courseId).Include(c => c.Enrollments).SingleAsync();
+            var course = await db.Courses.Where(c => c.CourseID == courseId).Include(c => c.Enrollments).ThenInclude(e => e.Student).SingleAsync();
             var enrollments = course.Enrollments;
 
             var doc = new ReadDocument
             {
                 Collection =
                 {
-                    Href = new Uri(string.Format(Url.Link<InstructorController>(c => c.Index()) + "/courses/{0}/students", courseId)),
+                    Href = new Uri(Url.Action("Students", "Instructor", new {id, courseId}, Request.GetUri().Scheme, null)),
                     Version = "1.0"
                 }
             };
@@ -143,7 +152,7 @@
                 doc.Collection.Items.Add(item);
             }
 
-            return doc.ToHttpResponseMessage();
+            return doc;
         }
 
         protected override void Dispose(bool disposing)
