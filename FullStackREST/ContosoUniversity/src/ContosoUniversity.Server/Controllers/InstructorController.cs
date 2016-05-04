@@ -26,7 +26,11 @@ namespace ContosoUniversity.Server.Controllers
         [HttpGet]
         public async Task<ReadDocument> Index()
         {
-            var instructors = await db.Instructors.Include(i => i.OfficeAssignment).ToListAsync();
+            var instructors = await db
+                .Instructors
+                .Include(i => i.OfficeAssignment)
+                .ToListAsync();
+
             var doc = new ReadDocument
             {
                 Collection =
@@ -43,7 +47,7 @@ namespace ContosoUniversity.Server.Controllers
                     new Data
                     {
                         Name = "last-name",
-                        Prompt = "Last Name",
+                        Prompt = "Surname",
                         Value = i.LastName
                     },
                     new Data

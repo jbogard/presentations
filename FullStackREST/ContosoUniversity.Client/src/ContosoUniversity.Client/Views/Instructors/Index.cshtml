@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Instructors";
+}
+
+<h2>Instructors</h2>
+<div id="content"></div>
+@section scripts{
+    <script src="~/lib/react/react.js"></script>
+    <script src="~/lib/react/react-dom.js"></script>
+    <script src="~/lib/lodash/lodash.js"></script>
+    <script src="~/js/InstructorsInfo.jsx"></script>
+    <script>
+        ReactDOM.render(
+            React.createElement(InstructorsInfo, { href: 'http://localhost:5001/api/instructor' }),
+            document.getElementById("content")
+        );
+    </script>
+}

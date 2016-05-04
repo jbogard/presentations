@@ -15,7 +15,10 @@ namespace FileConsumerAfterHost
                 conn.Open();
 
                 using (var tx = conn.BeginTransaction())
-                using (var cmd = new SqlCommand("INSERT ProductPurchased (TransactionId, Quantity, Price, Sku) VALUES (@TransactionId, @Quantity, @Price, @Sku)", conn, tx))
+                using (var cmd = new SqlCommand(
+                    "INSERT ProductPurchased" +
+                    "(TransactionId, Quantity, Price, Sku)" +
+                    " VALUES (@TransactionId, @Quantity, @Price, @Sku)", conn, tx))
                 {
                     cmd.Parameters.AddWithValue("TransactionId", message.TransactionId);
                     cmd.Parameters.AddWithValue("Quantity", message.Quantity);

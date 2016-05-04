@@ -10,15 +10,17 @@ using NServiceBus.Saga;
 
 namespace FileProducerAfter
 {
-    public class FileProductionSaga : Saga<FileProductionSagaData>,
+    public class FileProductionSaga : 
+        Saga<FileProductionSagaData>,
         IAmStartedByMessages<ExportFile>,
         IHandleMessages<ExportFileContents>
     {
         private static readonly string _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=KeepingIntegrationsSane;Integrated Security=SSPI;";
 
-        public override void ConfigureHowToFindSaga()
+        protected override void ConfigureHowToFindSaga(SagaPropertyMapper<FileProductionSagaData> mapper)
         {
-            ConfigureMapping<ExportFileContents>(saga => saga.BatchId, msg => msg.BatchId);
+            mapper.ConfigureMapping<ExportFileContents>(m => m.BatchId)
+                .ToSaga(s => s.BatchId);
         }
 
         public void Handle(ExportFile message)
@@ -30,15 +32,6 @@ namespace FileProducerAfter
             Bus.SendLocal(new ExportFileContents {BatchId = Data.BatchId});
         }
 
-        public void Handle(ExportFileContents message)
-        {
-            var contents = GetOrdersProcessed();
-
-            WriteContentsToFile(contents);
-
-            MarkAsComplete();
-        }
-
         private void MarkOrdersToExport()
         {
             using (var conn = new SqlConnection(_connectionString))
@@ -46,7 +39,9 @@ namespace FileProducerAfter
                 conn.Open();
 
                 using (var tx = conn.BeginTransaction())
-                using (var cmd = new SqlCommand("UPDATE OrdersProcessed SET BatchId = @BatchId", conn, tx))
+                using (var cmd = new SqlCommand(
+                    "UPDATE OrdersProcessed " +
+                    "SET BatchId = @BatchId", conn, tx))
                 {
                     cmd.Parameters.AddWithValue("BatchId", Data.BatchId);
                     cmd.ExecuteNonQuery();
@@ -56,18 +51,25 @@ namespace FileProducerAfter
             }
         }
 
+        public void Handle(ExportFileContents message)
+        {
+            var contents = GetOrdersProcessed();
+
+            WriteContentsToFile(contents);
+
+            MarkAsComplete();
+        }
+
         private IEnumerable<string> GetOrdersProcessed()
         {
-            Console.WriteLine("Retrieving orders...");
-
-            var items = new List<string>();
-
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
 
                 using (var tx = conn.BeginTransaction())
-                using (var cmd = new SqlCommand("SELECT OrderId, PurchaseDate, Amount FROM OrdersProcessed WHERE BatchId = @BatchId", conn, tx))
+                using (var cmd = new SqlCommand(
+                    "SELECT OrderId, PurchaseDate, Amount " +
+                    "FROM OrdersProcessed WHERE BatchId = @BatchId", conn, tx))
                 {
                     cmd.Parameters.AddWithValue("BatchId", Data.BatchId);
 
@@ -77,13 +79,11 @@ namespace FileProducerAfter
                         {
                             var values = new object[3];
                             reader.GetValues(values);
-                            items.Add(string.Join(",", values.Select(v => v.ToString())));
+                            yield return string.Join(",", values.Select(v => v.ToString()));
                         }
                     }
                 }
             }
-
-            return items;
         }
 
         private static void WriteContentsToFile(IEnumerable<string> contents)

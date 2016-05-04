@@ -41,7 +41,7 @@ namespace FileConsumer
 
             var fileContents = File.ReadAllLines(path);
 
-            return fileContents
+            var productsPurchased = fileContents
                 .Select(line => line.Split(','))
                 .Select(split => new RecordProductPurchased
                 {
@@ -51,6 +51,11 @@ namespace FileConsumer
                     Sku = split[3]
                 })
                 .ToArray();
+
+            foreach (var item in productsPurchased)
+            {
+                Bus.Send(item);
+            }
         }
 
         private static void ProcessContents(IEnumerable<RecordProductPurchased> productsPurchased)
