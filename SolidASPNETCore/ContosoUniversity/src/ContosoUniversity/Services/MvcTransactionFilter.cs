@@ -1,39 +1,37 @@
-﻿namespace ContosoUniversity.Services
-{
-    using System;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Models;
+﻿//namespace ContosoUniversity.Services
+//{
+//    using System;
+//    using System.Threading.Tasks;
+//    using Microsoft.AspNetCore.Mvc.Filters;
+//    using Models;
 
-    public class MvcTransactionFilter : IAsyncActionFilter
-    {
-        private readonly SchoolContext _dbContext;
+//    public class MvcTransactionFilter : IAsyncActionFilter
+//    {
+//        private readonly SchoolContext _dbContext;
 
-        public MvcTransactionFilter(SchoolContext dbContext)
-        {
-            _dbContext = dbContext;
+//        public MvcTransactionFilter(SchoolContext dbContext)
+//        {
+//            _dbContext = dbContext;
+//        }
 
+//        public async Task OnActionExecutionAsync(
+//            ActionExecutingContext context,
+//            ActionExecutionDelegate next)
+//        {
+//            try
+//            {
+//                await _dbContext.BeginTransaction();
 
-        }
-         
-        public async Task OnActionExecutionAsync(
-            ActionExecutingContext context, 
-            ActionExecutionDelegate next)
-        {
-            try
-            {
-                await _dbContext.BeginTransaction();
+//                await next();
 
-                await next();
+//                await _dbContext.CloseTransaction();
+//            }
+//            catch (Exception e)
+//            {
+//                await _dbContext.CloseTransaction(e);
 
-                await _dbContext.CloseTransaction();
-            }
-            catch (Exception e)
-            {
-                await _dbContext.CloseTransaction(e);
-
-                throw;
-            }
-        }
-    }
-}
+//                throw;
+//            }
+//        }
+//    }
+//}

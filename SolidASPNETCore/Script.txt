@@ -55,43 +55,47 @@ Conclusion
 NEW MODE
 
 StudentController
-1. Add IoC
-
-        public DefaultRegistry() {
-            Scan(
-                scan => {
-                    scan.TheCallingAssembly();
-                    scan.WithDefaultConventions();
-					scan.With(new ControllerConvention());
-                    scan.LookForRegistries();
-                    scan.AssemblyContainingType<DefaultRegistry>();
-                });
-            For<SchoolContext>().Use<SchoolContext>().LifecycleIs<TransientLifecycle>();
-            //For<IExample>().Use<Example>();
-        }
 
 - Transaction filter
 
-    public class MvcTransactionFilter : ActionFilterAttribute
+    public class MvcTransactionFilter : IAsyncActionFilter
     {
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        private readonly SchoolContext _dbContext;
+
+        public MvcTransactionFilter(SchoolContext dbContext)
         {
-            var context = StructuremapMvc.StructureMapDependencyScope.CurrentNestedContainer.GetInstance<SchoolContext>();
-            context.BeginTransaction();
+            _dbContext = dbContext;
+
+
         }
 
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
+        public async Task OnActionExecutionAsync(
+            ActionExecutingContext context,
+            ActionExecutionDelegate next)
         {
-            var instance = StructuremapMvc.StructureMapDependencyScope.CurrentNestedContainer.GetInstance<SchoolContext>();
-            instance.CloseTransaction(filterContext.Exception);
+            try
+            {
+                await _dbContext.BeginTransaction();
+
+                await next();
+
+                await _dbContext.CloseTransaction();
+            }
+            catch (Exception e)
+            {
+                await _dbContext.CloseTransaction(e);
+
+                throw;
+            }
         }
     }
+
 	
 SchoolContext.cs
 
-        private DbContextTransaction _currentTransaction;
+        private IDbContextTransaction _currentTransaction;
 
-		public void BeginTransaction()
+        public async Task BeginTransaction()
         {
             try
             {
@@ -100,7 +104,7 @@ SchoolContext.cs
                     return;
                 }
 
-                _currentTransaction = Database.BeginTransaction(IsolationLevel.ReadCommitted);
+                _currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
             }
             catch (Exception)
             {
@@ -109,12 +113,12 @@ SchoolContext.cs
             }
         }
 
-        public void CloseTransaction()
+        public Task CloseTransaction()
         {
-            CloseTransaction(exception: null);
+            return CloseTransaction(exception: null);
         }
 
-        public void CloseTransaction(Exception exception)
+        public async Task CloseTransaction(Exception exception)
         {
             try
             {
@@ -125,17 +129,14 @@ SchoolContext.cs
                     return;
                 }
 
-                SaveChanges();
+                await SaveChangesAsync();
 
-                if (_currentTransaction != null)
-                {
-                    _currentTransaction.Commit();
-                }
+                _currentTransaction?.Commit();
             }
             catch (Exception)
             {
                 // todo: log exception
-                if (_currentTransaction != null && _currentTransaction.UnderlyingTransaction.Connection != null)
+                if (_currentTransaction?.GetDbTransaction().Connection != null)
                 {
                     _currentTransaction.Rollback();
                 }
@@ -150,11 +151,15 @@ SchoolContext.cs
                     _currentTransaction = null;
                 }
             }
-        }	
+        }
 
-FilterConfig.cs
 
-            filters.Add(new MvcTransactionFilter());
+Program.cs
+
+            services.AddMvc(opt =>
+            {
+                opt.Filters.Add(typeof(MvcTransactionFilter));
+            });
 
 1a Validations
 
@@ -251,34 +256,10 @@ _Layout.cshtml
 
 ValidatorActionFilter.cs
 
-    public class ValidatorActionFilter : IActionFilter
-    {
-        public void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            if (!filterContext.Controller.ViewData.ModelState.IsValid)
-            {
-                var result = new ContentResult();
-                string content = JsonConvert.SerializeObject(filterContext.Controller.ViewData.ModelState, new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                });
-                result.Content = content;
-                result.ContentType = "application/json";
 
-                filterContext.HttpContext.Response.StatusCode = 400;
-                filterContext.Result = result;
-            }
-        }
+Startup.cs
 
-        public void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-
-        }
-    }
-
-FilterConfig.cs
-
-filters.Add(new ValidatorActionFilter());
+                opt.Filters.Add(typeof(ValidatorActionFilter));
 
 ControllerExtensions.cs
 
@@ -312,755 +293,98 @@ ControllerExtensions.cs
 		
 2. Add AutoMapper
 
-Index
-
-StudentModels.cs
-
-    public class StudentIndexQuery
-    {
-        public string SortOrder { get; set; }
-        public string CurrentFilter { get; set; }
-        public string SearchString { get; set; }
-        public int? Page { get; set; }
-    }
-
-    public class StudentIndexResult
-    {
-        public string CurrentSort { get; set; }
-        public string NameSortParm { get; set; }
-        public string DateSortParm { get; set; }
-        public string CurrentFilter { get; set; }
-        public string SearchString { get; set; }
-
-        public IPagedList<StudentIndexModel> Results { get; set; }
-    }
-
-    public class StudentIndexModel
-    {
-        public int ID { get; set; }
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Enrollment Date")]
-        public DateTime EnrollmentDate { get; set; }
-    }
-
-    public class StudentMappingProfile : Profile
-    {
-        protected override void Configure()
-        {
-            CreateMap<Student, StudentIndexModel>();
-        }
-    }
-
-StudentController.cs
-
-        public ViewResult Index(StudentIndexQuery query)
-        {
-            var model = new StudentIndexResult
-            {
-                CurrentSort = query.SortOrder,
-                NameSortParm = String.IsNullOrEmpty(query.SortOrder) ? "name_desc" : "",
-                DateSortParm = query.SortOrder == "Date" ? "date_desc" : "Date",
-            };
-
-            if (query.SearchString != null)
-            {
-                query.Page = 1;
-            }
-            else
-            {
-                query.SearchString = query.CurrentFilter;
-            }
-
-            model.CurrentFilter = query.SearchString;
-            model.SearchString = query.SearchString;
-
-            var students = from s in db.Students
-                           select s;
-            if (!String.IsNullOrEmpty(query.SearchString))
-            {
-                students = students.Where(s => s.LastName.Contains(query.SearchString)
-                                               || s.FirstMidName.Contains(query.SearchString));
-            }
-            switch (query.SortOrder)
-            {
-                case "name_desc":
-                    students = students.OrderByDescending(s => s.LastName);
-                    break;
-                case "Date":
-                    students = students.OrderBy(s => s.EnrollmentDate);
-                    break;
-                case "date_desc":
-                    students = students.OrderByDescending(s => s.EnrollmentDate);
-                    break;
-                default: // Name ascending 
-                    students = students.OrderBy(s => s.LastName);
-                    break;
-            }
-
-            int pageSize = 3;
-            int pageNumber = (query.Page ?? 1);
-            model.Results = students.ProjectToPagedList<StudentIndexModel>(pageNumber, pageSize);
-
-            return View(model);
-        }
-
-Index.cshtml
-
-@{ int i = 0; }
-i++;
-
-AutoMapperBootstrapper.cs
-
-    public class AutoMapperBootstrapper
-    {
-        private static bool _initialized;
-        private static readonly object Lock = new object();
-
-        public static void Initialize(IContainer container)
-        {
-            lock (Lock)
-            {
-                if (_initialized) return;
-                InitializeInternal(container);
-                _initialized = true;
-            }
-        }
-
-        private static void InitializeInternal(IContainer container)
-        {
-            Mapper.Initialize(cfg =>
-            {
-                foreach (var profile in container.GetAllInstances<Profile>())
-                {
-                    cfg.AddProfile(profile);
-                }
-
-                cfg.ConstructServicesUsing(container.GetInstance);
-            });
-        }
-    }
-
-StructureMapMvc.cs
-
-AutoMapperBootstrapper.Initialize(container);
-
-DefaultRegistry.cs
-
-scan.AddAllTypesOf<Profile>();
-
-Details
-
-    public class StudentDetailsModel
-    {
-        public int ID { get; set; }
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Enrollment Date")]
-        public DateTime EnrollmentDate { get; set; }
-        public List<Enrollment> Enrollments { get; set; }
-
-        public class Enrollment
-        {
-            public string CourseTitle { get; set; }
-            public Grade? Grade { get; set; }
-        }
-    }
-
-StudentController.cs
-
-	var student = db.Students
-	.Where(s => s.ID == message.Id)
-	.ProjectToSingleOrDefault<StudentDetailsModel>();
-
-
-Details.cshtml
-
-<div>
-    <h4>Student</h4>
-	<hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstMidName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FirstMidName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EnrollmentDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EnrollmentDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Enrollments)
-        </dt>
-        <dd>
-            <table class="table">
-                <tr>
-                    <th>Course Title</th>
-                    <th>Grade</th>
-                </tr>
-                @foreach (var item in Model.Enrollments)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CourseTitle)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Grade)
-                        </td>
-                    </tr>
-                }
-            </table>
-        </dd>
-    </dl>
-</div>
-
-Create
-
-    public class StudentCreateModel
-    {
-        [Required]
-        [StringLength(50)]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-
-        [Required]
-        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Enrollment Date")]
-        public DateTime? EnrollmentDate { get; set; }
-    }
-
-            var student = Mapper.Map<StudentCreateModel, Student>(model);
-
-            db.Students.Add(student);
-
-Edit
-
-    public class StudentEditModel : StudentCreateModel
-    {
-        public int ID { get; set; }
-    }
-
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-			var student = db.Students
-				.Where(s => s.ID == id)
-				.ProjectToSingleOrDefault<StudentEditModel>();
-
-			return View(student);
-        }
-	
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(StudentEditModel model)
-        {
-			var student = db.Students.Find(message.ID);
-
-			Mapper.Map(message, student);
-
-Delete
-
-    public class StudentDeleteModel : StudentEditModel
-    {
-        
-    }
-	
-Delete.cshtml
-
-@Html.HiddenFor(m => m.ID)
+services.AddAutoMapper(typeof(Startup));
 
 3. MediatR
 
-DefaultRegistry.cs
+services.AddMediatR(typeof(Startup));
 
-                    scan.AssemblyContainingType<IMediator>();
-                    scan.AddAllTypesOf(typeof(IRequestHandler<,>));
+4. HtmlTags
 
-            For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
-            For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
+services.AddHtmlTags(new DefaultHtmlConventions());
 
-StudentModels.cs
 
-    public class StudentIndexQuery : IRequest<StudentIndexResult>
+    public class MvcCoreHtmlConventions : HtmlConventionRegistry
     {
-        public string SortOrder { get; set; }
-        public string CurrentFilter { get; set; }
-        public string SearchString { get; set; }
-        public int? Page { get; set; }
-    }
-
-    public class StudentIndexResult
-    {
-        public string CurrentSort { get; set; }
-        public string NameSortParm { get; set; }
-        public string DateSortParm { get; set; }
-        public string CurrentFilter { get; set; }
-        public string SearchString { get; set; }
-
-        public IPagedList<StudentIndexModel> Results { get; set; }
-    }
-
-    public class StudentIndexModel
-    {
-        public int ID { get; set; }
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Enrollment Date")]
-        public DateTime EnrollmentDate { get; set; }
-    }
-
-    public class StudentDetailsQuery : IRequest<StudentDetailsModel>
-    {
-        public int? Id { get; set; }
-    }
-
-    public class StudentDetailsModel
-    {
-        public int ID { get; set; }
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Enrollment Date")]
-        public DateTime EnrollmentDate { get; set; }
-        public List<Enrollment> Enrollments { get; set; }
-
-        public class Enrollment
+        public MvcCoreHtmlConventions()
         {
-            public string CourseTitle { get; set; }
-            public Grade? Grade { get; set; }
         }
     }
 
-    public class StudentCreateModel : StudentModel, IRequest
-    {
-    }
+            Editors.Always.AddClass("form-control");
 
-    public class StudentModel
-    {
-        [Required]
-        [StringLength(50)]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+            Editors.IfPropertyIs<DateTime?>().ModifyWith(m => m.CurrentTag
+                .AddPattern("9{1,2}/9{1,2}/9999")
+                .AddPlaceholder("MM/DD/YYYY")
+                .AddClass("datepicker")
+                .Value(m.Value<DateTime?>() != null ? m.Value<DateTime>().ToShortDateString() : string.Empty));
+            Editors.If(er => er.Accessor.Name.EndsWith("id", StringComparison.OrdinalIgnoreCase)).BuildBy(a => new HiddenTag().Value(a.StringValue()));
 
-        [Required]
-        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Enrollment Date")]
-        public DateTime? EnrollmentDate { get; set; }
-    }
+            Labels.Always.AddClass("control-label");
+            Labels.Always.AddClass("col-md-2");
+            Labels.ModifyForAttribute<DisplayAttribute>((t, a) => t.Text(a.Name));
 
-    public class StudentEditQuery : IRequest<StudentEditModel>
-    {
-        public int? Id { get; set; }
-    }
-
-    public class StudentEditModel : StudentModel, IRequest
-    {
-        public int ID { get; set; }
-    }
-
-    public class StudentDeleteModel : IRequest
-    {
-        public int ID { get; set; }
-
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Enrollment Date")]
-        public DateTime? EnrollmentDate { get; set; }
-    }
-
-    public class StudentDeleteQuery : IRequest<StudentDeleteModel>
-    {
-        public int? Id { get; set; }
-    }
-
-StudentHandlers.cs
-
-public class StudentIndexQueryHandler : IRequestHandler<StudentIndexQuery, StudentIndexResult>
-    {
-        private readonly SchoolContext db;
-
-        public StudentIndexQueryHandler(SchoolContext db)
+        public ElementCategoryExpression DisplayLabels
         {
-            this.db = db;
+            get { return new ElementCategoryExpression(Library.TagLibrary.Category("DisplayLabels").Profile(TagConstants.Default)); }
         }
 
-        public StudentIndexResult Handle(StudentIndexQuery message)
+            DisplayLabels.Always.BuildBy<DefaultDisplayLabelBuilder>();
+            DisplayLabels.ModifyForAttribute<DisplayAttribute>((t, a) => t.Text(a.Name));
+
+            Displays.IfPropertyIs<DateTime>().ModifyWith(m => m.CurrentTag.Text(m.Value<DateTime>().ToShortDateString()));
+            Displays.IfPropertyIs<DateTime?>().ModifyWith(m => m.CurrentTag.Text(m.Value<DateTime?>() == null ? null : m.Value<DateTime?>().Value.ToShortDateString()));
+
+
+        public static HtmlTag DisplayLabel<T>(this IHtmlHelper<T> helper, Expression<Func<T, object>> expression)
+            where T : class
         {
-            var model = new StudentIndexResult
-            {
-                CurrentSort = message.SortOrder,
-                NameSortParm = String.IsNullOrEmpty(message.SortOrder) ? "name_desc" : "",
-                DateSortParm = message.SortOrder == "Date" ? "date_desc" : "Date",
-            };
-
-            if (message.SearchString != null)
-            {
-                message.Page = 1;
-            }
-            else
-            {
-                message.SearchString = message.CurrentFilter;
-            }
-
-            model.CurrentFilter = message.SearchString;
-            model.SearchString = message.SearchString;
-
-            var students = from s in db.Students
-                           select s;
-            if (!String.IsNullOrEmpty(message.SearchString))
-            {
-                students = students.Where(s => s.LastName.Contains(message.SearchString)
-                                               || s.FirstMidName.Contains(message.SearchString));
-            }
-            switch (message.SortOrder)
-            {
-                case "name_desc":
-                    students = students.OrderByDescending(s => s.LastName);
-                    break;
-                case "Date":
-                    students = students.OrderBy(s => s.EnrollmentDate);
-                    break;
-                case "date_desc":
-                    students = students.OrderByDescending(s => s.EnrollmentDate);
-                    break;
-                default: // Name ascending 
-                    students = students.OrderBy(s => s.LastName);
-                    break;
-            }
-
-            int pageSize = 3;
-            int pageNumber = (message.Page ?? 1);
-            model.Results = students.ProjectToPagedList<StudentIndexModel>(pageNumber, pageSize);
-
-            return model;
-        }
-    }
-
-    public class StudentDetailsQueryHandler : IRequestHandler<StudentDetailsQuery, StudentDetailsModel>
-    {
-        private readonly SchoolContext db;
-
-        public StudentDetailsQueryHandler(SchoolContext db)
-        {
-            this.db = db;
+			return helper.Tag(expression, "DisplayLabels");
         }
 
-        public StudentDetailsModel Handle(StudentDetailsQuery message)
+		
+		
+        public static HtmlTag InputBlock<T>(this HtmlHelper<T> helper,
+            Expression<Func<T, object>> expression,
+            Action<HtmlTag> inputModifier = null) where T : class
         {
-            var student = db.Students
-                .Where(s => s.ID == message.Id)
-                .ProjectToSingleOrDefault<StudentDetailsModel>();
+            inputModifier = inputModifier ?? (_ => { });
 
-            return student;
-        }
-    }
+            var divTag = new HtmlTag("div");
+            divTag.AddClass("col-md-10");
 
-    public class StudentCreateHandler : RequestHandler<StudentCreateModel>
-    {
-        private readonly SchoolContext db;
+            var inputTag = helper.Input(expression);
+            inputModifier(inputTag);
 
-        public StudentCreateHandler(SchoolContext db)
-        {
-            this.db = db;
-        }
+            divTag.Append(inputTag);
 
-        protected override void HandleCore(StudentCreateModel message)
-        {
-            var student = Mapper.Map<StudentCreateModel, Student>(message);
-
-            db.Students.Add(student);
-        }
-    }
-
-
-    public class StudentEditQueryHandler : IRequestHandler<StudentEditQuery, StudentEditModel>
-    {
-        private readonly SchoolContext db;
-
-        public StudentEditQueryHandler(SchoolContext db)
-        {
-            this.db = db;
+            return divTag;
         }
 
-        public StudentEditModel Handle(StudentEditQuery message)
+        public static HtmlTag FormBlock<T>(this HtmlHelper<T> helper,
+            Expression<Func<T, object>> expression,
+            Action<HtmlTag> labelModifier = null,
+            Action<HtmlTag> inputBlockModifier = null,
+            Action<HtmlTag> inputModifier = null
+            ) where T : class
         {
-            var student = db.Students
-                .Where(s => s.ID == message.Id)
-                .ProjectToSingleOrDefault<StudentEditModel>();
+            labelModifier = labelModifier ?? (_ => { });
+            inputBlockModifier = inputBlockModifier ?? (_ => { });
 
-            return student;
+            var divTag = new HtmlTag("div");
+            divTag.AddClass("form-group");
+
+            var labelTag = helper.Label(expression);
+            labelModifier(labelTag);
+
+            var inputBlockTag = helper.InputBlock(
+                expression,
+                inputModifier);
+            inputBlockModifier(inputBlockTag);
+
+            divTag.Append(labelTag);
+            divTag.Append(inputBlockTag);
+
+            return divTag;
         }
-    }
-
-    public class StudentEditHandler : RequestHandler<StudentEditModel>
-    {
-        private readonly SchoolContext db;
-
-        public StudentEditHandler(SchoolContext db)
-        {
-            this.db = db;
-        }
-
-        protected override void HandleCore(StudentEditModel message)
-        {
-            var student = db.Students.Find(message.ID);
-
-            Mapper.Map(message, student);
-        }
-    }
-    public class StudentDeleteQueryHandler : IRequestHandler<StudentDeleteQuery, StudentDeleteModel>
-    {
-        private readonly SchoolContext db;
-
-        public StudentDeleteQueryHandler(SchoolContext db)
-        {
-            this.db = db;
-        }
-
-        public StudentDeleteModel Handle(StudentDeleteQuery message)
-        {
-            var student = db.Students
-                .Where(s => s.ID == message.Id)
-                .ProjectToSingleOrDefault<StudentDeleteModel>();
-
-            return student;
-        }
-    }
-
-    public class StudentDeleteHandler : RequestHandler<StudentDeleteModel>
-    {
-        private readonly SchoolContext db;
-
-        public StudentDeleteHandler(SchoolContext db)
-        {
-            this.db = db;
-        }
-
-        protected override void HandleCore(StudentDeleteModel message)
-        {
-            var student = db.Students.Find(message.ID);
-
-            db.Students.Remove(student);
-        }
-    }
-	
-StudentController.cs
-
-    public class StudentController : Controller
-    {
-        private readonly IMediator _mediator;
-
-        public StudentController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
-        // GET: /Student/
-        public ViewResult Index(StudentIndexQuery query)
-        {
-            var model = _mediator.Send(query);
-
-            return View(model);
-        }
-
-        // GET: /Student/Details/5
-        public ActionResult Details(StudentDetailsQuery query)
-        {
-            if (query.Id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var student = _mediator.Send(query);
-            if (student == null)
-            {
-                return HttpNotFound();
-            }
-            return View(student);
-        }
-
-        // GET: /Student/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: /Student/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(StudentCreateModel model)
-        {
-            _mediator.Send(model);
-
-            return this.RedirectToActionJson("Index");
-        }
-
-
-        // GET: /Student/Edit/5
-        public ActionResult Edit(StudentEditQuery query)
-        {
-            if (query.Id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var student = _mediator.Send(query);
-            if (student == null)
-            {
-                return HttpNotFound();
-            }
-            return View(student);
-        }
-
-        // POST: /Student/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(StudentEditModel model)
-        {
-            _mediator.Send(model);
-
-            return this.RedirectToActionJson("Index");
-        }
-
-        // GET: /Student/Delete/5
-        public ActionResult Delete(StudentDeleteQuery query)
-        {
-            if (query.Id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var student = _mediator.Send(query);
-            if (student == null)
-            {
-                return HttpNotFound();
-            }
-            return View(student);
-        }
-
-        // POST: /Student/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(StudentDeleteModel model)
-        {
-            _mediator.Send(model);
-
-            return this.RedirectToActionJson("Index");
-        }
-    }
-
-ValidatorActionFilter.cs
-        public void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            if (!filterContext.Controller.ViewData.ModelState.IsValid)
-            {
-                if (filterContext.HttpContext.Request.HttpMethod == "GET")
-                {
-                    var result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                    filterContext.Result = result;
-                }
-                else
-                {
-                    var result = new ContentResult();
-                    string content = JsonConvert.SerializeObject(filterContext.Controller.ViewData.ModelState,
-                        new JsonSerializerSettings
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        });
-                    result.Content = content;
-                    result.ContentType = "application/json";
-
-                    filterContext.HttpContext.Response.StatusCode = 400;
-                    filterContext.Result = result;
-                }
-            }
-        }
-
-4. Feature folders
-
-
-    public class FeatureViewLocationRazorViewEngine : RazorViewEngine
-    {
-        public FeatureViewLocationRazorViewEngine()
-        {
-            ViewLocationFormats = new[]
-            {
-                "~/Features/{1}/{0}.cshtml",
-                "~/Features/{1}/{0}.vbhtml",
-                "~/Features/Shared/{0}.cshtml",
-                "~/Features/Shared/{0}.vbhtml",
-            };
-
-            MasterLocationFormats = ViewLocationFormats;
-
-            PartialViewLocationFormats = new[]
-            {
-                "~/Features/{1}/{0}.cshtml",
-                "~/Features/{1}/{0}.vbhtml",
-                "~/Features/Shared/{0}.cshtml",
-                "~/Features/Shared/{0}.vbhtml",
-            };
-        }
-    }
-
-ViewStart.cshtml
-@{
-    Layout = "~/Features/Shared/_Layout.cshtml";
-}
-
-
-global.asax.cs
-
-            ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new FeatureViewLocationRazorViewEngine());
-

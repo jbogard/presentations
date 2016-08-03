@@ -2,10 +2,9 @@
 {
     using System;
     using System.Linq;
-    using System.Net;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using Models;
+    using ViewModels;
     using X.PagedList;
 
     public class StudentController : Controller
@@ -18,31 +17,35 @@
         }
 
         // GET: /Student/
-        public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public ViewResult Index(StudentIndexQuery query)
         {
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-
-            if (searchString != null)
+            var model = new StudentIndexResult
             {
-                page = 1;
+                CurrentSort = query.SortOrder,
+                NameSortParm = String.IsNullOrEmpty(query.SortOrder) ? "name_desc" : "",
+                DateSortParm = query.SortOrder == "Date" ? "date_desc" : "Date",
+            };
+
+            if (query.SearchString != null)
+            {
+                query.Page = 1;
             }
             else
             {
-                searchString = currentFilter;
+                query.SearchString = query.CurrentFilter;
             }
 
-            ViewBag.CurrentFilter = searchString;
+            model.CurrentFilter = query.SearchString;
+            model.SearchString = query.SearchString;
 
             var students = from s in db.Students
                            select s;
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(query.SearchString))
             {
-                students = students.Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())
-                                       || s.FirstMidName.ToUpper().Contains(searchString.ToUpper()));
+                students = students.Where(s => s.LastName.Contains(query.SearchString)
+                                               || s.FirstMidName.Contains(query.SearchString));
             }
-            switch (sortOrder)
+            switch (query.SortOrder)
             {
                 case "name_desc":
                     students = students.OrderByDescending(s => s.LastName);
@@ -53,14 +56,24 @@
                 case "date_desc":
                     students = students.OrderByDescending(s => s.EnrollmentDate);
                     break;
-                default:  // Name ascending 
+                default: // Name ascending 
                     students = students.OrderBy(s => s.LastName);
                     break;
             }
 
             int pageSize = 3;
-            int pageNumber = (page ?? 1);
-            return View(students.ToPagedList(pageNumber, pageSize));
+            int pageNumber = query.Page ?? 1;
+            model.Results = students
+                .Select(s => new StudentIndexModel
+                {
+                    ID = s.ID,
+                    EnrollmentDate = s.EnrollmentDate,
+                    FirstMidName = s.FirstMidName,
+                    LastName = s.LastName
+                })
+                .ToPagedList(pageNumber, pageSize);
+
+            return View(model);
         }
 
         // GET: /Student/Details/5
@@ -70,12 +83,27 @@
             {
                 return BadRequest();
             }
-            Student student = db.Students.Include(s => s.Enrollments).SingleOrDefault(s => s.ID == id);
-            if (student == null)
+            var model = db.Students
+                .Where(s => s.ID == id)
+                .Select(s => new StudentDetailsModel
+                {
+                    ID = s.ID,
+                    EnrollmentDate = s.EnrollmentDate,
+                    FirstMidName = s.FirstMidName,
+                    LastName = s.LastName,
+                    Enrollments = s.Enrollments.Select(e =>
+                        new StudentDetailsModel.Enrollment
+                        {
+                            CourseTitle = e.Course.Title,
+                            Grade = e.Grade
+                        }).ToList()
+                })
+                .SingleOrDefault();
+            if (model == null)
             {
                 return NotFound();
             }
-            return View(student);
+            return View(model);
         }
 
         // GET: /Student/Create
@@ -89,17 +117,21 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(
-            [Bind("LastName, FirstMidName, EnrollmentDate")]
-            Student student)
+        public IActionResult Create(StudentCreateModel model)
         {
             if (ModelState.IsValid)
             {
+                var student = new Student
+                {
+                    FirstMidName = model.FirstMidName,
+                    LastName = model.LastName,
+                    EnrollmentDate = model.EnrollmentDate.GetValueOrDefault()
+                };
                 db.Students.Add(student);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(model);
         }
 
         // GET: /Student/Edit/5
@@ -109,12 +141,21 @@
             {
                 return BadRequest();
             }
-            Student student = db.Students.SingleOrDefault(s => s.ID == id);
-            if (student == null)
+            var model = db.Students
+                .Where(s => s.ID == id)
+                .Select(s => new StudentEditModel
+                {
+                    ID = s.ID,
+                    FirstMidName = s.FirstMidName,
+                    LastName = s.LastName,
+                    EnrollmentDate = s.EnrollmentDate
+                })
+                .SingleOrDefault();
+            if (model == null)
             {
                 return NotFound();
             }
-            return View(student);
+            return View(model);
         }
 
         // POST: /Student/Edit/5
@@ -122,16 +163,21 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([Bind("ID, LastName, FirstMidName, EnrollmentDate")]Student student)
+        public IActionResult Edit(StudentEditModel model)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(student).State = EntityState.Modified;
+                var student = db.Students.SingleOrDefault(s => s.ID == model.ID);
+
+                student.FirstMidName = model.FirstMidName;
+                student.LastName = model.LastName;
+                student.EnrollmentDate = model.EnrollmentDate.GetValueOrDefault();
+
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(student);
+            return View(model);
         }
         // GET: /Student/Delete/5
         public IActionResult Delete(int? id, bool? saveChangesError = false)
@@ -144,12 +190,21 @@
             {
                 ViewBag.ErrorMessage = "Delete failed. Try again, and if the problem persists see your system administrator.";
             }
-            Student student = db.Students.SingleOrDefault(s => s.ID == id);
-            if (student == null)
+            var model = db.Students
+                .Where(s => s.ID == id)
+                .Select(s => new StudentDeleteModel
+                {
+                    ID = s.ID,
+                    FirstMidName = s.FirstMidName,
+                    LastName = s.LastName,
+                    EnrollmentDate = s.EnrollmentDate
+                })
+                .SingleOrDefault();
+            if (model == null)
             {
                 return NotFound();
             }
-            return View(student);
+            return View(model);
         }
 
         // POST: /Student/Delete/5
@@ -161,16 +216,7 @@
             db.Students.Remove(student);
             db.SaveChanges();
 
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

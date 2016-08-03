@@ -1,4 +1,4 @@
-﻿@model ContosoUniversity.Models.Student
+﻿@model StudentDetailsModel
 
 @{
     ViewBag.Title = "Details";
@@ -47,7 +47,7 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Course.Title)
+                            @Html.DisplayFor(modelItem => item.CourseTitle)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Grade)

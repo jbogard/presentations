@@ -1,10 +1,10 @@
 ﻿namespace ContosoUniversity.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Models;
     using X.PagedList;
-    using AutoMapper;
 
     public class StudentIndexQuery
     {
@@ -38,12 +38,52 @@
         public DateTime EnrollmentDate { get; set; }
     }
 
-    public class StudentMappingProfile : Profile
+    public class StudentDetailsModel
     {
-        public StudentMappingProfile()
+        public int ID { get; set; }
+        [Display(Name = "First Name")]
+        public string FirstMidName { get; set; }
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        [Display(Name = "Enrollment Date")]
+        public DateTime EnrollmentDate { get; set; }
+        public List<Enrollment> Enrollments { get; set; }
+
+        public class Enrollment
         {
-            CreateMap<Student, StudentIndexModel>();
+            public string CourseTitle { get; set; }
+            public Grade? Grade { get; set; }
         }
+    }
+
+    public class StudentCreateModel
+    {
+        [Required]
+        [StringLength(50)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
+        [Display(Name = "First Name")]
+        public string FirstMidName { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Enrollment Date")]
+        public DateTime? EnrollmentDate { get; set; }
+    }
+
+    public class StudentEditModel : StudentCreateModel
+    {
+        public int ID { get; set; }
+    }
+
+    public class StudentDeleteModel : StudentEditModel
+    {
+
     }
 
 }

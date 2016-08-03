@@ -11,7 +11,7 @@ using IHtmlHelper = System.Web.Mvc.HtmlHelper;
 #else
 using TagBuilder = Microsoft.AspNetCore.Mvc.Rendering.TagBuilder;
 using TagRenderMode = Microsoft.AspNetCore.Mvc.Rendering.TagRenderMode;
-using HtmlString = Microsoft.AspNetCore.Mvc.Rendering.HtmlString;
+using HtmlString = Microsoft.AspNetCore.Html.HtmlString;
 using IHtmlHelper = Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper;
 #endif
 
