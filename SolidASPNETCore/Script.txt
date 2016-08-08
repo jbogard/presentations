@@ -165,7 +165,10 @@ Program.cs
 
 _Layout.cshtml
 
-<script type="text/javascript">
+        <script src="~/lib/lodash/dist/lodash.js"></script>
+
+
+    <script type="text/javascript">
     var highlightFields = function (response) {
 
         $('.form-group').removeClass('has-error');
@@ -193,7 +196,7 @@ _Layout.cshtml
     var showSummary = function (response) {
         $('#validationSummary').empty().removeClass('hidden');
 
-        var verboseErrors = _.flatten(_.pluck(response, 'Errors')),
+        var verboseErrors = _.flatten(_.map(response, 'Errors')),
             errors = [];
 
         var nonNullErrors = _.reject(verboseErrors, function (error) {
@@ -252,8 +255,11 @@ _Layout.cshtml
         return false;
     });
 
-</script>
+    </script>
 
+Edit.cshtml
+	<div id="validationSummary" class="alert alert-danger hidden" />
+	
 ValidatorActionFilter.cs
 
 
@@ -265,7 +271,7 @@ ControllerExtensions.cs
 
     public static class ControllerExtensions
     {
-        public static ActionResult RedirectToActionJson<TController>(this TController controller, string action)
+        public static IActionResult RedirectToActionJson<TController>(this TController controller, string action)
             where TController : Controller
         {
             return controller.JsonNet(new
@@ -294,10 +300,6 @@ ControllerExtensions.cs
 2. Add AutoMapper
 
 services.AddAutoMapper(typeof(Startup));
-
-3. MediatR
-
-services.AddMediatR(typeof(Startup));
 
 4. HtmlTags
 
