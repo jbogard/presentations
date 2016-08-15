@@ -124,7 +124,6 @@ SchoolContext.cs
             {
                 if (_currentTransaction != null && exception != null)
                 {
-                    // todo: log exception
                     _currentTransaction.Rollback();
                     return;
                 }
