@@ -1,0 +1,36 @@
+﻿@model Polyglot.Products.Models.Product
+
+@{
+    ViewBag.Title = "View Product";
+}
+
+<h2>View @Model.Name</h2>
+
+<h3>@Model.ListPrice.ToString("c")</h3>
+<p>@Model.ProductModel.ProductModelProductDescriptionCultures.First().ProductDescription.Description</p>
+<p>@Html.ActionLink("Add to Cart", "AddItem", "Cart", new{ Model.ProductID}, new {})</p>
+
+<section>
+    <header>Customers also purchased</header>
+    <div id="productList"></div>
+</section>
+@section scripts
+{
+    <script language="javascript">
+        $(function() {
+            $.ajax({
+                url: 'http://localhost:2551/api/alsopurchased/@Model.ProductID',
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $.ajax({
+                            url: 'http://localhost:40591/product/widget/?productid=' + value,
+                            success : function(html) {
+                                $('#productList').append(html);
+                            }
+                        });
+                    });
+                }
+            });
+        })
+    </script>
+}

@@ -1,0 +1,18 @@
+﻿@model Polyglot.UI.Orders.Models.OrderShowModel
+
+@{
+    ViewBag.Title = "View Order";
+}
+
+<h2>View Order</h2>
+
+<p>Order total: $@Html.DisplayFor(m => m.Total)</p>
+<p>@Html.DisplayFor(m => m.Status)</p>
+
+
+
+@using (Html.BeginForm("Approve", "Order"))
+{
+    @Html.HiddenFor(m => m.Id)
+    <input type="submit" value="Approve"/>
+}
