@@ -1,0 +1,80 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.UI", "Polyglot.UI\Polyglot.UI.csproj", "{DFEB2235-CD75-4B0C-9509-630BAC82122D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.Products", "Polyglot.Products\Polyglot.Products.csproj", "{57FEF7CB-4733-4F2A-AA10-7078F872F46B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.Cart", "Polyglot.Cart\Polyglot.Cart.csproj", "{2CD1D236-2773-44E1-A755-24CF5E0DEF3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.Orders", "Polyglot.Orders\Polyglot.Orders.csproj", "{2ACF678A-35DA-435E-87CF-0F0E136612B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.UI.Orders", "Polyglot.UI.Orders\Polyglot.UI.Orders.csproj", "{7293991C-5352-4D24-85B3-5DD886D7677E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.Orders.Processor", "Polyglot.Orders.Processor\Polyglot.Orders.Processor.csproj", "{5C01D1DF-C546-469E-923B-FCE2EA760F91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.Orders.Processor.Messages", "Polyglot.Orders.Processor.Messages\Polyglot.Orders.Processor.Messages.csproj", "{08AF179A-CC94-4E41-9DAC-05A893F0DBCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.OrderAnalytics", "Polyglot.OrderAnalytics\Polyglot.OrderAnalytics.csproj", "{C087BF7D-4A76-4F5C-ABE6-F96C45156A2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.OrderAnalytics.Api", "Polyglot.OrderAnalytics.Api\Polyglot.OrderAnalytics.Api.csproj", "{2CC4934E-32C4-428C-A4DB-E65632060915}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.OrderAnalytics.Model", "Polyglot.OrderAnalytics.Model\Polyglot.OrderAnalytics.Model.csproj", "{6C0EE9FF-2120-45A9-BE85-EF5A12E17E6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyglot.OrderAnalytics.Loader", "Polyglot.OrderAnalytics.Loader\Polyglot.OrderAnalytics.Loader.csproj", "{53275BB7-F7DF-43FC-8E37-69AF19D47DC6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFEB2235-CD75-4B0C-9509-630BAC82122D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFEB2235-CD75-4B0C-9509-630BAC82122D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFEB2235-CD75-4B0C-9509-630BAC82122D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFEB2235-CD75-4B0C-9509-630BAC82122D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57FEF7CB-4733-4F2A-AA10-7078F872F46B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57FEF7CB-4733-4F2A-AA10-7078F872F46B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57FEF7CB-4733-4F2A-AA10-7078F872F46B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57FEF7CB-4733-4F2A-AA10-7078F872F46B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CD1D236-2773-44E1-A755-24CF5E0DEF3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CD1D236-2773-44E1-A755-24CF5E0DEF3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CD1D236-2773-44E1-A755-24CF5E0DEF3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CD1D236-2773-44E1-A755-24CF5E0DEF3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ACF678A-35DA-435E-87CF-0F0E136612B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ACF678A-35DA-435E-87CF-0F0E136612B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ACF678A-35DA-435E-87CF-0F0E136612B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ACF678A-35DA-435E-87CF-0F0E136612B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7293991C-5352-4D24-85B3-5DD886D7677E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7293991C-5352-4D24-85B3-5DD886D7677E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7293991C-5352-4D24-85B3-5DD886D7677E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7293991C-5352-4D24-85B3-5DD886D7677E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C01D1DF-C546-469E-923B-FCE2EA760F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C01D1DF-C546-469E-923B-FCE2EA760F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C01D1DF-C546-469E-923B-FCE2EA760F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C01D1DF-C546-469E-923B-FCE2EA760F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08AF179A-CC94-4E41-9DAC-05A893F0DBCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08AF179A-CC94-4E41-9DAC-05A893F0DBCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08AF179A-CC94-4E41-9DAC-05A893F0DBCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08AF179A-CC94-4E41-9DAC-05A893F0DBCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C087BF7D-4A76-4F5C-ABE6-F96C45156A2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C087BF7D-4A76-4F5C-ABE6-F96C45156A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C087BF7D-4A76-4F5C-ABE6-F96C45156A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C087BF7D-4A76-4F5C-ABE6-F96C45156A2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CC4934E-32C4-428C-A4DB-E65632060915}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CC4934E-32C4-428C-A4DB-E65632060915}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CC4934E-32C4-428C-A4DB-E65632060915}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CC4934E-32C4-428C-A4DB-E65632060915}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C0EE9FF-2120-45A9-BE85-EF5A12E17E6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C0EE9FF-2120-45A9-BE85-EF5A12E17E6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C0EE9FF-2120-45A9-BE85-EF5A12E17E6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C0EE9FF-2120-45A9-BE85-EF5A12E17E6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53275BB7-F7DF-43FC-8E37-69AF19D47DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53275BB7-F7DF-43FC-8E37-69AF19D47DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53275BB7-F7DF-43FC-8E37-69AF19D47DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53275BB7-F7DF-43FC-8E37-69AF19D47DC6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

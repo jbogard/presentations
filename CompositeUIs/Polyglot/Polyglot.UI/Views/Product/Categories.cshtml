@@ -1,0 +1,11 @@
+﻿@model System.Collections.Generic.List<Polyglot.Products.Models.ProductCategory>
+
+<nav>
+    <ul id="menu">
+@foreach (var category in Model)
+{
+        <li>@Html.ActionLink(category.Name, "Index", "Product", new { category.ProductCategoryID }, new {})</li>
+}
+    </ul>
+</nav>
+
