@@ -1,0 +1,17 @@
+{
+  "NServiceBus.MessageId": "04229737-29c3-4811-95ec-a7be0135e74e",
+  "NServiceBus.MessageIntent": "Send",
+  "NServiceBus.OriginatingSagaId": "a9d4ce11-cff8-6317-54c8-6e785f361d4e",
+  "NServiceBus.OriginatingSagaType": "OrderProcessing.ProcessOrderSaga, OrderProcessing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "NServiceBus.ReplyToAddress": "ShopExample.OrderProcessing",
+  "NServiceBus.CorrelationId": "8ce41235-5f93-40cd-acec-a7be0135e716",
+  "NServiceBus.OriginatingMachine": "DESKTOP-0H5HNC5",
+  "NServiceBus.OriginatingEndpoint": "ShopExample.OrderProcessing",
+  "$.diagnostics.originating.hostid": "cb26f4442d0903abd1b55887293143c4",
+  "NServiceBus.ContentType": "application\/json",
+  "NServiceBus.EnclosedMessageTypes": "PaymentGateway.Messages.ProcessPaymentCommand, PaymentGateway.Messages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "NServiceBus.RelatedTo": "8ce41235-5f93-40cd-acec-a7be0135e716",
+  "NServiceBus.ConversationId": "b3e52a8d-732a-4f73-a488-a7be0135e739",
+  "NServiceBus.Version": "6.3.4",
+  "NServiceBus.TimeSent": "2017-07-28 18:48:19:457112 Z"
+}

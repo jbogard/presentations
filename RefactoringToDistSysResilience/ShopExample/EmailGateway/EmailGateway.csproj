@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NServiceBus" Version="6.*" />
+    <ProjectReference Include="..\OrderProcessing.Messages\OrderProcessing.Messages.csproj" />
+    <Reference Include="System.ServiceProcess" />
+  </ItemGroup>
+</Project>

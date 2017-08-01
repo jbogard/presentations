@@ -1,0 +1,19 @@
+{
+  "NServiceBus.MessageId": "8ce41235-5f93-40cd-acec-a7be0135e716",
+  "NServiceBus.MessageIntent": "Send",
+  "NServiceBus.CorrelationId": "8ce41235-5f93-40cd-acec-a7be0135e716",
+  "NServiceBus.OriginatingMachine": "DESKTOP-0H5HNC5",
+  "NServiceBus.OriginatingEndpoint": "ShopExample.WebApp",
+  "$.diagnostics.originating.hostid": "22ea478298fdb1529ffb839fb25dae10",
+  "NServiceBus.ContentType": "application\/json",
+  "NServiceBus.EnclosedMessageTypes": "OrderProcessing.Messages.ProcessOrderCommand, OrderProcessing.Messages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "NServiceBus.ConversationId": "b3e52a8d-732a-4f73-a488-a7be0135e739",
+  "NServiceBus.Version": "6.3.4",
+  "NServiceBus.TimeSent": "2017-07-28 18:48:19:385453 Z",
+  "NServiceBus.ProcessingStarted": "2017-07-28 18:48:19:438562 Z",
+  "NServiceBus.ProcessingEnded": "2017-07-28 18:48:19:461123 Z",
+  "$.diagnostics.hostid": "cb26f4442d0903abd1b55887293143c4",
+  "$.diagnostics.hostdisplayname": "DESKTOP-0H5HNC5",
+  "NServiceBus.ProcessingMachine": "DESKTOP-0H5HNC5",
+  "NServiceBus.ProcessingEndpoint": "ShopExample.OrderProcessing"
+}

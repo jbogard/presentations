@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net452</TargetFramework>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NServiceBus" Version="6.*" />
+    <ProjectReference Include="..\OrderProcessing.Messages\OrderProcessing.Messages.csproj" />
+    <ProjectReference Include="..\PaymentGateway.Messages\PaymentGateway.Messages.csproj" />
+    <Reference Include="System.ServiceProcess" />
+  </ItemGroup>
+</Project>
