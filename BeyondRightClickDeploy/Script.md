@@ -65,20 +65,16 @@ For the sql files in our .csproj:
   </ItemGroup>
 
 ```
-Create project
-Create step for azure web app
-Disconnect
-Create new release, deploy
+ - Create project
+ - Create step for azure web app
+ - Disconnect
+ - Create new release, deploy
 
 ### Resource templates
 
-View resource
-
-Download templates
-
-Run them in powershell
-
-Make a change and run again
-
-Create step in octopus and run again
+ - View resource
+ - Download templates
+ - Run them in powershell
+ - Make a change and run again
+ - Create step in octopus and run again
 
