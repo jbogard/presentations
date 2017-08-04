@@ -1,23 +1,96 @@
 Beyond right-click deploy
 
-The contoso university core app
 
-Walkthrough of creating a database?
-Walkthrough of deploying app?
+Web site with one sit
+Show build
+Make change
+Right-click deploy to Azure
+Git push to Azure via kudu
+Create new site, new DB (or configure to be separate branch)
+Configure new site to be different branch (dev)
+Merge to new site
+Convert to OCTOPUS DEPLOY
+Add AppVeyor to create package
+Configure OCTOPUS DEPLOY to have environments/deployment
+With Db migrations w/ roundhouse
+Then look at ARM
+Then feature flags in ARM
 
-But what about database changes?
-What about config values?
 
-Appveyor?
+### Visual studio deploy
+Right-click publish in VS
+Pick all the options
+kcdc2017 resource group
+North-Central US
+Lowest tier
+Run app
+Create database in portal
+ContosoUniversityCore-KCDC2017
+username: contosouniversitycore-kcdc2017
+password: (pwd)
+Tools -> Query editor
+Run SchemaAndData.sql
+Copy connection string
+Put in Application Settings (Data:DefaultConnection:ConnectionString)
+Make change to title, publish, don't commit
 
+### Continuous deployment
+Deployment -> Quickstart -> ASP.NET Core -> Cloud based source control
+Deployments -> Setup -> Project (kcdc2017-cicd)
+Sync....wait
 
-What about a test version?
-Test version with dev/master branches
-All done through UI
-Pushing out just through git push
+### CI/CD pipeline
+Add new file, appveyor.yml
+```
+version: 1.0.{build}
+image: Visual Studio 2017
+build_script:
+- ps: .\Build.ps1
+artifacts:
+- path: artifacts\packages\*.nupkg
+  name: nuget
+test: off
+```
+ci.appveyor.com, add project
+Run build, see failure
+nuget install roundhouse
+Copy rh.exe from .nuget into tools folder
+Create App_data folder and runAfterCreateDatabase
+Copy SchemaAndData.sql, rename to 0001_***
+Build.ps1 add:
+```
+exec { & .\tools\rh.exe /d=ContosoUniversity /f=src\ContosoUniversityCore\App_Data /s="(LocalDb)\mssqllocaldb" /silent }
+exec { & .\tools\rh.exe /d=ContosoUniversity-Test /f=src\ContosoUniversityCore\App_Data /s="(LocalDb)\mssqllocaldb" /silent /drop }
+exec { & .\tools\rh.exe /d=ContosoUniversity-Test /f=src\ContosoUniversityCore\App_Data /s="(LocalDb)\mssqllocaldb" /silent /simple }
+```
+Remove the dotnet pack
+Download octo.exe into tools https://octopus.com/downloads
+To the build script:
+```
+exec { & dotnet publish src/ContosoUniversityCore --output .\..\..\publish --configuration Release }
 
-Azure resource manager demo
+$octo_revision = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = "0" }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
+$octo_version = "1.0.$octo_revision"
 
-Blank one
-Web site
-Variables
+exec { & .\tools\Octo.exe pack --id ContosoUniversityCore --version $octo_version --basePath publish --outFolder artifacts }
+```
+For the sql files in our .csproj:
+```
+
+  <ItemGroup>
+    <None Include="App_Data\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+```
+Create project
+Create step for azure web app
+Disconnect
+Create new release, deploy
+
+### Resource templates
+View resource
+Download templates
+Run them in powershell
+Make a change and run again
+Create step in octopus and run again
+
