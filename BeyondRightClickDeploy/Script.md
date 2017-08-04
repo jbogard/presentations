@@ -1,22 +1,5 @@
 Beyond right-click deploy
 
-
-Web site with one sit
-Show build
-Make change
-Right-click deploy to Azure
-Git push to Azure via kudu
-Create new site, new DB (or configure to be separate branch)
-Configure new site to be different branch (dev)
-Merge to new site
-Convert to OCTOPUS DEPLOY
-Add AppVeyor to create package
-Configure OCTOPUS DEPLOY to have environments/deployment
-With Db migrations w/ roundhouse
-Then look at ARM
-Then feature flags in ARM
-
-
 ### Visual studio deploy
 Right-click publish in VS
 Pick all the options
@@ -88,9 +71,14 @@ Disconnect
 Create new release, deploy
 
 ### Resource templates
+
 View resource
+
 Download templates
+
 Run them in powershell
+
 Make a change and run again
+
 Create step in octopus and run again
 
