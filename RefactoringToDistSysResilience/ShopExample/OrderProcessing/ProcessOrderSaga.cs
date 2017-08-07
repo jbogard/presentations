@@ -25,6 +25,8 @@ namespace OrderProcessing
         {
             Data.OrderId = message.OrderId;
 
+            _log.InfoFormat("Processing order {0}", Data.OrderId);
+
             return context.Send(new ProcessPaymentCommand
             {
                 OrderId = Data.OrderId
@@ -39,11 +41,13 @@ namespace OrderProcessing
                 _log.InfoFormat("Payment was not successful; Marking order {0} as needing manual intervention.", Data.OrderId);
 
                 // Mark order as needing intervention
+                // order.PaymentFailed = true;
 
                 return Task.FromResult(0);
             }
 
-
+            _log.InfoFormat("Marking order {0} as successful.", Data.OrderId);
+            // order.PaymentSuccessful = true;;
 
             return context.Publish(new OrderAcceptedEvent {OrderId = Data.OrderId});
         }

@@ -115,3 +115,6 @@ packages/
 
 # Office Temp Files 
 ~$*
+
+# NServiceBus
+.LearningTransport/

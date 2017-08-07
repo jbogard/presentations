@@ -25,7 +25,10 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder()
         {
+            // Save order details to DB
+            // dbContext.Orders.Add(order);
 
+            // Send commmand to kick off process
             await _bus.Send(new ProcessOrderCommand
             {
                 OrderId = _orderId++
