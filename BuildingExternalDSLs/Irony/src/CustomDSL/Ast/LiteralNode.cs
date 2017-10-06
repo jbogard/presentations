@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using Irony.Ast;
 using Irony.Interpreter.Ast;
+using Irony.Parsing;
 
 namespace CustomDsl.Ast
 {
@@ -8,7 +10,7 @@ namespace CustomDsl.Ast
     {
         public object Value { get; protected set; }
 
-        public override void Init(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
             Value = treeNode.Token.Value;

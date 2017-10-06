@@ -1,3 +1,4 @@
+using Irony.Ast;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
@@ -8,12 +9,12 @@ namespace CustomDsl.Ast
         public AstNode ConditionNode { get; private set; }
         public AstNode ResultNode { get; private set; }
 
-        public override void Init(ParsingContext context, ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
 
-            ConditionNode = (AstNode)treeNode.FirstChild.AstNode;
-            ResultNode = (AstNode)treeNode.LastChild.AstNode;
+            ConditionNode = (AstNode)treeNode.FirstChild().AstNode;
+            ResultNode = (AstNode)treeNode.LastChild().AstNode;
         }
     }
 }

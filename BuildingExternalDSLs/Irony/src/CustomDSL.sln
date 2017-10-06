@@ -1,11 +1,19 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.10
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDsl", "CustomDSL\CustomDsl.csproj", "{3439128E-1FEA-4E5D-B870-0A2874C3919E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDSL.Tests", "CustomDSL.Tests\CustomDSL.Tests.csproj", "{FEA35376-199C-4FFE-9E77-29FD9F615B64}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDSL.UI", "CustomDSL.UI\CustomDSL.UI.csproj", "{A4C108B8-077D-45E2-AE6F-9BE68F2A781D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Irony", "Irony", "{195AFA6F-B3F9-4DC7-9EBE-1ADD2E09FF57}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Irony", "..\..\..\..\irony\src\Irony\Irony.csproj", "{0792C636-2D3B-4917-899A-E0482F7AE50D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Irony.Interpreter", "..\..\..\..\irony\src\Irony.Interpreter\Irony.Interpreter.csproj", "{1B4400A1-901F-4245-A727-D3C8D2B65B4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,8 +55,39 @@ Global
 		{A4C108B8-077D-45E2-AE6F-9BE68F2A781D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{A4C108B8-077D-45E2-AE6F-9BE68F2A781D}.Release|x86.ActiveCfg = Release|x86
 		{A4C108B8-077D-45E2-AE6F-9BE68F2A781D}.Release|x86.Build.0 = Release|x86
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Debug|x86.Build.0 = Debug|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Release|x86.ActiveCfg = Release|Any CPU
+		{0792C636-2D3B-4917-899A-E0482F7AE50D}.Release|x86.Build.0 = Release|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Debug|x86.Build.0 = Debug|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Release|x86.ActiveCfg = Release|Any CPU
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0792C636-2D3B-4917-899A-E0482F7AE50D} = {195AFA6F-B3F9-4DC7-9EBE-1ADD2E09FF57}
+		{1B4400A1-901F-4245-A727-D3C8D2B65B4C} = {195AFA6F-B3F9-4DC7-9EBE-1ADD2E09FF57}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15D41888-3B1E-4D4E-8D5E-565E562226D7}
 	EndGlobalSection
 EndGlobal

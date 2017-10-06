@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using Irony.Ast;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
@@ -8,7 +9,7 @@ namespace CustomDsl.Ast
     public class DateNode : AstNode
     {
         public DateTime Value { get; private set; }
-        public override void Init(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
 
@@ -17,7 +18,7 @@ namespace CustomDsl.Ast
 
             if (!TryParseDate(cleanDate, out date))
             {
-                var message = string.Format("{0} is not a valid date", GetCleanDate(treeNode));
+                var message = $"{GetCleanDate(treeNode)} is not a valid date";
                 throw new AstException(this, message);
             }
 
@@ -34,7 +35,7 @@ namespace CustomDsl.Ast
 
         private string GetCleanDate(ParseTreeNode treeNode)
         {
-            return treeNode.LastChild.FindTokenAndGetText().Replace("\'", "");
+            return treeNode.LastChild().FindTokenAndGetText().Replace("\'", "");
         }
     }
 }

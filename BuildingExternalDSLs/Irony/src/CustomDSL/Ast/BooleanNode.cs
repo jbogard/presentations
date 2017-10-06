@@ -1,22 +1,24 @@
 using System;
+using Irony.Ast;
 using Irony.Interpreter.Ast;
+using Irony.Parsing;
 
 namespace CustomDsl.Ast
 {
     public class BooleanNode : AstNode
     {
         public Boolean Value { get; private set; }
-        public override void Init(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
 
-            var stringfiedValue = treeNode.FirstChild.FindTokenAndGetText();
+            var stringfiedValue = treeNode.FirstChild().FindTokenAndGetText();
 
             bool value;
 
             if(!Boolean.TryParse(stringfiedValue,out value))
             {
-                var message = string.Format("{0} is not a valid boolean value",stringfiedValue);
+                var message = $"{stringfiedValue} is not a valid boolean value";
                 throw new AstException(this,message);
 
             }

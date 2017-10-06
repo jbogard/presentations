@@ -1,4 +1,5 @@
-﻿using Irony.Interpreter.Ast;
+﻿using Irony.Ast;
+using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
 namespace CustomDsl.Ast
@@ -9,7 +10,7 @@ namespace CustomDsl.Ast
         public AstNode IfTrue { get; private set; }
         public AstNode IfFalse { get; private set; }
 
-        public override void Init(ParsingContext context, ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
 
