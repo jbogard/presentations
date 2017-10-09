@@ -37,6 +37,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Irony, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ca48ace7223ead47, processorArchitecture=MSIL">
+      <HintPath>..\packages\Irony.0.9.1\lib\net40\Irony.dll</HintPath>
+    </Reference>
+    <Reference Include="Irony.Interpreter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ca48ace7223ead47, processorArchitecture=MSIL">
+      <HintPath>..\packages\Irony.Interpreter.0.9.1\lib\net40\Irony.Interpreter.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -74,6 +80,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -85,14 +92,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\irony\src\Irony.Interpreter\Irony.Interpreter.csproj">
-      <Project>{1b4400a1-901f-4245-a727-d3c8d2b65b4c}</Project>
-      <Name>Irony.Interpreter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\irony\src\Irony\Irony.csproj">
-      <Project>{0792c636-2d3b-4917-899a-e0482f7ae50d}</Project>
-      <Name>Irony</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CustomDSL\CustomDsl.csproj">
       <Project>{3439128E-1FEA-4E5D-B870-0A2874C3919E}</Project>
       <Name>CustomDsl</Name>

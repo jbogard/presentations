@@ -20,8 +20,7 @@ namespace CustomDsl.Tests
         public CustomDslCSharpExpressionVisitorTest()
         {
             var grammar = new CustomDslGrammar();
-            var language = new LanguageData(grammar);
-            _parser = new Parser(language);
+            _parser = new Parser(grammar);
             _visitor = new CSharpExpressionBuilder();
         }
 
@@ -33,6 +32,16 @@ namespace CustomDsl.Tests
             var func = _visitor.Build((AstNode)tree.Root.AstNode);
 
             func().ShouldBe("I am a string");
+        }
+
+        [Fact]
+        public void Number()
+        {
+            var tree = _parser.Parse("5");
+
+            var func = _visitor.Build((AstNode)tree.Root.AstNode);
+
+            func().ShouldBe(5);
         }
 
         [Fact]

@@ -8,6 +8,7 @@ namespace CustomDsl.Ast
     public class BooleanNode : AstNode
     {
         public Boolean Value { get; private set; }
+
         public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);

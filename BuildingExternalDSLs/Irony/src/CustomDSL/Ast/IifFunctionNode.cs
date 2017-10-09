@@ -1,4 +1,5 @@
-﻿using Irony.Ast;
+﻿
+using Irony.Ast;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
@@ -19,6 +20,4 @@ namespace CustomDsl.Ast
             IfFalse = (AstNode)treeNode.ChildNodes[3].AstNode;
         }
     }
-
-
 }
