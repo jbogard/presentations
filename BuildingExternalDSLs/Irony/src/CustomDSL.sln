@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.10
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDsl", "CustomDSL\CustomDsl.csproj", "{3439128E-1FEA-4E5D-B870-0A2874C3919E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDSL.Tests", "CustomDSL.Tests\CustomDSL.Tests.csproj", "{FEA35376-199C-4FFE-9E77-29FD9F615B64}"
@@ -50,5 +52,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15D41888-3B1E-4D4E-8D5E-565E562226D7}
 	EndGlobalSection
 EndGlobal

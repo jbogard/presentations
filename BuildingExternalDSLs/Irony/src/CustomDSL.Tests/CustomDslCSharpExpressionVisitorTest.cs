@@ -1,56 +1,60 @@
-using System;
-using System.Linq.Expressions;
 using CustomDsl.ExpressionBuilding;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
-using NUnit.Framework;
-using CustomDsl.Ast;
-using Should;
+using Shouldly;
+using Xunit;
 
 namespace CustomDsl.Tests
 {
-    [TestFixture]
     public class CustomDslCSharpExpressionVisitorTest 
     {
-        private Parser _parser;
+        private readonly Parser _parser;
 
-        private CSharpExpressionBuilder _visitor;
+        private readonly CSharpExpressionBuilder _visitor;
 
         public class Foo
         {
             public int Bar { get; set; }
         }
 
-        [SetUp]
-        public void SetUp()
+        public CustomDslCSharpExpressionVisitorTest()
         {
             var grammar = new CustomDslGrammar();
-            var language = new LanguageData(grammar);
-            _parser = new Parser(language);
+            _parser = new Parser(grammar);
             _visitor = new CSharpExpressionBuilder();
         }
 
-        [Test]
+        [Fact]
         public void String()
         {
             var tree = _parser.Parse("'I am a string'");
 
             var func = _visitor.Build((AstNode)tree.Root.AstNode);
 
-            func().ShouldEqual("I am a string");
+            func().ShouldBe("I am a string");
         }
 
-        [Test]
+        [Fact]
+        public void Number()
+        {
+            var tree = _parser.Parse("5");
+
+            var func = _visitor.Build((AstNode)tree.Root.AstNode);
+
+            func().ShouldBe(5);
+        }
+
+        [Fact]
         public void Add()
         {
             var tree = _parser.Parse("1 + 2");
 
             var func = _visitor.Build((AstNode)tree.Root.AstNode);
 
-            func().ShouldEqual(3);
+            func().ShouldBe(3);
         }
 
-        [Test]
+        [Fact]
         public void ObjectProperty()
         {
             var tree = _parser.Parse("$Bar > 5");
@@ -60,8 +64,8 @@ namespace CustomDsl.Tests
             var invalid = new Foo {Bar = 4};
             var valid = new Foo {Bar = 6};
 
-            func(invalid).ShouldEqual(false);
-            func(valid).ShouldEqual(true);
+            func(invalid).ShouldBe(false);
+            func(valid).ShouldBe(true);
         }
     }
 }

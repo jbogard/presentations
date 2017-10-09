@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Irony.Ast;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
@@ -10,7 +11,7 @@ namespace CustomDsl.Ast
         public IEnumerable<CaseConditionNode> CaseConditionNodes { get; private set; }
         public AstNode ElseResultNode { get; private set; }
 
-        public override void Init(ParsingContext context, ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
 

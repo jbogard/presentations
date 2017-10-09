@@ -11,7 +11,7 @@ namespace CustomDsl
             : base(false)
         {
 
-            #region Terminals
+            #region Non-terminals
 
             var Number = new NumberLiteral("number", NumberOptions.AllowSign, typeof (NumberNode))
             {
@@ -20,21 +20,41 @@ namespace CustomDsl
 
             var StringLiteral = new StringLiteral("string", "'", StringOptions.AllowsDoubledQuote, typeof (StringNode));
 
-            var Comma = ToTerm(",");
-            var Not = ToTerm("NOT");
-            var LParen = ToTerm("(");
-            var RParen = ToTerm(")");
+            var Comma = new NonTerminal("comma")
+            {
+                Rule = ToTerm(","),
+                Flags = TermFlags.NoAstNode
+            };
+            var Not = new NonTerminal("not")
+            {
+                Rule = ToTerm("NOT"),
+                Flags = TermFlags.NoAstNode
+            };
+            var LParen = new NonTerminal("lparen")
+            {
+                Rule = ToTerm("("),
+                Flags = TermFlags.NoAstNode
+            };
+            var RParen = new NonTerminal("rparen")
+            {
+                Rule = ToTerm(")"),
+                Flags = TermFlags.NoAstNode
+            };
 
-            var UnaryOperator = ToTerm("+") | "-" | Not;
+            var UnaryOperator = new NonTerminal("unaryOperator")
+            {
+                Rule = ToTerm("+") | "-" | Not,
+                Flags = TermFlags.NoAstNode
+            };
 
-            var BinaryOperator = ToTerm("+") | "-" | "*" | "/" | "%" //arithmetic
-                                 | "&" | "|" | "^" //bit
-                                 | "=" | ">" | "<" | ">=" | "<=" | "<>"
-                                 | "AND" | "OR";
-
-            #endregion
-
-            #region Non-terminals
+            var BinaryOperator = new NonTerminal("binaryOperator")
+            {
+                Rule = ToTerm("+") | "-" | "*" | "/" | "%" //arithmetic
+                       | "&" | "|" | "^" //bit
+                       | "=" | ">" | "<" | ">=" | "<=" | "<>"
+                       | "AND" | "OR",
+                Flags = TermFlags.NoAstNode
+            };
 
             var date = new NonTerminal("date", typeof (DateNode));
             var boolean = new NonTerminal("boolean", typeof (BooleanNode));
@@ -44,7 +64,7 @@ namespace CustomDsl
             var unaryExpression = new NonTerminal("unaryExpression", typeof (UnaryExpressionNode));
             var binaryExpression = new NonTerminal("binaryExpression", typeof (BinaryExpressionNode));
             var functionCall = new NonTerminal("functionCall", typeof (FunctionNode));
-            var terminal = new NonTerminal("term");
+            var terminal = new NonTerminal("term") {Flags = TermFlags.NoAstNode};
             var tuple = new NonTerminal("tuple", typeof (TupleNode));
 
             var logicFunction = new NonTerminal("logicFunction", typeof (FunctionNode));
@@ -65,7 +85,7 @@ namespace CustomDsl
             var leftFunction = new NonTerminal("left", typeof (FunctionNode));
             var rightFunction = new NonTerminal("right", typeof (FunctionNode));
 
-            var fieldName = new NonTerminal("fieldName");
+            var fieldName = new NonTerminal("fieldName") { Flags = TermFlags.NoAstNode };
             var expressionList = new NonTerminal("expressionList", typeof (ExpressionListNode));
 
             var today = new NonTerminal("today", typeof (TodayNode));

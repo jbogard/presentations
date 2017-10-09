@@ -81,12 +81,7 @@ namespace CustomDsl.ExpressionBuilding
             Func<AstNode, Type> func;
             _dispatchTable.TryGetValue(node.GetType(), out func);
 
-            if (func != null)
-            {
-                return func(node);
-            }
-
-            return null;
+            return func?.Invoke(node);
         }
 
         private Type Build(BinaryExpressionNode node)
@@ -174,7 +169,7 @@ namespace CustomDsl.ExpressionBuilding
 
         private Type Build(ObjectPropertyNode node)
         {
-            var targetType = _objectType.GetProperty(node.VariableName, BindingFlags.Instance | BindingFlags.Public).PropertyType;
+            var targetType = _objectType.GetProperty(node.VariableName, BindingFlags.Instance | BindingFlags.Public)?.PropertyType;
 
             return GetUnderlyingType(targetType);
         }

@@ -1,4 +1,7 @@
-﻿using Irony.Interpreter.Ast;
+﻿
+using Irony.Ast;
+using Irony.Interpreter.Ast;
+using Irony.Parsing;
 
 namespace CustomDsl.Ast
 {
@@ -7,12 +10,12 @@ namespace CustomDsl.Ast
         public AstNode Argument { get; private set; }
         public string Op { get; private set; }
 
-        public override void Init(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
-            var op = treeNode.FirstChild.FindTokenAndGetText();
+            var op = treeNode.FirstChild().FindTokenAndGetText();
             Op = op;
-            Argument = (AstNode)treeNode.LastChild.AstNode;
+            Argument = (AstNode)treeNode.LastChild().AstNode;
 
         }
     }

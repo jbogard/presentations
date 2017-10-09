@@ -1,4 +1,6 @@
-﻿using Irony.Interpreter.Ast;
+﻿
+using Irony.Ast;
+using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
 namespace CustomDsl.Ast
@@ -6,11 +8,11 @@ namespace CustomDsl.Ast
     public class TupleNode : AstNode
     {
         public AstNode Expression { get; private set; }
-        public override void Init(ParsingContext context, ParseTreeNode treeNode)
+        public override void Init(AstContext context, ParseTreeNode treeNode)
         {
             base.Init(context, treeNode);
-            AddChild("expression",treeNode.FirstChild);
-            Expression = (AstNode)treeNode.FirstChild.AstNode;
+            AddChild("expression",treeNode.FirstChild());
+            Expression = (AstNode)treeNode.FirstChild().AstNode;
         }
     }
 }
