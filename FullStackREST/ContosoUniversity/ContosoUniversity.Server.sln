@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F31C353-9944-4872-BBDE-DF944587ED3B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ContosoUniversity.Server", "src\ContosoUniversity.Server\ContosoUniversity.Server.xproj", "{EB9EFA43-166B-4CD2-9FF6-A0D18CE9D389}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContosoUniversity.Server", "src\ContosoUniversity.Server\ContosoUniversity.Server.csproj", "{EB9EFA43-166B-4CD2-9FF6-A0D18CE9D389}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB9EFA43-166B-4CD2-9FF6-A0D18CE9D389} = {5F31C353-9944-4872-BBDE-DF944587ED3B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {328033B8-A72B-4FDD-A4C6-304EA63F0E3E}
 	EndGlobalSection
 EndGlobal

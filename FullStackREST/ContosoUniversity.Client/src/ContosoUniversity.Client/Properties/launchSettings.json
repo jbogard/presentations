@@ -12,14 +12,16 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "Hosting:Environment": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "web": {
-      "commandName": "web",
+    "ContosoUniversity.Client": {
+      "commandName": "Project",
+      "launchBrowser": true,
       "environmentVariables": {
-        "Hosting:Environment": "Development"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:51585/"
     }
   }
 }

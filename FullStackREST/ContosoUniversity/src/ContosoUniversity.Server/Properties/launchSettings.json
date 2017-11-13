@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:21862/",
+      "applicationUrl": "http://localhost:5001/",
       "sslPort": 0
     }
   },
@@ -16,11 +16,14 @@
         "ASPNET_ENV": "Development"
       }
     },
-    "web": {
-      "commandName": "web",
+    "ContosoUniversity.Server": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "api/values",
       "environmentVariables": {
-        "Hosting:Environment": "Development"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5001/"
     }
   }
 }

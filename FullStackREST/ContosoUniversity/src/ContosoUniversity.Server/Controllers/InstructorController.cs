@@ -1,15 +1,14 @@
 ﻿using ContosoUniversity.Server.Models;
-using Microsoft.ApplicationInsights.AspNet.Extensions;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace ContosoUniversity.Server.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Net;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using CollectionJson;
-    using Microsoft.AspNet.Mvc;
-    using Microsoft.Data.Entity;
     using System.Linq;
 
     [Route("api/instructor")]
@@ -47,7 +46,7 @@ namespace ContosoUniversity.Server.Controllers
                     new Data
                     {
                         Name = "last-name",
-                        Prompt = "Surname",
+                        Prompt = "Last Name",
                         Value = i.LastName
                     },
                     new Data
@@ -85,7 +84,7 @@ namespace ContosoUniversity.Server.Controllers
         [HttpGet]
         public ActionResult Details(int id)
         {
-            return HttpNotFound();
+            return NotFound();
         }
 
         [Route("{id}/courses")]

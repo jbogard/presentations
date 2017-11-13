@@ -1,17 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F31C353-9944-4872-BBDE-DF944587ED3B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{70178A25-0EFD-4698-BA13-98F32E2A6BC8}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-		NuGet.Config = NuGet.Config
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ContosoUniversity.Client", "src\ContosoUniversity.Client\ContosoUniversity.Client.xproj", "{86105E24-C99F-4CEB-AAA1-7301EAF76530}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContosoUniversity.Client", "src\ContosoUniversity.Client\ContosoUniversity.Client.csproj", "{BB23D3EE-4F3A-41F4-B452-C809EA28C63D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,15 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{86105E24-C99F-4CEB-AAA1-7301EAF76530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86105E24-C99F-4CEB-AAA1-7301EAF76530}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86105E24-C99F-4CEB-AAA1-7301EAF76530}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86105E24-C99F-4CEB-AAA1-7301EAF76530}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB23D3EE-4F3A-41F4-B452-C809EA28C63D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB23D3EE-4F3A-41F4-B452-C809EA28C63D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB23D3EE-4F3A-41F4-B452-C809EA28C63D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB23D3EE-4F3A-41F4-B452-C809EA28C63D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{86105E24-C99F-4CEB-AAA1-7301EAF76530} = {5F31C353-9944-4872-BBDE-DF944587ED3B}
+		{BB23D3EE-4F3A-41F4-B452-C809EA28C63D} = {5F31C353-9944-4872-BBDE-DF944587ED3B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {214F9B28-DC97-4983-8120-D7D9918D528C}
 	EndGlobalSection
 EndGlobal

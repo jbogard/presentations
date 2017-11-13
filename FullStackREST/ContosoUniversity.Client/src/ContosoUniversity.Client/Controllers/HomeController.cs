@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+﻿using System.Diagnostics;
+using ContosoUniversity.Client.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ContosoUniversity.Client.Controllers
 {
@@ -30,7 +28,7 @@ namespace ContosoUniversity.Client.Controllers
 
         public IActionResult Error()
         {
-            return View("~/Views/Shared/Error.cshtml");
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

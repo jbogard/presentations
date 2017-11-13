@@ -1,75 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ContosoUniversity.Server.Models;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
-using Microsoft.Data.Entity;
+﻿using ContosoUniversity.Server.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversity.Server
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            // Set up configuration sources.
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json");
-
-            if (env.IsEnvironment("Development"))
-            {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build().ReloadOnChanged("appsettings.json");
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; set; }
+        public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddApplicationInsightsTelemetry(Configuration);
-
             services.AddCors();
 
-            services.AddMvc();
+            services.AddDbContext<SchoolContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddEntityFramework()
-                .AddSqlServer()
-                .AddDbContext<SchoolContext>(options =>
-                {
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]);
-                });
+            services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            app.UseCors(builder =>
+                builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
 
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-
-            app.UseIISPlatformHandler();
-
-            app.UseApplicationInsightsRequestTelemetry();
-
-            app.UseApplicationInsightsExceptionTelemetry();
-
-            app.UseStaticFiles();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseMvc();
         }
-
-        // Entry point for the application.
-        public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }
 }
