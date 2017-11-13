@@ -137,3 +137,5 @@ class CollectionJsonTableLink extends React.Component {
 CollectionJsonTableLink.propTypes = {
     onSelect: React.PropTypes.func.isRequired
 };
+
+

@@ -46,7 +46,7 @@ namespace ContosoUniversity.Server.Controllers
                     new Data
                     {
                         Name = "last-name",
-                        Prompt = "Last Name",
+                        Prompt = "Surname",
                         Value = i.LastName
                     },
                     new Data
@@ -61,17 +61,17 @@ namespace ContosoUniversity.Server.Controllers
                         Prompt = "Hire Date",
                         Value = i.HireDate.ToShortDateString()
                     },
-                    //new Data
-                    //{
-                    //    Name = "office",
-                    //    Prompt = "Office",
-                    //    Value = i.OfficeAssignment?.Location
-                    //},
+                    new Data
+                    {
+                        Name = "office",
+                        Prompt = "Office",
+                        Value = i.OfficeAssignment?.Location
+                    },
                 },
-                //Links = new List<Link>
-                //{
-                //    new Link { Href = new Uri(Url.Action("Courses", "Instructor", new { id=i.ID }, Request.GetUri().Scheme, null)), Prompt = "Courses", Rel = "courses" }
-                //}
+                Links = new List<Link>
+                {
+                    new Link { Href = new Uri(Url.Action("Courses", "Instructor", new { id=i.ID }, Request.GetUri().Scheme, null)), Prompt = "Courses", Rel = "courses" }
+                }
             }))
             {
                 doc.Collection.Items.Add(item);
@@ -91,7 +91,11 @@ namespace ContosoUniversity.Server.Controllers
         [HttpGet]
         public async Task<ReadDocument> Courses(int id)
         {
-            var courses = await db.CourseInstructors.Where(i => i.InstructorID == id).Include(ci => ci.Course).ThenInclude(c => c.Department).ToListAsync();
+            var courses = await db.CourseInstructors
+                .Where(i => i.InstructorID == id)
+                .Include(ci => ci.Course)
+                .ThenInclude(c => c.Department)
+                .ToListAsync();
 
             var doc = new ReadDocument
             {
@@ -110,15 +114,15 @@ namespace ContosoUniversity.Server.Controllers
                     new Data { Name = "title", Prompt = "Title", Value = c.Course.Title },
                     new Data { Name = "dept", Prompt = "Department", Value = c.Course.Department?.Name }
                 },
-                //Links = new List<Link>
-                //{
-                //    new Link
-                //    {
-                //        Href = new Uri(Url.Action("Students", "Instructor", new { id, courseId = c.CourseID}, Request.GetUri().Scheme, null)),
-                //        Prompt = "Students",
-                //        Rel = "students"
-                //    }
-                //}
+                Links = new List<Link>
+                {
+                    new Link
+                    {
+                        Href = new Uri(Url.Action("Students", "Instructor", new { id, courseId = c.CourseID}, Request.GetUri().Scheme, null)),
+                        Prompt = "Students",
+                        Rel = "students"
+                    }
+                }
             }))
             {
                 doc.Collection.Items.Add(item);
@@ -131,7 +135,11 @@ namespace ContosoUniversity.Server.Controllers
         [HttpGet]
         public async Task<ReadDocument> Students(int id, int courseId)
         {
-            var course = await db.Courses.Where(c => c.CourseID == courseId).Include(c => c.Enrollments).ThenInclude(e => e.Student).SingleAsync();
+            var course = await db.Courses
+                .Where(c => c.CourseID == courseId)
+                .Include(c => c.Enrollments)
+                .ThenInclude(e => e.Student)
+                .SingleAsync();
             var enrollments = course.Enrollments;
 
             var doc = new ReadDocument

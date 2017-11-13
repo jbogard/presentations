@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F31C353-9944-4872-BBDE-DF944587ED3B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{70178A25-0EFD-4698-BA13-98F32E2A6BC8}"
+	ProjectSection(SolutionItems) = preProject
+		..\FullStackREST.txt = ..\FullStackREST.txt
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContosoUniversity.Client", "src\ContosoUniversity.Client\ContosoUniversity.Client.csproj", "{BB23D3EE-4F3A-41F4-B452-C809EA28C63D}"
 EndProject
