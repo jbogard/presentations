@@ -61,17 +61,17 @@ namespace ContosoUniversity.Server.Controllers
                         Prompt = "Hire Date",
                         Value = i.HireDate.ToShortDateString()
                     },
-                    new Data
-                    {
-                        Name = "office",
-                        Prompt = "Office",
-                        Value = i.OfficeAssignment?.Location
-                    },
+                    //new Data
+                    //{
+                    //    Name = "office",
+                    //    Prompt = "Office",
+                    //    Value = i.OfficeAssignment?.Location
+                    //},
                 },
-                Links = new List<Link>
-                {
-                    new Link { Href = new Uri(Url.Action("Courses", "Instructor", new { id=i.ID }, Request.GetUri().Scheme, null)), Prompt = "Courses", Rel = "courses" }
-                }
+                //Links = new List<Link>
+                //{
+                //    new Link { Href = new Uri(Url.Action("Courses", "Instructor", new { id=i.ID }, Request.GetUri().Scheme, null)), Prompt = "Courses", Rel = "courses" }
+                //}
             }))
             {
                 doc.Collection.Items.Add(item);
@@ -110,15 +110,15 @@ namespace ContosoUniversity.Server.Controllers
                     new Data { Name = "title", Prompt = "Title", Value = c.Course.Title },
                     new Data { Name = "dept", Prompt = "Department", Value = c.Course.Department?.Name }
                 },
-                Links = new List<Link>
-                {
-                    new Link
-                    {
-                        Href = new Uri(Url.Action("Students", "Instructor", new { id, courseId = c.CourseID}, Request.GetUri().Scheme, null)),
-                        Prompt = "Students",
-                        Rel = "students"
-                    }
-                }
+                //Links = new List<Link>
+                //{
+                //    new Link
+                //    {
+                //        Href = new Uri(Url.Action("Students", "Instructor", new { id, courseId = c.CourseID}, Request.GetUri().Scheme, null)),
+                //        Prompt = "Students",
+                //        Rel = "students"
+                //    }
+                //}
             }))
             {
                 doc.Collection.Items.Add(item);
