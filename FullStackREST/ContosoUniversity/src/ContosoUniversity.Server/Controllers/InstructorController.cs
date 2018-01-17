@@ -46,7 +46,7 @@ namespace ContosoUniversity.Server.Controllers
                     new Data
                     {
                         Name = "last-name",
-                        Prompt = "Surname",
+                        Prompt = "Last Name",
                         Value = i.LastName
                     },
                     new Data

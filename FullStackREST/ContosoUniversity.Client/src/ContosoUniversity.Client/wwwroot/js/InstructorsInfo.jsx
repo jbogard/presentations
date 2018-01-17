@@ -64,7 +64,6 @@ class CollectionJsonTable extends React.Component {
     }
 }
 
-
 class CollectionJsonTableHeader extends React.Component {
     render() {
         const headerCells = _(this.props.data[0].data)
@@ -83,6 +82,7 @@ class CollectionJsonTableHeader extends React.Component {
         );
     }
 }
+
 
 class CollectionJsonTableRow extends React.Component {
     render() {
@@ -138,3 +138,4 @@ class CollectionJsonTableLink extends React.Component {
 CollectionJsonTableLink.propTypes = {
     onSelect: React.PropTypes.func.isRequired
 };
+
