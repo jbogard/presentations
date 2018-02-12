@@ -8,7 +8,7 @@ namespace OrderProcessing
 {
     public class ProcessOrderData : ContainSagaData
     {
-        public int OrderId { get; set; }
+        public virtual int OrderId { get; set; }
     }
     public class ProcessOrderSaga : Saga<ProcessOrderData>,
         IAmStartedByMessages<ProcessOrderCommand>,
@@ -23,8 +23,6 @@ namespace OrderProcessing
 
         public Task Handle(ProcessOrderCommand message, IMessageHandlerContext context)
         {
-            Data.OrderId = message.OrderId;
-
             _log.InfoFormat("Processing order {0}", Data.OrderId);
 
             return context.Send(new ProcessPaymentCommand

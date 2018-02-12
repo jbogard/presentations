@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using NServiceBus.Persistence;
 using OrderProcessing.Messages;
 
 namespace WebApp
@@ -33,8 +34,8 @@ namespace WebApp
             services.AddMvc();
 
             var endpointConfiguration = new EndpointConfiguration("ShopExample.WebApp");
-            var transport = endpointConfiguration.UseTransport<LearningTransport>();
-            endpointConfiguration.UsePersistence<LearningPersistence>();
+            var transport = endpointConfiguration.UseTransport<RabbitMQTransport>().ConnectionString("host=localhost");
+            endpointConfiguration.UsePersistence<NHibernatePersistence>().ConnectionString("Server=(localdb)\\mssqllocaldb;Database=ShopExample;Trusted_Connection=True;MultipleActiveResultSets=true");
             endpointConfiguration.UseSerialization<JsonSerializer>();
             endpointConfiguration.SendOnly();
 

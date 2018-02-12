@@ -5,6 +5,7 @@ using System.ServiceProcess;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Logging;
+using NServiceBus.Persistence;
 using PaymentGateway.Messages;
 
 namespace OrderProcessing
@@ -57,34 +58,19 @@ namespace OrderProcessing
             {
                 var endpointConfiguration = new EndpointConfiguration("ShopExample.OrderProcessing");
                 endpointConfiguration.UseSerialization<JsonSerializer>();
-                //TODO: optionally choose a different error queue. Perhaps on a remote machine
-                // https://docs.particular.net/nservicebus/recoverability/
                 endpointConfiguration.SendFailedMessagesTo("error");
-                //TODO: optionally choose a different audit queue. Perhaps on a remote machine
-                // https://docs.particular.net/nservicebus/operations/auditing
                 endpointConfiguration.AuditProcessedMessagesTo("audit");
                 endpointConfiguration.DefineCriticalErrorAction(OnCriticalError);
 
-                //TODO: this if is here to prevent accidentally deploying to production without considering important actions
-                if (Environment.UserInteractive && Debugger.IsAttached)
-                {
-                    //TODO: For production use select a durable transport.
-                    // https://docs.particular.net/nservicebus/transports/
-                    var transport = endpointConfiguration.UseTransport<LearningTransport>();
+                var transport = endpointConfiguration.UseTransport<RabbitMQTransport>().ConnectionString("host=localhost");
+                endpointConfiguration.UsePersistence<NHibernatePersistence>().ConnectionString("Server=(localdb)\\mssqllocaldb;Database=ShopExample;Trusted_Connection=True;MultipleActiveResultSets=true");
+                endpointConfiguration.EnableInstallers();
 
-                    //TODO: For production use select a durable persistence.
-                    // https://docs.particular.net/nservicebus/persistence/
-                    endpointConfiguration.UsePersistence<LearningPersistence>();
+                var routing = transport.Routing();
+                routing.RouteToEndpoint(
+                    assembly: typeof(ProcessPaymentCommand).Assembly,
+                    destination: "ShopExample.PaymentGateway");
 
-
-                    var routing = transport.Routing();
-                    routing.RouteToEndpoint(
-                        assembly: typeof(ProcessPaymentCommand).Assembly,
-                        destination: "ShopExample.PaymentGateway");
-
-                    //TODO: For production use script the installation.
-                    endpointConfiguration.EnableInstallers();
-                }
                 _endpoint = await Endpoint.Start(endpointConfiguration)
                     .ConfigureAwait(false);
                 PerformStartupOperations();
