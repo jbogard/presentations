@@ -30,6 +30,7 @@ namespace AdventureWorksCosmos.UI
                 options.Cookie.HttpOnly = true;
             });
             services.AddDbContext<AdventureWorks2016Context>();
+            services.AddSingleton<IDocumentDBRepository<Models.Orders.OrderRequest>>(new DocumentDBRepository<Models.Orders.OrderRequest>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
