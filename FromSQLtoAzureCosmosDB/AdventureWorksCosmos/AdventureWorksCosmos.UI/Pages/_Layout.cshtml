@@ -31,6 +31,9 @@
             <div class="navbar-collapse collapse">
                 @await Component.InvokeAsync("Categories")
             </div>
+            <div class="navbar-right">
+                @await Component.InvokeAsync("CartWidget")
+            </div>
         </div>
     </nav>
     <div class="container body-content">

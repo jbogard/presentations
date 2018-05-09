@@ -1,3 +1,4 @@
+using System;
 using AdventureWorksCosmos.Products.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,6 +21,14 @@ namespace AdventureWorksCosmos.UI
         {
             services.AddMvc();
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+            });
             services.AddDbContext<AdventureWorks2016Context>();
         }
 
@@ -35,6 +44,8 @@ namespace AdventureWorksCosmos.UI
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            app.UseSession();
 
             app.UseStaticFiles();
 

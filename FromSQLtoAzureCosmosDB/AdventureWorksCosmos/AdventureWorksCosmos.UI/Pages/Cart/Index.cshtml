@@ -1,0 +1,32 @@
+﻿@page
+@model AdventureWorksCosmos.UI.Pages.Cart.IndexModel
+@{
+    ViewData["Title"] = "View Cart";
+}
+
+<h2>View Cart</h2>
+
+<h3>Cart total: @Model.Cart.Total.ToString("c")</h3>
+
+<table class="table">
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+    </tr>
+    @foreach (var lineItem in Model.Cart.Items)
+    {
+        <tr>
+            <td><a asp-page="/Products/Show" asp-route-id="@lineItem.Value.ProductID">@lineItem.Value.ProductName</a></td>
+            <td>@lineItem.Value.Quantity</td>
+            <td>@lineItem.Value.ListPrice.ToString("c")</td>
+            <td>@lineItem.Value.Subtotal.ToString("c")</td>
+        </tr>
+    }        
+</table>
+<p>
+    <a asp-page="/Cart/Checkout">Checkout</a>
+</p>
+
+
