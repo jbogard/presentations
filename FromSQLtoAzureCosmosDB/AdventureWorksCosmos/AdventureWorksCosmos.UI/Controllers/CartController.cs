@@ -53,13 +53,13 @@ namespace AdventureWorksCosmos.UI
                 Status = Status.New
             };
 
-            await _docDbRepository.CreateItemAsync(request);
+            var doc = await _docDbRepository.CreateItemAsync(request);
 
             cart.Items.Clear();
 
             HttpContext.Session.Set("Cart", cart);
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("/ORders/Show", new {id = doc.Id});
         }
 
         private ShoppingCart GetCart() 
