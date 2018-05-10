@@ -8,6 +8,8 @@
 
 <p>Order total: $@Html.DisplayFor(m => m.Order.Total)</p>
 <p>@Html.DisplayFor(m => m.Order.Status)</p>
+<p>@Html.DisplayFor(m => m.Order.Customer.FirstName)</p>
+<p>@Html.DisplayFor(m => m.Order.Customer.LastName)</p>
 
 
 <form asp-controller="Order" asp-action="Approve" asp-route-id="@Model.Order.Id" method="post">
