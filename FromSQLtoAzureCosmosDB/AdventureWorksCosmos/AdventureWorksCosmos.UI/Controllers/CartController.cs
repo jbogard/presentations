@@ -59,7 +59,7 @@ namespace AdventureWorksCosmos.UI
 
             HttpContext.Session.Set("Cart", cart);
 
-            return RedirectToPage("/ORders/Show", new {id = doc.Id});
+            return RedirectToPage("/Orders/Show", new {id = doc.Id});
         }
 
         private ShoppingCart GetCart() 

@@ -11,7 +11,7 @@ namespace Polyglot.OrderAnalytics.Model
         IRelationshipAllowingSourceNode<Product>,
         IRelationshipAllowingTargetNode<Product>
     {
-        public AlsoBoughtWith(NodeReference targetNode, TimesBought data)
+        public AlsoBoughtWith( targetNode, TimesBought data)
             : base(targetNode, data)
         {
         }
@@ -19,7 +19,7 @@ namespace Polyglot.OrderAnalytics.Model
         public AlsoBoughtWith() : base(null, null) {}
 
         public const string TypeKey = "PRODUCT_ALSO_BOUGHT_WITH";
-
+NodeReference
         public override string RelationshipTypeKey
         {
             get { return TypeKey; }

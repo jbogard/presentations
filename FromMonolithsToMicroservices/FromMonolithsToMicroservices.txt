@@ -1,0 +1,143 @@
+From Monolith to Microservices
+
+People Process Technology
+
+
+Problem space
+----
+Volume Licensing Software
+Home Builder
+Insurance
+
+Definitions
+- Monolith
+- Microservice
+
+Main Challenges
+- Modernize workforce
+- Modernize delivery
+
+
+
+Step 0: Perspective
+
+Emotions will run high!
+
+History lessons
+
+Empathy!
+
+Value stream mapping
+
+Mapping people
+- Business workers
+- Knowledge workers
+
+Mapping process
+- "Go to the gemba"
+
+Mapping information
+
+Mapping technology
+- Cataloging tech used
+- Cataloging operations possible
+- Calaloging the data
+- Cataloging the dependencies
+
+Step 1: Planning
+
+Strategies
+- The big rewrite
+- Start at the edges
+- Tail or the head
+
+Defining Boundaries
+You will get it wrong!
+- Org Boundary?
+-- Conway's Law.
+-- Reverse Conway Law
+-- Construction Example
+- Data Boundaries?
+-- Anemic Services
+- Business Concern?
+-- Collection of business processes
+- Value Streams?
+-- Can cross many orgs and lead to composition
+
+Picking a starting point
+- Maximize business value while minimizing risk
+-- People risk
+--- Open and willing?
+--- Captive audience?
+--- How many? Where?
+-- Tech risk
+-- Data risk
+--- More people have access than you know!
+--- The "reports" tab
+-- Scope risk
+-- Schedule risk
+- Where not to start
+-- The middle step of a process
+-- Completely paper-based groups
+-- Contentious areas
+-- Cross-cutting concern services
+
+Phasing out and in
+- May be initially more difficult
+- Single sources of truth
+-- However for a value chain the data may change meanings
+- Migrations
+-- Dual-write
+-- Modify read paths
+-- Modify write paths
+-- Remove old data
+- Avoiding bi-directional updates
+- Read-only screens
+
+Step 2: Pilot
+
+Building a team
+- Cut silos
+- Dedicated time
+What are we actually building?
+- Customer-facing vs. back-office
+- SCS vs. composition
+- Navel-gazing and bike shedding
+- Picking a technology
+Training new members
+- Have they developed on this platform?
+- Have they used source control?
+- Have they done CI?
+- Have they done CD?
+- Have they done Agile?
+- Have they done DevOps?
+Lean vs. Scrum
+Constraining scope
+- Do what the old system does
+- Except its bugs
+- But maybe those bugs
+Constraining goals
+- Mgmt will want this to be the "new way"
+- Desire to solve all future "microservice" problems now
+Building a complete solution for a set of users
+
+
+Step 3: Phased Migration
+
+Picking next areas
+- Landscape may change as you replace services
+- Priorities may change from the business
+- Build vs. buy now in effect
+Planning team working 1 service ahead
+Things to avoid
+- Re-introducing coupling through "shared libraries"
+- Framework-of-the-month
+- Experiment as needed but include lessons, outcomes, and future support
+- Project vs. product
+Measuring progress
+- Retired screens?
+- Retired tables?
+- Converted users?
+- Converted workflows?
+- Business metrics?
+Scaling
