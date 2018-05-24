@@ -140,4 +140,6 @@ Measuring progress
 - Converted users?
 - Converted workflows?
 - Business metrics?
-Scaling
+Operational Support
+- Monitoring
+- Observability
