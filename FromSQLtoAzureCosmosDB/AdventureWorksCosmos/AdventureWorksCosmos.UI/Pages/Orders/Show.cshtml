@@ -1,5 +1,6 @@
 ﻿@page
-@model AdventureWorksCosmos.UI.Pages.Orders.ShowModel
+@using Models.Orders
+@model ShowModel
 @{
     ViewData["Title"] = "View Order";
 }
@@ -12,6 +13,9 @@
 <p>@Html.DisplayFor(m => m.Order.Customer.LastName)</p>
 
 
-<form asp-controller="Order" asp-action="Approve" asp-route-id="@Model.Order.Id" method="post">
-    <input type="submit" value="Approve" />
-</form>
+@if (Model.Order.Status != Status.Approved)
+{
+    <form asp-controller="Order" asp-action="Approve" asp-route-id="@Model.Order.Id" method="post">
+        <input type="submit" value="Approve"/>
+    </form>
+}

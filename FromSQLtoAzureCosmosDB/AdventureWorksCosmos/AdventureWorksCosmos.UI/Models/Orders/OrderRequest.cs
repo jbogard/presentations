@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using AdventureWorksCosmos.UI.Infrastructure;
 
 namespace AdventureWorksCosmos.UI.Models.Orders
 {
@@ -12,11 +12,8 @@ namespace AdventureWorksCosmos.UI.Models.Orders
         Approved = 2
     }
 
-    public class OrderRequest
+    public class OrderRequest : AggregateBase
     {
-        [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
-
         public List<LineItem> Items { get; set; }
 
         public Status Status { get; set; }

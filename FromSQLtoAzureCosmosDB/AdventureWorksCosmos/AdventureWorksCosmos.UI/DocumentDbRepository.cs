@@ -3,34 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AdventureWorksCosmos.UI.Infrastructure;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using Newtonsoft.Json;
 
 namespace AdventureWorksCosmos.UI
 {
-    public class DocumentDBRepository<T> : IDocumentDBRepository<T> where T : class
+    public class DocumentDBRepository<T> : IDocumentDBRepository<T> where T : AggregateBase
     {
+        private readonly IUnitOfWork _unitOfWork;
 
-        private readonly string Endpoint = "https://ndcminnesota2018-sql.documents.azure.com:443/";
-        private readonly string Key = "UVlJVo9iE6P9yo67jkDLCYy2AU7nF4T4B5b6usBxq105zuhmDJkCKdF1TLK42f6znCS9ZMJc86uY6Kwr46uJhA==";
-        private readonly string DatabaseId = "OrderRequests";
+        private readonly string Endpoint = "https://ndcoslo-sql-2018.documents.azure.com:443/";
+        private readonly string Key = "xXQQAO5EcbGo7yp7k9vonKdvT25Fv5YbDfRVokcAfLHpNlGcK2QTegHVq4xjZ2KYYGFrNbyp8gFThuIwpUn0xQ==";
+        private readonly string DatabaseId = typeof(T).Name;
         private readonly string CollectionId = "Items";
-        private DocumentClient client;
+        private readonly DocumentClient _client;
 
-        public DocumentDBRepository()
+        public DocumentDBRepository(IUnitOfWork unitOfWork)
         {
-            this.client = new DocumentClient(new Uri(Endpoint), Key);
+            _unitOfWork = unitOfWork;
+            _client = new DocumentClient(new Uri(Endpoint), Key, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
         }
 
-        public async Task<T> GetItemAsync(string id)
+        public async Task<T> GetItemAsync(Guid id)
         {
             try
             {
-                Document document = await client.ReadDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
-                return (T)(dynamic)document;
+                var root = _unitOfWork.Find<T>(id);
+
+                if (root != null)
+                    return root;
+
+                Document document = await _client.ReadDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id.ToString()));
+                var item = (T)(dynamic)document;
+
+                _unitOfWork.Register(item);
+
+                return item;
             }
             catch (DocumentClientException e)
             {
@@ -38,16 +54,14 @@ namespace AdventureWorksCosmos.UI
                 {
                     return null;
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
         }
 
         public async Task<IEnumerable<T>> GetItemsAsync(Expression<Func<T, bool>> predicate)
         {
-            IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
+            IDocumentQuery<T> query = _client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId),
                 new FeedOptions { MaxItemCount = -1 })
                 .Where(predicate)
@@ -58,36 +72,37 @@ namespace AdventureWorksCosmos.UI
             {
                 results.AddRange(await query.ExecuteNextAsync<T>());
             }
+            _unitOfWork.Register(results);
 
             return results;
         }
 
         public async Task<Document> CreateItemAsync(T item)
         {
-            return await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), item);
+            return await _client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), item);
         }
 
-        public async Task<Document> UpdateItemAsync(string id, T item)
+        public async Task<Document> UpdateItemAsync(T item)
         {
-            return await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id), item);
+            return await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, item.Id.ToString()), item);
         }
 
-        public async Task DeleteItemAsync(string id)
+        public async Task DeleteItemAsync(Guid id)
         {
-            await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
+            await _client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id.ToString()));
         }
 
         private async Task CreateDatabaseIfNotExistsAsync()
         {
             try
             {
-                await client.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(DatabaseId));
+                await _client.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(DatabaseId));
             }
             catch (DocumentClientException e)
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    await client.CreateDatabaseAsync(new Database { Id = DatabaseId });
+                    await _client.CreateDatabaseAsync(new Database { Id = DatabaseId });
                 }
                 else
                 {
@@ -100,13 +115,13 @@ namespace AdventureWorksCosmos.UI
         {
             try
             {
-                await client.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId));
+                await _client.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId));
             }
             catch (DocumentClientException e)
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    await client.CreateDocumentCollectionAsync(
+                    await _client.CreateDocumentCollectionAsync(
                         UriFactory.CreateDatabaseUri(DatabaseId),
                         new DocumentCollection { Id = CollectionId },
                         new RequestOptions { OfferThroughput = 1000 });

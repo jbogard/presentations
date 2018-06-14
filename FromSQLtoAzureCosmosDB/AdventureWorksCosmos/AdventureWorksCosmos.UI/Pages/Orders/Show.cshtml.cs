@@ -14,7 +14,7 @@ namespace AdventureWorksCosmos.UI.Pages.Orders
 
         public ShowModel(IDocumentDBRepository<OrderRequest> db) => _db = db;
 
-        public async Task OnGet(string id)
+        public async Task OnGet(Guid id)
         {
             Order = await _db.GetItemAsync(id);
         }

@@ -1,5 +1,7 @@
 using System;
 using AdventureWorksCosmos.Products.Models;
+using AdventureWorksCosmos.UI.Infrastructure;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +25,12 @@ namespace AdventureWorksCosmos.UI
 
             services.AddDistributedMemoryCache();
 
+            services.AddMediatR(typeof(Startup));
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
+
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -30,7 +38,8 @@ namespace AdventureWorksCosmos.UI
                 options.Cookie.HttpOnly = true;
             });
             services.AddDbContext<AdventureWorks2016Context>();
-            services.AddSingleton<IDocumentDBRepository<Models.Orders.OrderRequest>>(new DocumentDBRepository<Models.Orders.OrderRequest>());
+
+            services.AddScoped(typeof(IDocumentDBRepository<>), typeof(DocumentDBRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
