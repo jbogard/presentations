@@ -24,11 +24,33 @@ namespace AdventureWorksCosmos.UI.Models.Orders
         }
 
         public Customer Customer { get; set; }
+
+        public void Approve()
+        {
+            Status = Status.Approved;
+            foreach (var lineItem in Items)
+            {
+                Publish(new ItemPurchased
+                {
+                    ProductId = lineItem.ProductId,
+                    Quantity = lineItem.Quantity,
+                    Id = Guid.NewGuid()
+                });
+            }
+        }
+    }
+
+    public class ItemPurchased : IDomainEvent
+    {
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
+        public Guid Id { get; set; }
     }
 
     public class Customer
     {
         public string FirstName { get; set; }
+        public string MiddleName { get; set; }
         public string LastName { get; set; }
     }
 

@@ -9,8 +9,10 @@ namespace AdventureWorksCosmos.UI.Infrastructure
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
 
-        private HashSet<IDomainEvent> _outbox = new HashSet<IDomainEvent>(DomainEventEqualityComparer.Instance);
-        private HashSet<IDomainEvent> _inbox = new HashSet<IDomainEvent>(DomainEventEqualityComparer.Instance);
+        private HashSet<IDomainEvent> _outbox 
+            = new HashSet<IDomainEvent>(DomainEventEqualityComparer.Instance);
+        private HashSet<IDomainEvent> _inbox
+            = new HashSet<IDomainEvent>(DomainEventEqualityComparer.Instance);
 
         public IEnumerable<IDomainEvent> Outbox
         {

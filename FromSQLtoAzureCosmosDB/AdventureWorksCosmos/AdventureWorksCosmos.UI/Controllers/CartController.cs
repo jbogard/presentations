@@ -41,6 +41,7 @@ namespace AdventureWorksCosmos.UI
                 Customer = new Models.Orders.Customer
                 {
                     FirstName = "Jane",
+                    MiddleName = "Mary",
                     LastName = "Doe"
                 },
                 Items = cart.Items.Select(li => new Models.Orders.LineItem

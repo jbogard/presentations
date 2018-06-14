@@ -1,6 +1,8 @@
 using System;
 using AdventureWorksCosmos.Products.Models;
 using AdventureWorksCosmos.UI.Infrastructure;
+using AdventureWorksCosmos.UI.Models.Inventory;
+using AdventureWorksCosmos.UI.Models.Orders;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +32,8 @@ namespace AdventureWorksCosmos.UI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
+
+            services.AddScoped<IDomainEventHandler<ItemPurchased>, UpdateStockFromItemPurchasedHandler>();
 
             services.AddSession(options =>
             {
