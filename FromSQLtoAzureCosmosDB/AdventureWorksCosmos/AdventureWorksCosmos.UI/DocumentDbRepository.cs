@@ -15,8 +15,8 @@ namespace AdventureWorksCosmos.UI
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        private readonly string Endpoint = "https://ndcoslo-sql-2018.documents.azure.com:443/";
-        private readonly string Key = "xXQQAO5EcbGo7yp7k9vonKdvT25Fv5YbDfRVokcAfLHpNlGcK2QTegHVq4xjZ2KYYGFrNbyp8gFThuIwpUn0xQ==";
+        private readonly string Endpoint = "https://kcdc-sql-2018.documents.azure.com:443/";
+        private readonly string Key = "0OMN74IUxF8nt5XVhwDZJ32omXjk2NocVWOBGye4XgMXX5g27l2v6gUSEMMc7Z9At5FMPChBFV1Mw4geJy3qQw==";
         private readonly string DatabaseId = typeof(T).Name;
         private readonly string CollectionId = "Items";
         private readonly DocumentClient _client;
