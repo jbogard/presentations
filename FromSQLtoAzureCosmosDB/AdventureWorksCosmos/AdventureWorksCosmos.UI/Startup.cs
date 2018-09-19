@@ -29,11 +29,17 @@ namespace AdventureWorksCosmos.UI
 
             services.AddMediatR(typeof(Startup));
 
+            services.AddScoped(typeof(IDocumentDBRepository<>), typeof(DocumentDBRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+            services.AddScoped<IDocumentMessageDispatcher, DocumentMessageDispatcher>();
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
-
-            services.AddScoped<IDomainEventHandler<ItemPurchased>, UpdateStockFromItemPurchasedHandler>();
+            services.Scan(c =>
+            {
+                c.FromAssembliesOf(typeof(Startup))
+                    .AddClasses(t => t.AssignableTo(typeof(IDocumentMessageHandler<>)))
+                    .AsImplementedInterfaces()
+                    .WithTransientLifetime();
+            });
 
             services.AddSession(options =>
             {
@@ -43,7 +49,6 @@ namespace AdventureWorksCosmos.UI
             });
             services.AddDbContext<AdventureWorks2016Context>();
 
-            services.AddScoped(typeof(IDocumentDBRepository<>), typeof(DocumentDBRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

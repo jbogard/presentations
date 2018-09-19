@@ -3,15 +3,15 @@ using AdventureWorksCosmos.UI.Models.Orders;
 
 namespace AdventureWorksCosmos.UI.Models.Inventory
 {
-    public class Stock : AggregateBase
+    public class Stock : DocumentBase
     {
         public int QuantityAvailable { get; set; }
 
         public int ProductId { get; set; }
 
-        public void Handle(ItemPurchased domainEvent)
+        public void Handle(ItemPurchased message)
         {
-            Process(domainEvent, e =>
+            Process(message, e =>
             {
                 QuantityAvailable -= e.Quantity;
             });

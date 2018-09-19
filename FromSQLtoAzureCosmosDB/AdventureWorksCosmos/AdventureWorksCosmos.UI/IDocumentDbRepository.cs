@@ -7,7 +7,7 @@ using Microsoft.Azure.Documents;
 
 namespace AdventureWorksCosmos.UI
 {
-    public interface IDocumentDBRepository<T> where T : AggregateBase
+    public interface IDocumentDBRepository<T> where T : DocumentBase
     {
         Task<Document> CreateItemAsync(T item);
         Task DeleteItemAsync(Guid id);

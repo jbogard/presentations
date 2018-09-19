@@ -7,23 +7,24 @@ namespace AdventureWorksCosmos.UI.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IDomainEventDispatcher _dispatcher;
-        private readonly ISet<AggregateBase> _identityMap = new HashSet<AggregateBase>(AggregateBaseEqualityComparer.Instance);
+        private readonly IDocumentMessageDispatcher _dispatcher;
+        private readonly ISet<DocumentBase> _identityMap 
+            = new HashSet<DocumentBase>(DocumentBaseEqualityComparer.Instance);
 
-        public UnitOfWork(IDomainEventDispatcher dispatcher)
+        public UnitOfWork(IDocumentMessageDispatcher dispatcher)
         {
             _dispatcher = dispatcher;
         }
 
-        public void Register(AggregateBase aggregate)
+        public void Register(DocumentBase document)
         {
-            if (aggregate != null)
+            if (document != null)
             {
-                _identityMap.Add(aggregate);
+                _identityMap.Add(document);
             }
         }
 
-        public void Register(IEnumerable<AggregateBase> aggregates)
+        public void Register(IEnumerable<DocumentBase> aggregates)
         {
             foreach (var aggregate in aggregates)
             {
@@ -31,18 +32,18 @@ namespace AdventureWorksCosmos.UI.Infrastructure
             }
         }
 
-        public T Find<T>(Guid id) where T : AggregateBase
+        public T Find<T>(Guid id) where T : DocumentBase
         {
             return _identityMap.OfType<T>().FirstOrDefault(ab => ab.Id == id);
         }
 
         public async Task Complete()
         {
-            var toSkip = new HashSet<AggregateBase>(AggregateBaseEqualityComparer.Instance);
+            var toSkip = new HashSet<DocumentBase>(DocumentBaseEqualityComparer.Instance);
 
-            while (_identityMap.Except(toSkip, AggregateBaseEqualityComparer.Instance).Any(a => a.Outbox.Any()))
+            while (_identityMap.Except(toSkip, DocumentBaseEqualityComparer.Instance).Any(a => a.Outbox.Any()))
             {
-                var aggregate = _identityMap.Except(toSkip, AggregateBaseEqualityComparer.Instance).FirstOrDefault(a => a.Outbox.Any());
+                var aggregate = _identityMap.Except(toSkip, DocumentBaseEqualityComparer.Instance).FirstOrDefault(a => a.Outbox.Any());
 
                 if (aggregate == null)
                     continue;

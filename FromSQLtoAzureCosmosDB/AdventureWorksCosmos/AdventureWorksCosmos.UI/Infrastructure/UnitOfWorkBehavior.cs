@@ -4,7 +4,8 @@ using MediatR;
 
 namespace AdventureWorksCosmos.UI.Infrastructure
 {
-    public class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class UnitOfWorkBehavior<TRequest, TResponse> 
+        : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -13,7 +14,10 @@ namespace AdventureWorksCosmos.UI.Infrastructure
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken token, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(
+            TRequest request, 
+            CancellationToken token, 
+            RequestHandlerDelegate<TResponse> next)
         {
             var response = await next();
 

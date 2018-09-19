@@ -11,12 +11,12 @@ using Newtonsoft.Json;
 
 namespace AdventureWorksCosmos.UI
 {
-    public class DocumentDBRepository<T> : IDocumentDBRepository<T> where T : AggregateBase
+    public class DocumentDBRepository<T> : IDocumentDBRepository<T> where T : DocumentBase
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        private readonly string Endpoint = "https://kcdc-sql-2018.documents.azure.com:443/";
-        private readonly string Key = "0OMN74IUxF8nt5XVhwDZJ32omXjk2NocVWOBGye4XgMXX5g27l2v6gUSEMMc7Z9At5FMPChBFV1Mw4geJy3qQw==";
+        private readonly string Endpoint = "https://localhost:8081/";
+        private readonly string Key = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
         private readonly string DatabaseId = typeof(T).Name;
         private readonly string CollectionId = "Items";
         private readonly DocumentClient _client;
