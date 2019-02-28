@@ -1,0 +1,56 @@
+Life Beyond Distributed Transactions
+
+Simple - Database
+First encounter - 2 databases
+More complicated - Receiving message & database
+Even more complicated - Rx msg, DB, and send message
+
+2PC protocol
+
+Problems with 2PC
+- Distance
+- Not bullet-proof
+- Network interruptions
+- Not CAP-compliant
+
+Life Beyond 2PC - an Apostate's opinion
+What is an apostate
+Overall problem statement - coordinating activities when transactional boundary is a single entity
+Diagram walkthrough
+But no implementation!
+
+Real-world problem
+Mfg system w/ MongoDB and RabbitMQ
+Document is the transactional boundary
+Use inbox/outbox to keep track of messages between entities
+
+How to dispatch messages?
+
+Dispatcher to dispatch messages from one entity to another
+
+<Example>
+
+How do we know what entities have messages to process?
+
+Unit of wok
+Messages
+Triggers
+Batch job
+
+What if something goes wrong?
+
+Retries
+
+<Retry example>
+
+Multiple resources in same request
+Unit of work
+
+<Multiple resources example>
+
+Bridging resources
+Messaging
+Disparate databases
+
+Final picture
+Single resource 

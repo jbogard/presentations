@@ -5,23 +5,37 @@ using PaymentGateway.Messages;
 
 namespace PaymentGateway
 {
-    public class ProcessOrderHandler : IHandleMessages<ProcessPaymentCommand>
+    public static class StripeService
     {
         private static bool _success;
-        private static ILog _log = LogManager.GetLogger<ProcessOrderHandler>();
 
-        public Task Handle(ProcessPaymentCommand message, 
+        public static Task<bool> ProcessPayment(ProcessPaymentCommand message)
+        {
+            _success = !_success;
+            return Task.FromResult(_success);
+        }
+    }
+
+    public class ProcessOrderHandler 
+        : IHandleMessages<ProcessPaymentCommand>
+    {
+        public async Task Handle(ProcessPaymentCommand message, 
             IMessageHandlerContext context)
         {
-            var result = new ProcessPaymentResult
+            var result = await StripeService.ProcessPayment(message);
+
+            var reply = new ProcessPaymentResult
             {
-                Success = _success
+                Success = result
             };
-            _success = !_success;
 
-            _log.InfoFormat("Payment for order {0} success: {1}", message.OrderId, result.Success);
+            _log.InfoFormat("Payment for order {0} success: {1}", 
+                message.OrderId, reply.Success);
 
-            return context.Reply(result);
+            await context.Reply(result);
         }
+
+        private static ILog _log = LogManager.GetLogger<ProcessOrderHandler>();
+
     }
 }

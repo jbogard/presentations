@@ -5,15 +5,25 @@ using OrderProcessing.Messages;
 
 namespace EmailGateway
 {
-    public class ThankYouSender : IHandleMessages<OrderAcceptedEvent>
+    public static class SendGridService
     {
-        private static ILog _log = LogManager.GetLogger<ThankYouSender>();
-
-        public Task Handle(OrderAcceptedEvent message, IMessageHandlerContext context)
+        public static Task SendThankYouEmail(OrderAcceptedEvent message)
         {
-            _log.InfoFormat("Sending email for order ID  {0}", message.OrderId);
-
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
+    }
+
+    public class ThankYouSender 
+        : IHandleMessages<OrderAcceptedEvent>
+    {
+        public Task Handle(OrderAcceptedEvent message, 
+            IMessageHandlerContext context)
+        {
+            _log.InfoFormat("Sending email for order ID {0}", message.OrderId);
+
+            return SendGridService.SendThankYouEmail(message);
+        }
+
+        private static ILog _log = LogManager.GetLogger<ThankYouSender>();
     }
 }
