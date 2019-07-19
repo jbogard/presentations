@@ -56,6 +56,7 @@ steps:
  - Create step for azure web app
  - Set Package
  - Set Continuous Deploy trigger
+ 
  - Deploy
 
 NOW WE NEED DB MIGRATIONS
@@ -87,5 +88,8 @@ $(RoundhousE.ENV)
 ```
  - Grab connection string from azure portal
  - DEV and PROD
+ - Rename connection strings in the Azure portal 
+ - Set transform for connection strings `**/appsettings.json`
+ 
  
 
