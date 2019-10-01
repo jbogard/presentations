@@ -12,36 +12,21 @@ trigger:
 
 steps:
 
-- task: PowerShell@2
-  inputs:
-    targetType: filePath
-    filePath: '.\Build.ps1'
-  displayName: Run Full Build
-```
- - dev.azure.com
- - Run build, see failure
- - Add steps to create localdb
-```
 - task: CmdLine@1
   inputs:
     filename: sqllocaldb
     arguments: 'create mssqllocaldb'
   displayName: Create SQL LocalDB Instance
-```
- - Run build
- - Show 
- - Add test results
-```
+- task: PowerShell@2
+  inputs:
+    targetType: filePath
+    filePath: '.\Build.ps1'
+  displayName: Run Full Build
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
-```
- - Run build
-
- - Add artifacts
-```
 - task: PublishBuildArtifacts@1
   inputs:
     PathToPublish: '.\publish'
@@ -49,7 +34,7 @@ steps:
     ArtifactType: Container
   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
 ```
- 
+ - dev.azure.com
 
  - Create release pipeline
  - Create artifact
