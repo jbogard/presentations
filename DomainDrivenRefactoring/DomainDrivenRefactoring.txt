@@ -74,13 +74,14 @@ Refactorings:
 
 - Encapsulated operations
 -- Member.AssignOffer()
+- Double dispatch
+-- calculating discount percentage
 
 - Introduce constructor
 -- Adding Member to offer ctor
+-- inlining value
 - Private setters
 -- Removing Offer.MemberAssigned()
-- Double dispatch
--- calculating discount percentage
 
 
 

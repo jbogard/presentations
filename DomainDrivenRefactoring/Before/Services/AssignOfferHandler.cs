@@ -1,17 +1,19 @@
 using System;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Before.Model;
+using MediatR;
 
 namespace Before.Services
 {
-    public class OfferAssignmentService
+    public class AssignOfferHandler : IRequestHandler<AssignOfferRequest>
     {
         private readonly AppDbContext _appDbContext;
         private readonly HttpClient _httpClient;
 
-        public OfferAssignmentService(
+        public AssignOfferHandler(
             AppDbContext appDbContext,
             HttpClient httpClient)
         {
@@ -19,18 +21,20 @@ namespace Before.Services
             _httpClient = httpClient;
         }
 
-        public async Task AssignOffer(Guid memberId, Guid offerTypeId)
+        public async Task<Unit> Handle(AssignOfferRequest request, CancellationToken cancellationToken)
         {
-            var member = await _appDbContext.Members.FindAsync(memberId);
-            var offerType = await _appDbContext.OfferTypes.FindAsync(offerTypeId);
+            var member = await _appDbContext.Members.FindAsync(request.MemberId);
+            var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId);
 
             // Calculate offer value
-            var response = await _httpClient.GetAsync($"/calculate-offer-value?email={member.Email}&offerType={offerType.Name}");
+            var response = await _httpClient.GetAsync(
+                $"/calculate-offer-value?email={member.Email}&offerType={offerType.Name}",
+                cancellationToken);
 
             response.EnsureSuccessStatusCode();
 
             await using var responseStream = await response.Content.ReadAsStreamAsync();
-            var value = await JsonSerializer.DeserializeAsync<int>(responseStream);
+            var value = await JsonSerializer.DeserializeAsync<int>(responseStream, cancellationToken: cancellationToken);
 
             // Calculate expiration date
             DateTime dateExpiring;
@@ -62,9 +66,11 @@ namespace Before.Services
             member.AssignedOffers.Add(offer);
             member.NumberOfActiveOffers++;
 
-            await _appDbContext.Offers.AddAsync(offer);
+            await _appDbContext.Offers.AddAsync(offer, cancellationToken);
 
-            await _appDbContext.SaveChangesAsync();
+            await _appDbContext.SaveChangesAsync(cancellationToken);
+
+            return Unit.Value;
         }
     }
 }
