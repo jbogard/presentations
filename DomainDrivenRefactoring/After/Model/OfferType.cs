@@ -8,28 +8,6 @@ namespace After.Model
         public ExpirationType ExpirationType { get; set; }
         public int DaysValid { get; set; }
         public DateTime? BeginDate { get; set; }
-
-        public DateTime CalculateExpirationDate()
-        {
-            DateTime dateExpiring;
-
-            switch (ExpirationType)
-            {
-                case ExpirationType.Assignment:
-                    dateExpiring = DateTime.Today.AddDays(DaysValid);
-                    break;
-                case ExpirationType.Fixed:
-                    if (BeginDate != null)
-                        dateExpiring =
-                            BeginDate.Value.AddDays(DaysValid);
-                    else
-                        throw new InvalidOperationException();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return dateExpiring;
-        }
+        public DateTime CalculateExpirationDate() => ExpirationType.CalculateExpirationDate(this);
     }
 }

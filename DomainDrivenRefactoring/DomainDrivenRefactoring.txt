@@ -49,6 +49,19 @@ Refactorings:
 - Field, use base type where possible
 - Introduce parameter
 -- Also add the DI configuration
+
+- Move member (Calculate expiration date -> OfferType)
+- Make member non-static
+-- Undo, then make member non-static
+
+- Primitive obsession
+-- Offer Expiration Type - sliding/absolute
+-- Create enumeration classes
+-- Make switch just use constants
+-- Move method to enum class
+-- Extract method and make method non-static for OfferType
+-- Calculate based on double dispatch w/ offer type
+
 - Encapsulate collection
 -- For member -> offer
 -- Want to have bi-directional relationship
@@ -62,10 +75,6 @@ Refactorings:
 -- Removing Offer.MemberAssigned()
 - Double dispatch
 -- calculating discount percentage
-- Primitive obsession
--- Offer Expiration Type - sliding/absolute
--- Create enumeration classes
--- Calculate based on double dispatch w/ offer type
 
 
 
