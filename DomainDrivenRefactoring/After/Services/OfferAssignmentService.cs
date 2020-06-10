@@ -23,27 +23,9 @@ namespace After.Services
             var member = await _appDbContext.Members.FindAsync(memberId);
             var offerType = await _appDbContext.OfferTypes.FindAsync(offerTypeId);
 
-            var value = await _offerValueCalculator.Calculate(member, offerType);
-
-            var dateExpiring = offerType.CalculateExpirationDate();
-
-            var offer = AssignOffer(member, offerType, value, dateExpiring);
+            var offer = await member.AssignOffer(offerType, _offerValueCalculator);
 
             await SaveOffer(offer);
-        }
-
-        private static Offer AssignOffer(Member member, OfferType offerType, int value, DateTime dateExpiring)
-        {
-            var offer = new Offer
-            {
-                MemberAssigned = member,
-                Type = offerType,
-                Value = value,
-                DateExpiring = dateExpiring
-            };
-            member.AssignedOffers.Add(offer);
-            member.NumberOfActiveOffers++;
-            return offer;
         }
 
         private async Task SaveOffer(Offer offer)
