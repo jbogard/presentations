@@ -9,14 +9,13 @@ namespace After.Services
     public class OfferAssignmentService
     {
         private readonly AppDbContext _appDbContext;
-        private readonly HttpClient _httpClient;
+        private readonly IOfferValueCalculator _offerValueCalculator;
 
         public OfferAssignmentService(
-            AppDbContext appDbContext,
-            HttpClient httpClient)
+            AppDbContext appDbContext, IOfferValueCalculator offerValueCalculator)
         {
             _appDbContext = appDbContext;
-            _httpClient = httpClient;
+            _offerValueCalculator = offerValueCalculator;
         }
 
         public async Task AssignOffer(Guid memberId, Guid offerTypeId)
@@ -24,48 +23,13 @@ namespace After.Services
             var member = await _appDbContext.Members.FindAsync(memberId);
             var offerType = await _appDbContext.OfferTypes.FindAsync(offerTypeId);
 
-            var value = await CalculateOfferValue(member, offerType);
+            var value = await _offerValueCalculator.Calculate(member, offerType);
 
-            var dateExpiring = CalculateExpirationDate(offerType);
+            var dateExpiring = offerType.CalculateExpirationDate();
 
             var offer = AssignOffer(member, offerType, value, dateExpiring);
 
             await SaveOffer(offer);
-        }
-
-        private async Task<int> CalculateOfferValue(Member member, OfferType offerType)
-        {
-            var response =
-                await _httpClient.GetAsync($"/calculate-offer-value?email={member.Email}&offerType={offerType.Name}");
-
-            response.EnsureSuccessStatusCode();
-
-            await using var responseStream = await response.Content.ReadAsStreamAsync();
-
-            return await JsonSerializer.DeserializeAsync<int>(responseStream);
-        }
-
-        private static DateTime CalculateExpirationDate(OfferType offerType)
-        {
-            DateTime dateExpiring;
-
-            switch (offerType.ExpirationType)
-            {
-                case ExpirationType.Assignment:
-                    dateExpiring = DateTime.Today.AddDays(offerType.DaysValid);
-                    break;
-                case ExpirationType.Fixed:
-                    if (offerType.BeginDate != null)
-                        dateExpiring =
-                            offerType.BeginDate.Value.AddDays(offerType.DaysValid);
-                    else
-                        throw new InvalidOperationException();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return dateExpiring;
         }
 
         private static Offer AssignOffer(Member member, OfferType offerType, int value, DateTime dateExpiring)
