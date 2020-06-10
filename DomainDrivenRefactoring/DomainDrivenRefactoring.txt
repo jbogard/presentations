@@ -1,0 +1,72 @@
+Crafting wicked domain models
+
+Why do I care?
+When should I care?
+Disclaimers
+- Does your ORM support it?
+- Does it matter?
+- Can I wait to do it?
+What's our aim?
+- Domain model that represents business data AND behavior
+- Encapsulation
+- Domain model satisfies invariants of operations
+- Consistency
+Dirty little secret
+- All about code smells and OO, with a bent towards capturing business concepts
+- We're not going to get it right the first time
+- Let's make it "good enough" and trust tests, code smells and model smells to guide us
+Our domain
+- Pulled from a real-world project, capturing real-world refactorings
+- Members receive rewards
+- Members can claim offers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Refactorings:
+- Encapsulate collection
+-- For member -> offer
+-- Want to have bi-directional relationship
+-- Bunch of actions I don't support
+-- Member.AddOffer
+- Introduce constructor
+-- Adding Member to offer ctor
+- Encapsulated operations
+-- Member.AssignOffer()
+- Private setters
+-- Removing Offer.MemberAssigned()
+- Double dispatch
+-- calculating discount percentage
+- Primitive obsession
+-- Offer Expiration Type - sliding/absolute
+-- Create enumeration classes
+-- Calculate based on double dispatch w/ offer type
+
+
+
+
+
+
+
+
+
+
+
+
+
+
