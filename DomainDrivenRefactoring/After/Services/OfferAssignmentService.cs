@@ -21,15 +21,11 @@ namespace After.Services
         public async Task AssignOffer(Guid memberId, Guid offerTypeId)
         {
             var member = await _appDbContext.Members.FindAsync(memberId);
+
             var offerType = await _appDbContext.OfferTypes.FindAsync(offerTypeId);
 
             var offer = await member.AssignOffer(offerType, _offerValueCalculator);
 
-            await SaveOffer(offer);
-        }
-
-        private async Task SaveOffer(Offer offer)
-        {
             await _appDbContext.Offers.AddAsync(offer);
 
             await _appDbContext.SaveChangesAsync();

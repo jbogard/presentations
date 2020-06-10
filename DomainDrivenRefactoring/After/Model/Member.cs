@@ -20,15 +20,10 @@ namespace After.Model
         {
             var value = await offerValueCalculator.Calculate(this, offerType);
 
-            var offer = new Offer
-            {
-                MemberAssigned = this,
-                Type = offerType,
-                Value = value,
-                DateExpiring = offerType.CalculateExpirationDate()
-            };
+            var offer = new Offer(this, offerType, value);
 
             _assignedOffers.Add(offer);
+
             NumberOfActiveOffers++;
 
             return offer;

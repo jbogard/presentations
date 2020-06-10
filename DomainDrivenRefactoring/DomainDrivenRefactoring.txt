@@ -61,16 +61,22 @@ Refactorings:
 -- Move method to enum class
 -- Extract method and make method non-static for OfferType
 -- Calculate based on double dispatch w/ offer type
+-- EF Core, use OnModelCreating, modelBuilder.Entity.Property(...).HasConversion()
+
+
 
 - Encapsulate collection
 -- For member -> offer
 -- Want to have bi-directional relationship
 -- Bunch of actions I don't support
 -- Member.AddOffer
-- Introduce constructor
--- Adding Member to offer ctor
+--- Extract method, make method non-static
+
 - Encapsulated operations
 -- Member.AssignOffer()
+
+- Introduce constructor
+-- Adding Member to offer ctor
 - Private setters
 -- Removing Offer.MemberAssigned()
 - Double dispatch
