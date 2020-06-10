@@ -39,6 +39,12 @@ Our domain
 
 
 Refactorings:
+- Compose method
+-- Method for calculate offer value, expiration date, assign offer, and save offer
+-- Let's go to each method
+- Extract class
+-- Extract class from method
+- Extract interface
 - Encapsulate collection
 -- For member -> offer
 -- Want to have bi-directional relationship
