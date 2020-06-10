@@ -24,6 +24,7 @@ namespace After.Services
             var member = await _appDbContext.Members.FindAsync(memberId);
             var offerType = await _appDbContext.OfferTypes.FindAsync(offerTypeId);
 
+            // Calculate offer value
             var response = await _httpClient.GetAsync($"/calculate-offer-value?email={member.Email}&offerType={offerType.Name}");
 
             response.EnsureSuccessStatusCode();
@@ -31,6 +32,7 @@ namespace After.Services
             await using var responseStream = await response.Content.ReadAsStreamAsync();
             var value = await JsonSerializer.DeserializeAsync<int>(responseStream);
 
+            // Calculate expiration date
             DateTime dateExpiring;
 
             switch (offerType.ExpirationType)
@@ -49,6 +51,7 @@ namespace After.Services
                     throw new ArgumentOutOfRangeException();
             }
 
+            // Assign offer
             var offer = new Offer
             {
                 MemberAssigned = member,
