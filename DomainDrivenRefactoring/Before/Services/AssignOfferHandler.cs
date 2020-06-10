@@ -23,8 +23,8 @@ namespace Before.Services
 
         public async Task<Unit> Handle(AssignOfferRequest request, CancellationToken cancellationToken)
         {
-            var member = await _appDbContext.Members.FindAsync(request.MemberId);
-            var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId);
+            var member = await _appDbContext.Members.FindAsync(request.MemberId, cancellationToken);
+            var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId, cancellationToken);
 
             // Calculate offer value
             var response = await _httpClient.GetAsync(
