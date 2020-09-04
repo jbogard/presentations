@@ -14,7 +14,7 @@
   "main": "react-dom.js",
   "devDependencies": {
     "jasmine-node": "2.0.0-beta4",
-    "react": "0.10.0",
+    "react": "16.13.1",
     "uglify-js": "2.4.13",
     "colors": "0.6.2"
   },
