@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,24 @@ namespace ContosoUniversity.Pages.Students
             _context = context;
         }
 
-        public Student Student { get; set; }
+        public Model Data { get; set; }
 
-        #region snippet_OnGetAsync
+        public class Model
+        {
+            public int ID { get; set; }
+            [Display(Name = "First Name")]
+            public string FirstMidName { get; set; }
+            public string LastName { get; set; }
+            public DateTime EnrollmentDate { get; set; }
+            public List<Enrollment> Enrollments { get; set; }
+
+            public class Enrollment
+            {
+                public string CourseTitle { get; set; }
+                public Grade? Grade { get; set; }
+            }
+        }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -29,18 +45,26 @@ namespace ContosoUniversity.Pages.Students
                 return NotFound();
             }
 
-            Student = await _context.Students
-                .Include(s => s.Enrollments)
-                .ThenInclude(e => e.Course)
-                .AsNoTracking()
+            Data = await _context.Students
+                .Select(s => new Model
+                {
+                    ID = s.ID,
+                    FirstMidName = s.FirstMidName,
+                    LastName = s.LastName,
+                    EnrollmentDate = s.EnrollmentDate,
+                    Enrollments = s.Enrollments.Select(e => new Model.Enrollment
+                    {
+                        CourseTitle = e.Course.Title,
+                        Grade = e.Grade
+                    }).ToList()
+                })
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (Student == null)
+            if (Data == null)
             {
                 return NotFound();
             }
             return Page();
         }
-        #endregion
     }
 }

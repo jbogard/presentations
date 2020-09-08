@@ -12,25 +12,25 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Student.LastName)
+            @Html.DisplayNameFor(model => model.Data.LastName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Student.LastName)
+            @Html.DisplayFor(model => model.Data.LastName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Student.FirstMidName)
+            @Html.DisplayNameFor(model => model.Data.FirstMidName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Student.FirstMidName)
+            @Html.DisplayFor(model => model.Data.FirstMidName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Student.EnrollmentDate)
+            @Html.DisplayNameFor(model => model.Data.EnrollmentDate)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Student.EnrollmentDate)
+            @Html.DisplayFor(model => model.Data.EnrollmentDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Student.Enrollments)
+            @Html.DisplayNameFor(model => model.Data.Enrollments)
         </dt>
         <dd class="col-sm-10">
             <table class="table">
@@ -38,11 +38,11 @@
                     <th>Course Title</th>
                     <th>Grade</th>
                 </tr>
-                @foreach (var item in Model.Student.Enrollments)
+                @foreach (var item in Model.Data.Enrollments)
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Course.Title)
+                            @Html.DisplayFor(modelItem => item.CourseTitle)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Grade)
@@ -54,6 +54,6 @@
     </dl>
 </div>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Student.ID">Edit</a> |
+    <a asp-page="./Edit" asp-route-id="@Model.Data.ID">Edit</a> |
     <a asp-page="./Index">Back to List</a>
 </div>
