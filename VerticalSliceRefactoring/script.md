@@ -1,4 +1,4 @@
-### Step 1
+### Step 1 - Simple Reads
 
 Convert Courses\Index.cshtml to use viewmodels
 
@@ -15,6 +15,7 @@ public class Result
 
     public class Course
     {
+        [Display(Name = "Number")]
         public int CourseID { get; set; }
         public string Title { get; set; }
         public int Credits { get; set; }
@@ -44,3 +45,26 @@ Data = new Result
 
 using System.Linq;
 ```
+
+Fix Index.cshtml
+
+### Step 2 - Another Simple Read - Details
+
+Rename to Data
+
+```csharp
+public class Model
+{
+    [Display(Name = "Number")]
+    public int CourseID { get; set; }
+    public string Title { get; set; }
+    public int Credits { get; set; }
+    [Display(Name = "Department")]
+    public string DepartmentName { get; set; }
+}
+```
+
+Fix `OnGetAsync` and view
+
+### Step 3 - One-to-many
+
