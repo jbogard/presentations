@@ -23,19 +23,21 @@ namespace ContosoUniversity
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        #region snippet_ConfigureServices
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMiniProfiler().AddEntityFramework();
+
             services.AddRazorPages();
 
             services.AddDbContext<SchoolContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("SchoolContext")));
         }
-        #endregion
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiniProfiler();
+         
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
