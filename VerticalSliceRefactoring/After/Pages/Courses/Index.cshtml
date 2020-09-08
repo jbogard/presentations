@@ -14,22 +14,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Courses[0].CourseID)
+                @Html.DisplayNameFor(model => model.Data.Courses[0].CourseID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Courses[0].Title)
+                @Html.DisplayNameFor(model => model.Data.Courses[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Courses[0].Credits)
+                @Html.DisplayNameFor(model => model.Data.Courses[0].Credits)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Courses[0].Department)
+                @Html.DisplayNameFor(model => model.Data.Courses[0].DepartmentName)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Courses)
+@foreach (var item in Model.Data.Courses)
 {
         <tr>
             <td>
@@ -42,7 +42,7 @@
                 @Html.DisplayFor(modelItem => item.Credits)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
+                @Html.DisplayFor(modelItem => item.DepartmentName)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.CourseID">Edit</a> |

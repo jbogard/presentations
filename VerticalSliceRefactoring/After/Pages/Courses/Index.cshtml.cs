@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ContosoUniversity.Pages.Courses
@@ -15,14 +17,36 @@ namespace ContosoUniversity.Pages.Courses
             _context = context;
         }
 
-        public IList<Course> Courses { get; set; }
+        public Result Data { get; set; }
+
+        public class Result
+        {
+            public List<Course> Courses { get; set; }
+
+            public class Course
+            {
+                public int CourseID { get; set; }
+                public string Title { get; set; }
+                public int Credits { get; set; }
+                [Display(Name = "Department")]
+                public string DepartmentName { get; set; }
+            }
+        }
 
         public async Task OnGetAsync()
         {
-            Courses = await _context.Courses
-                .Include(c => c.Department)
-                .AsNoTracking()
-                .ToListAsync();
+            Data = new Result
+            {
+                Courses = await _context.Courses
+                    .Select(c => new Result.Course
+                    {
+                        Credits = c.Credits,
+                        DepartmentName = c.Department.Name,
+                        CourseID = c.CourseID,
+                        Title = c.Title
+                    })
+                    .ToListAsync()
+            };
         }
     }
 }
