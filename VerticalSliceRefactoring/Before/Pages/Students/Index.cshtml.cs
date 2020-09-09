@@ -1,5 +1,4 @@
-﻿#region snippet_All
-using ContosoUniversity.Data;
+﻿using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -72,4 +71,3 @@ namespace ContosoUniversity.Pages.Students
         }
     }
 }
-#endregion

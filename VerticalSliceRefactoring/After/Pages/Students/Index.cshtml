@@ -15,7 +15,7 @@
     <div class="form-actions no-color">
         <p>
             Find by name: 
-            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="text" name="SearchString" value="@Model.Data.CurrentFilter" />
             <input type="submit" value="Search" class="btn btn-primary" /> |
             <a asp-page="./Index">Back to full List</a>
         </p>
@@ -26,25 +26,25 @@
     <thead>
         <tr>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
-                   asp-route-currentFilter="@Model.CurrentFilter">
-                    @Html.DisplayNameFor(model => model.Students[0].LastName)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.Data.NameSort"
+                   asp-route-currentFilter="@Model.Data.CurrentFilter">
+                    @Html.DisplayNameFor(model => model.Data.Students[0].LastName)
                 </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Students[0].FirstMidName)
+                @Html.DisplayNameFor(model => model.Data.Students[0].FirstMidName)
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
-                   asp-route-currentFilter="@Model.CurrentFilter">
-                    @Html.DisplayNameFor(model => model.Students[0].EnrollmentDate)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.Data.DateSort"
+                   asp-route-currentFilter="@Model.Data.CurrentFilter">
+                    @Html.DisplayNameFor(model => model.Data.Students[0].EnrollmentDate)
                 </a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Students)
+        @foreach (var item in Model.Data.Students)
         {
             <tr>
                 <td>
@@ -67,21 +67,21 @@
 </table>
 
 @{
-    var prevDisabled = !Model.Students.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Students.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Data.Students.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Data.Students.HasNextPage ? "disabled" : "";
 }
 
 <a asp-page="./Index"
-   asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageIndex="@(Model.Students.PageIndex - 1)"
-   asp-route-currentFilter="@Model.CurrentFilter"
+   asp-route-sortOrder="@Model.Data.CurrentSort"
+   asp-route-pageIndex="@(Model.Data.Students.PageIndex - 1)"
+   asp-route-currentFilter="@Model.Data.CurrentFilter"
    class="btn btn-primary @prevDisabled">
     Previous
 </a>
 <a asp-page="./Index"
-   asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageIndex="@(Model.Students.PageIndex + 1)"
-   asp-route-currentFilter="@Model.CurrentFilter"
+   asp-route-sortOrder="@Model.Data.CurrentSort"
+   asp-route-pageIndex="@(Model.Data.Students.PageIndex + 1)"
+   asp-route-currentFilter="@Model.Data.CurrentFilter"
    class="btn btn-primary @nextDisabled">
     Next
 </a>

@@ -1,10 +1,10 @@
-﻿#region snippet_All
-using ContosoUniversity.Data;
+﻿using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,19 +19,38 @@ namespace ContosoUniversity.Pages.Students
             _context = context;
         }
 
-        public string NameSort { get; set; }
-        public string DateSort { get; set; }
-        public string CurrentFilter { get; set; }
-        public string CurrentSort { get; set; }
+        public Result Data { get; private set; }
 
-        public PaginatedList<Student> Students { get; set; }
+        public class Result
+        {
+            public string CurrentSort { get; set; }
+            public string NameSortParm { get; set; }
+            public string DateSortParm { get; set; }
+            public string CurrentFilter { get; set; }
+            public string SearchString { get; set; }
+
+            public PaginatedList<Model> Results { get; set; }
+
+            public class Model
+            {
+                public int ID { get; set; }
+                [Display(Name = "First Name")]
+                public string FirstMidName { get; set; }
+                public string LastName { get; set; }
+                public DateTime EnrollmentDate { get; set; }
+            }
+        }
 
         public async Task OnGetAsync(string sortOrder,
             string currentFilter, string searchString, int? pageIndex)
         {
-            CurrentSort = sortOrder;
-            NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            DateSort = sortOrder == "Date" ? "date_desc" : "Date";
+            var model = new Result
+            {
+                CurrentSort = sortOrder,
+                NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "",
+                DateSortParm = sortOrder == "Date" ? "date_desc" : "Date"
+            };
+
             if (searchString != null)
             {
                 pageIndex = 1;
@@ -41,35 +60,44 @@ namespace ContosoUniversity.Pages.Students
                 searchString = currentFilter;
             }
 
-            CurrentFilter = searchString;
+            model.CurrentFilter = searchString;
+            model.SearchString = searchString;
 
-            IQueryable<Student> studentsIQ = from s in _context.Students
-                                            select s;
+            IQueryable<Student> students = _context.Students;
             if (!String.IsNullOrEmpty(searchString))
             {
-                studentsIQ = studentsIQ.Where(s => s.LastName.Contains(searchString)
-                                       || s.FirstMidName.Contains(searchString));
+                students = students.Where(s => s.LastName.Contains(searchString)
+                                               || s.FirstMidName.Contains(searchString));
             }
             switch (sortOrder)
             {
                 case "name_desc":
-                    studentsIQ = studentsIQ.OrderByDescending(s => s.LastName);
+                    students = students.OrderByDescending(s => s.LastName);
                     break;
                 case "Date":
-                    studentsIQ = studentsIQ.OrderBy(s => s.EnrollmentDate);
+                    students = students.OrderBy(s => s.EnrollmentDate);
                     break;
                 case "date_desc":
-                    studentsIQ = studentsIQ.OrderByDescending(s => s.EnrollmentDate);
+                    students = students.OrderByDescending(s => s.EnrollmentDate);
                     break;
-                default:
-                    studentsIQ = studentsIQ.OrderBy(s => s.LastName);
+                default: // Name ascending 
+                    students = students.OrderBy(s => s.LastName);
                     break;
             }
 
             int pageSize = 3;
-            Students = await PaginatedList<Student>.CreateAsync(
-                studentsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
+            int pageNumber = pageIndex ?? 1;
+            model.Results = await students
+                .Select(s => new Result.Model
+                {
+                    ID = s.ID,
+                    FirstMidName = s.FirstMidName,
+                    LastName = s.LastName,
+                    EnrollmentDate = s.EnrollmentDate
+                })
+                .PaginatedListAsync(pageNumber, pageSize);
+
+            Data = model;
         }
     }
 }
-#endregion

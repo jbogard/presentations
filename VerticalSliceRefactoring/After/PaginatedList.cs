@@ -45,4 +45,10 @@ namespace ContosoUniversity
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
     }
+
+    public static class PaginatedListExtensions
+    {
+        public static Task<PaginatedList<TDestination>> PaginatedListAsync<TDestination>(this IQueryable<TDestination> queryable, int pageNumber, int pageSize)
+            => PaginatedList<TDestination>.CreateAsync(queryable, pageNumber, pageSize);
+    }
 }
