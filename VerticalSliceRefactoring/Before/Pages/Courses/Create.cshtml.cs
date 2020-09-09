@@ -1,21 +1,24 @@
 using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using ContosoUniversity.Services;
 
 namespace ContosoUniversity.Pages.Courses
 {
     public class CreateModel : DepartmentNamePageModel
     {
-        private readonly ContosoUniversity.Data.SchoolContext _context;
+        private readonly ICourseRepository _courseRepository;
+        private readonly IDepartmentRepository _departmentRepository;
 
-        public CreateModel(ContosoUniversity.Data.SchoolContext context)
+        public CreateModel(ICourseRepository courseRepository, IDepartmentRepository departmentRepository)
         {
-            _context = context;
+            _courseRepository = courseRepository;
+            _departmentRepository = departmentRepository;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            PopulateDepartmentsDropDownList(_context);
+            await PopulateDepartmentsDropDownList(_departmentRepository);
             return Page();
         }
 
@@ -31,13 +34,12 @@ namespace ContosoUniversity.Pages.Courses
                  "course",   // Prefix for form value.
                  s => s.CourseID, s => s.DepartmentID, s => s.Title, s => s.Credits))
             {
-                _context.Courses.Add(emptyCourse);
-                await _context.SaveChangesAsync();
+                await _courseRepository.AddAsync(emptyCourse);
                 return RedirectToPage("./Index");
             }
 
             // Select DepartmentID if TryUpdateModelAsync fails.
-            PopulateDepartmentsDropDownList(_context, emptyCourse.DepartmentID);
+            await PopulateDepartmentsDropDownList(_departmentRepository, emptyCourse.DepartmentID);
             return Page();
         }
       }

@@ -3,17 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using ContosoUniversity.Services;
 
 namespace ContosoUniversity.Pages.Courses
 {
     public class DetailsModel : PageModel
     {
-        private readonly ContosoUniversity.Data.SchoolContext _context;
+        private readonly ICourseRepository _repository;
 
-        public DetailsModel(ContosoUniversity.Data.SchoolContext context)
-        {
-            _context = context;
-        }
+        public DetailsModel(ICourseRepository repository) => _repository = repository;
 
         public Course Course { get; set; }
 
@@ -24,10 +22,7 @@ namespace ContosoUniversity.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses
-                 .AsNoTracking()
-                 .Include(c => c.Department)
-                 .FirstOrDefaultAsync(m => m.CourseID == id);
+            Course = await _repository.FindWithDepartmentById(id.Value);
 
             if (Course == null)
             {

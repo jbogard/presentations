@@ -3,26 +3,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ContosoUniversity.Services;
 
 namespace ContosoUniversity.Pages.Courses
 {
     public class IndexModel : PageModel
     {
-        private readonly ContosoUniversity.Data.SchoolContext _context;
+        private readonly ICourseRepository _repository;
 
-        public IndexModel(ContosoUniversity.Data.SchoolContext context)
-        {
-            _context = context;
-        }
+        public IndexModel(ICourseRepository repository) => _repository = repository;
 
         public IList<Course> Courses { get; set; }
 
         public async Task OnGetAsync()
         {
-            Courses = await _context.Courses
-                .Include(c => c.Department)
-                .AsNoTracking()
-                .ToListAsync();
+            Courses = await _repository.ListWithDepartmentsAsync();
         }
     }
 }

@@ -1,8 +1,7 @@
-using ContosoUniversity.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using System.Threading.Tasks;
+using ContosoUniversity.Services;
 
 namespace ContosoUniversity.Pages.Courses
 {
@@ -10,14 +9,12 @@ namespace ContosoUniversity.Pages.Courses
     {
         public SelectList DepartmentNameSL { get; set; }
 
-        public void PopulateDepartmentsDropDownList(SchoolContext _context,
+        public async Task PopulateDepartmentsDropDownList(IDepartmentRepository repository,
             object selectedDepartment = null)
         {
-            var departmentsQuery = from d in _context.Departments
-                                   orderby d.Name // Sort by name.
-                                   select d;
+            var departments = await repository.ListByNameAsync();
 
-            DepartmentNameSL = new SelectList(departmentsQuery.AsNoTracking(),
+            DepartmentNameSL = new SelectList(departments,
                         "DepartmentID", "Name", selectedDepartment);
         }
     }

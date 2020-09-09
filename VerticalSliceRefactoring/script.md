@@ -124,7 +124,11 @@ Create property Data
 
 Fix view
 
-### Step 5 - Editing
+### Step 5 - AutoMapper
+
+Profiles and replacing with ProjectTo
+
+### Step 6 - Editing
 
 Model:
 
@@ -193,3 +197,5 @@ public async Task<IActionResult> OnPostAsync(int id)
     return RedirectToPage("./Index");
 }
 ```
+
+### Step 7 - MediatR

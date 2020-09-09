@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
+using ContosoUniversity.Infrastructure;
+using ContosoUniversity.Services;
 
 namespace ContosoUniversity
 {
@@ -31,6 +33,10 @@ namespace ContosoUniversity
 
             services.AddDbContext<SchoolContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("SchoolContext")));
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
