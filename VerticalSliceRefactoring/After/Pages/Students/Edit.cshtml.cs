@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +23,26 @@ namespace ContosoUniversity.Pages.Students
         }
 
         [BindProperty]
-        public Student Student { get; set; }
+        public Model Data { get; set; }
 
-        #region snippet_OnGetPost
+        public class Model
+        {
+            public int ID { get; set; }
+            [Required]
+            [StringLength(50)]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+            [Required]
+            [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
+            [Column("FirstName")]
+            [Display(Name = "First Name")]
+            public string FirstMidName { get; set; }
+            [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+            [Display(Name = "Enrollment Date")]
+            public DateTime EnrollmentDate { get; set; }
+        }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -31,9 +50,15 @@ namespace ContosoUniversity.Pages.Students
                 return NotFound();
             }
 
-            Student = await _context.Students.FindAsync(id);
+            Data = await _context.Students.Select(s => new Model
+            {
+                ID = s.ID,
+                FirstMidName = s.FirstMidName,
+                LastName = s.LastName,
+                EnrollmentDate = s.EnrollmentDate
+            }).SingleOrDefaultAsync(s => s.ID == id);
 
-            if (Student == null)
+            if (Data == null)
             {
                 return NotFound();
             }
@@ -49,18 +74,12 @@ namespace ContosoUniversity.Pages.Students
                 return NotFound();
             }
 
-            if (await TryUpdateModelAsync<Student>(
-                studentToUpdate,
-                "student",
-                s => s.FirstMidName, s => s.LastName, s => s.EnrollmentDate))
-            {
-                await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
-            }
-
-            return Page();
+            studentToUpdate.FirstMidName = Data.FirstMidName;
+            studentToUpdate.LastName = Data.LastName;
+            studentToUpdate.EnrollmentDate = Data.EnrollmentDate;
+            await _context.SaveChangesAsync();
+            return RedirectToPage("./Index");
         }
-        #endregion
 
         private bool StudentExists(int id)
         {

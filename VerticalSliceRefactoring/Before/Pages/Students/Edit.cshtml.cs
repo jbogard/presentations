@@ -23,7 +23,6 @@ namespace ContosoUniversity.Pages.Students
         [BindProperty]
         public Student Student { get; set; }
 
-        #region snippet_OnGetPost
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -60,7 +59,6 @@ namespace ContosoUniversity.Pages.Students
 
             return Page();
         }
-        #endregion
 
         private bool StudentExists(int id)
         {

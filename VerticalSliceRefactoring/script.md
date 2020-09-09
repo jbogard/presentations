@@ -110,10 +110,86 @@ public class Result
         public int ID { get; set; }
         [Display(Name = "First Name")]
         public string FirstMidName { get; set; }
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        [Display(Name = "Enrollment Date")]
         public DateTime EnrollmentDate { get; set; }
     }
 }
 ```
 
 Create property Data
+
+Fix view
+
+### Step 5 - Editing
+
+Model:
+
+```csharp
+public class Model
+{
+    public int ID { get; set; }
+    [Required]
+    [StringLength(50)]
+    [Display(Name = "Last Name")]
+    public string LastName { get; set; }
+    [Required]
+    [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
+    [Column("FirstName")]
+    [Display(Name = "First Name")]
+    public string FirstMidName { get; set; }
+    [DataType(DataType.Date)]
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+    [Display(Name = "Enrollment Date")]
+    public DateTime EnrollmentDate { get; set; }
+}
+```
+
+OnGetAsync:
+
+```csharp
+public async Task<IActionResult> OnGetAsync(int? id)
+{
+    if (id == null)
+    {
+        return NotFound();
+    }
+
+    Data = await _context.Students.Select(s => new Model
+    {
+        ID = s.ID,
+        FirstMidName = s.FirstMidName,
+        LastName = s.LastName,
+        EnrollmentDate = s.EnrollmentDate
+    }).SingleOrDefaultAsync(s => s.ID == id);
+
+    if (Data == null)
+    {
+        return NotFound();
+    }
+    return Page();
+}
+```
+
+OnPostAsync
+
+```csharp
+public async Task<IActionResult> OnPostAsync(int id)
+{
+    var studentToUpdate = await _context.Students.FindAsync(id);
+
+    if (studentToUpdate == null)
+    {
+        return NotFound();
+    }
+
+    studentToUpdate.FirstMidName = Data.FirstMidName;
+    studentToUpdate.LastName = Data.LastName;
+    studentToUpdate.EnrollmentDate = Data.EnrollmentDate;
+    await _context.SaveChangesAsync();
+    return RedirectToPage("./Index");
+}
+```

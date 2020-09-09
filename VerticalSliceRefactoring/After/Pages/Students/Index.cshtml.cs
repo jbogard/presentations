@@ -24,19 +24,23 @@ namespace ContosoUniversity.Pages.Students
         public class Result
         {
             public string CurrentSort { get; set; }
-            public string NameSortParm { get; set; }
-            public string DateSortParm { get; set; }
+            public string NameSort { get; set; }
+            public string DateSort { get; set; }
             public string CurrentFilter { get; set; }
             public string SearchString { get; set; }
 
-            public PaginatedList<Model> Results { get; set; }
+            public PaginatedList<Model> Students { get; set; }
 
             public class Model
             {
                 public int ID { get; set; }
                 [Display(Name = "First Name")]
                 public string FirstMidName { get; set; }
+                [Display(Name = "Last Name")]
                 public string LastName { get; set; }
+                [DataType(DataType.Date)]
+                [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+                [Display(Name = "Enrollment Date")]
                 public DateTime EnrollmentDate { get; set; }
             }
         }
@@ -47,8 +51,8 @@ namespace ContosoUniversity.Pages.Students
             var model = new Result
             {
                 CurrentSort = sortOrder,
-                NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "",
-                DateSortParm = sortOrder == "Date" ? "date_desc" : "Date"
+                NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "",
+                DateSort = sortOrder == "Date" ? "date_desc" : "Date"
             };
 
             if (searchString != null)
@@ -87,7 +91,7 @@ namespace ContosoUniversity.Pages.Students
 
             int pageSize = 3;
             int pageNumber = pageIndex ?? 1;
-            model.Results = await students
+            model.Students = await students
                 .Select(s => new Result.Model
                 {
                     ID = s.ID,
