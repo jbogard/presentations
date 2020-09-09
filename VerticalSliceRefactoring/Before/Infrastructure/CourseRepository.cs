@@ -13,8 +13,6 @@ namespace ContosoUniversity.Infrastructure
         {
         }
 
-        //public override Task<Course> GetByIdAsync(int id) => DbContext.Courses.FindAsync();
-
         public async Task<IList<Course>> ListWithDepartmentsAsync() =>
             await DbContext
                 .Courses

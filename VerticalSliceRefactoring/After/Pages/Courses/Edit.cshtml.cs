@@ -1,11 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ContosoUniversity.Pages.Courses
 {
-    public class EditModel : DepartmentNamePageModel
+    public class EditModel : PageModel
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
 
@@ -15,7 +19,23 @@ namespace ContosoUniversity.Pages.Courses
         }
 
         [BindProperty]
-        public Course Course { get; set; }
+        public Model Data { get; set; }
+
+        public class Model
+        {
+            [Display(Name = "Number")]
+            public int CourseID { get; set; }
+            [StringLength(50, MinimumLength = 3)]
+            [Required]
+            public string Title { get; set; }
+            [Range(0, 5)]
+            [Required]
+            public int? Credits { get; set; }
+            public int DepartmentID { get; set; }
+            public SelectList DepartmentNameSL { get; set; }
+            [Display(Name = "Department")]
+            public string DepartmentName { get; set; }
+        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -24,16 +44,22 @@ namespace ContosoUniversity.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses
-                .Include(c => c.Department).FirstOrDefaultAsync(m => m.CourseID == id);
+            Data = await _context.Courses.Select(c => new Model
+                {
+                    CourseID = c.CourseID,
+                    Credits = c.Credits,
+                    DepartmentID = c.DepartmentID,
+                    Title = c.Title
+                })
+                .FirstOrDefaultAsync(m => m.CourseID == id);
 
-            if (Course == null)
+            if (Data == null)
             {
                 return NotFound();
             }
 
             // Select current DepartmentID.
-            PopulateDepartmentsDropDownList(_context, Course.DepartmentID);
+            PopulateDepartmentsDropDownList(Data.DepartmentID);
             return Page();
         }
 
@@ -53,7 +79,7 @@ namespace ContosoUniversity.Pages.Courses
 
             if (await TryUpdateModelAsync<Course>(
                  courseToUpdate,
-                 "course",   // Prefix for form value.
+                 "data",   // Prefix for form value.
                    c => c.Credits, c => c.DepartmentID, c => c.Title))
             {
                 await _context.SaveChangesAsync();
@@ -61,8 +87,19 @@ namespace ContosoUniversity.Pages.Courses
             }
 
             // Select DepartmentID if TryUpdateModelAsync fails.
-            PopulateDepartmentsDropDownList(_context, courseToUpdate.DepartmentID);
+            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
             return Page();
-        }       
+        }
+
+        public void PopulateDepartmentsDropDownList(object selectedDepartment = null)
+        {
+            var departmentsQuery = from d in _context.Departments
+                orderby d.Name // Sort by name.
+                select d;
+
+            Data.DepartmentNameSL = new SelectList(departmentsQuery.AsNoTracking(),
+                "DepartmentID", "Name", selectedDepartment);
+        }
+
     }
 }

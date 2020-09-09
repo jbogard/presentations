@@ -126,29 +126,30 @@ Fix view
 
 ### Step 5 - AutoMapper
 
-Profiles and replacing with ProjectTo
+AutoMapAttribute and services.AddAutoMapper
+
 
 ### Step 6 - Editing
+
+Courses\Edit.cshtml
 
 Model:
 
 ```csharp
 public class Model
 {
-    public int ID { get; set; }
+    [Display(Name = "Number")]
+    public int CourseID { get; set; }
+    [StringLength(50, MinimumLength = 3)]
     [Required]
-    [StringLength(50)]
-    [Display(Name = "Last Name")]
-    public string LastName { get; set; }
+    public string Title { get; set; }
+    [Range(0, 5)]
     [Required]
-    [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
-    [Column("FirstName")]
-    [Display(Name = "First Name")]
-    public string FirstMidName { get; set; }
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    [Display(Name = "Enrollment Date")]
-    public DateTime EnrollmentDate { get; set; }
+    public int? Credits { get; set; }
+    public int DepartmentID { get; set; }
+    public SelectList DepartmentNameSL { get; set; }
+    [Display(Name = "Department")]
+    public string DepartmentName { get; set; }
 }
 ```
 
@@ -162,39 +163,65 @@ public async Task<IActionResult> OnGetAsync(int? id)
         return NotFound();
     }
 
-    Data = await _context.Students.Select(s => new Model
-    {
-        ID = s.ID,
-        FirstMidName = s.FirstMidName,
-        LastName = s.LastName,
-        EnrollmentDate = s.EnrollmentDate
-    }).SingleOrDefaultAsync(s => s.ID == id);
+    Data = await _context.Courses.Select(c => new Model
+        {
+            CourseID = c.CourseID,
+            Credits = c.Credits,
+            DepartmentID = c.DepartmentID,
+            Title = c.Title
+        })
+        .FirstOrDefaultAsync(m => m.CourseID == id);
 
     if (Data == null)
     {
         return NotFound();
     }
+
+    // Select current DepartmentID.
+    PopulateDepartmentsDropDownList(Data.DepartmentID);
     return Page();
+}
+
+private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
+{
+    var departmentsQuery = from d in _context.Departments
+        orderby d.Name // Sort by name.
+        select d;
+
+    Data.DepartmentNameSL = new SelectList(departmentsQuery.AsNoTracking(),
+        "DepartmentID", "Name", selectedDepartment);
 }
 ```
 
 OnPostAsync
 
 ```csharp
-public async Task<IActionResult> OnPostAsync(int id)
+public async Task<IActionResult> OnPostAsync(int? id)
 {
-    var studentToUpdate = await _context.Students.FindAsync(id);
-
-    if (studentToUpdate == null)
+    if (id == null)
     {
         return NotFound();
     }
 
-    studentToUpdate.FirstMidName = Data.FirstMidName;
-    studentToUpdate.LastName = Data.LastName;
-    studentToUpdate.EnrollmentDate = Data.EnrollmentDate;
-    await _context.SaveChangesAsync();
-    return RedirectToPage("./Index");
+    var courseToUpdate = await _context.Courses.FindAsync(id);
+
+    if (courseToUpdate == null)
+    {
+        return NotFound();
+    }
+
+    if (await TryUpdateModelAsync<Course>(
+         courseToUpdate,
+         "data",   // Prefix for form value.
+           c => c.Credits, c => c.DepartmentID, c => c.Title))
+    {
+        await _context.SaveChangesAsync();
+        return RedirectToPage("./Index");
+    }
+
+    // Select DepartmentID if TryUpdateModelAsync fails.
+    PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
+    return Page();
 }
 ```
 
