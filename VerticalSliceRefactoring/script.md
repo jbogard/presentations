@@ -98,12 +98,12 @@ Students\Index.cshtml
 public class Result
 {
     public string CurrentSort { get; set; }
-    public string NameSortParm { get; set; }
-    public string DateSortParm { get; set; }
+    public string NameSort { get; set; }
+    public string DateSort { get; set; }
     public string CurrentFilter { get; set; }
     public string SearchString { get; set; }
 
-    public PaginatedList<Model> Results { get; set; }
+    public PaginatedList<Model> Students { get; set; }
 
     public class Model
     {
