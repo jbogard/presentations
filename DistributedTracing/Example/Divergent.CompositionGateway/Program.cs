@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.Extensions.Hosting;
 
 namespace Divergent.CompositionGateway
 {

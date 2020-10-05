@@ -18,9 +18,9 @@ namespace Divergent.Customers.API.Controllers
         [HttpGet("byorders")]
         public IEnumerable<dynamic> ByOrders(string orderIds)
         {
-            var orderIdList = orderIds.Split(',')
+            var orderIdList = orderIds?.Split(',')
                 .Select(id => int.Parse(id))
-                .ToList();
+                .ToList() ?? new List<int>();
 
             var customers = _db.Customers
                 .Include(customer => customer.Orders)

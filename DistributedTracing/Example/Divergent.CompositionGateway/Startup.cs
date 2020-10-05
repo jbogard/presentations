@@ -2,7 +2,6 @@
 using ITOps.ViewModelComposition.Gateway;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Divergent.CompositionGateway
 {
@@ -15,10 +14,8 @@ namespace Divergent.CompositionGateway
             services.AddCors();
         }
 
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
-            loggerFactory.AddConsole(LogLevel.Warning);
-
             app.UseCors(policyBuilder =>
             {
                 policyBuilder.AllowAnyOrigin();

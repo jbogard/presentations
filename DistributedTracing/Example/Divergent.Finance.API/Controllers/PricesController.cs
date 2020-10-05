@@ -16,9 +16,9 @@ namespace Divergent.Finance.API.Controllers
         [HttpGet("orders/total")]
         public IEnumerable<dynamic> GetOrdersTotal(string orderIds)
         {
-            var orderIdList = orderIds.Split(',')
+            var orderIdList = orderIds?.Split(',')
                 .Select(id => int.Parse(id))
-                .ToList();
+                .ToList() ?? new List<int>();
 
             return _db.OrderItemPrices
                 .Where(orderItemPrice => orderIdList.Contains(orderItemPrice.OrderId))

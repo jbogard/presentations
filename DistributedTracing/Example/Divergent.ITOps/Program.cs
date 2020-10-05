@@ -43,9 +43,6 @@ namespace Divergent.ITOps
                     {
                         serviceRegistrar.Register(builder, services);
                     }
-
-                    //services.AddDbContext<FinanceContext>(options =>
-                    //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
                 })
                 .UseNServiceBus(context =>
                 {

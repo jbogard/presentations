@@ -1,7 +1,5 @@
 using System;
-using System.IO;
 using NServiceBus;
-using NServiceBus.Logging;
 
 namespace ITOps.EndpointConfig
 {
@@ -11,8 +9,6 @@ namespace ITOps.EndpointConfig
             this EndpointConfiguration endpointConfiguration,
             Action<RoutingSettings<LearningTransport>> configureRouting = null)
         {
-            var licensePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\..\\..\\License.xml");
-            endpointConfiguration.LicensePath(licensePath);
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.Recoverability().Delayed(c => c.NumberOfRetries(0));
 
@@ -20,7 +16,7 @@ namespace ITOps.EndpointConfig
 
             var routing = transport.Routing();
 
-            var persistence = endpointConfiguration.UsePersistence<LearningPersistence>();
+            endpointConfiguration.UsePersistence<LearningPersistence>();
 
             endpointConfiguration.SendFailedMessagesTo("error");
             endpointConfiguration.AuditProcessedMessagesTo("audit");
