@@ -1,32 +1,34 @@
 ﻿using Divergent.Finance.Data.Context;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Divergent.Finance.API.Controllers
 {
-    [RoutePrefix("api/prices")]
-    public class PricingController : ApiController
+    [Route("api/prices")]
+    [ApiController]
+    public class PricingController : ControllerBase
     {
-        [HttpGet, Route("orders/total")]
+        private readonly FinanceContext _db;
+
+        public PricingController(FinanceContext db) => _db = db;
+
+        [HttpGet("orders/total")]
         public IEnumerable<dynamic> GetOrdersTotal(string orderIds)
         {
             var orderIdList = orderIds.Split(',')
                 .Select(id => int.Parse(id))
                 .ToList();
 
-            using (var db = new FinanceContext())
-            {
-                return db.OrderItemPrices
-                    .Where(orderItemPrice => orderIdList.Contains(orderItemPrice.OrderId))
-                    .GroupBy(orderItemPrice => orderItemPrice.OrderId)
-                    .Select(orderGroup => new
-                    {
-                        OrderId = orderGroup.Key,
-                        Amount = orderGroup.Sum(orderItemPrice => orderItemPrice.ItemPrice),
-                    })
-                    .ToList();
-            }
+            return _db.OrderItemPrices
+                .Where(orderItemPrice => orderIdList.Contains(orderItemPrice.OrderId))
+                .GroupBy(orderItemPrice => orderItemPrice.OrderId)
+                .Select(orderGroup => new
+                {
+                    OrderId = orderGroup.Key,
+                    Amount = orderGroup.Sum(orderItemPrice => orderItemPrice.ItemPrice),
+                })
+                .ToList();
         }
     }
 }

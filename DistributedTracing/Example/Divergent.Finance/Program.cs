@@ -2,35 +2,62 @@
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading.Tasks;
+using Divergent.Finance.Data.Context;
+using Divergent.Finance.Data.Migrations;
+using Divergent.Finance.PaymentClient;
+using ITOps.EndpointConfig;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NServiceBus;
 
 namespace Divergent.Finance
 {
-    static class Program
+    public class Program
     {
-        public async static Task Main(string[] args)
+        public static string EndpointName => "Divergent.Finance";
+
+        public static void Main(string[] args)
         {
-            var host = new Host();
+            var host = CreateHostBuilder(args).Build();
 
-            // pass this command line option to run as a windows service
-            if (args.Contains("--run-as-service"))
-            {
-                using (var windowsService = new WindowsService(host))
-                {
-                    ServiceBase.Run(windowsService);
-                    return;
-                }
-            }
+            CreateDbIfNotExists(host);
 
-            Console.Title = Host.EndpointName;
-
-            var tcs = new TaskCompletionSource<object>();
-            Console.CancelKeyPress += (sender, e) => { tcs.SetResult(null); };
-
-            await host.Start();
-            await Console.Out.WriteLineAsync("Press Ctrl+C to exit...");
-
-            await tcs.Task;
-            await host.Stop();
+            host.Run();
         }
+
+        private static void CreateDbIfNotExists(IHost host)
+        {
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+
+            try
+            {
+                var context = services.GetRequiredService<FinanceContext>();
+                DatabaseInitializer.Initialize(context);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred creating the DB.");
+            }
+        }
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureServices((builder, services) =>
+                {
+                    services.AddSingleton<ReliablePaymentClient>();
+                    services.AddDbContext<FinanceContext>(options =>
+                        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                })
+                .UseNServiceBus(context =>
+                {
+                    var endpoint = new EndpointConfiguration(EndpointName);
+                    endpoint.Configure();
+
+                    return endpoint;
+                });
     }
 }

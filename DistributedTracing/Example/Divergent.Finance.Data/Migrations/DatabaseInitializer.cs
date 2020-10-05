@@ -1,15 +1,21 @@
-﻿using System.Data.Entity;
-using System.Data.Entity.Migrations;
+﻿using System.Linq;
 using Divergent.Finance.Data.Context;
 
 namespace Divergent.Finance.Data.Migrations
 {
-    public class DatabaseInitializer : CreateDatabaseIfNotExists<FinanceContext>
+    public static class DatabaseInitializer 
     {
-        protected override void Seed(FinanceContext context)
+        public static void Initialize(FinanceContext context)
         {
-            context.Prices.AddOrUpdate(k => k.Id, SeedData.Prices().ToArray());
-            context.OrderItemPrices.AddOrUpdate(k => k.Id, SeedData.OrderItemPrices().ToArray());
+            context.Database.EnsureCreated();
+
+            if (context.Prices.Any())
+            {
+                return;
+            }
+
+            context.Prices.AddRange(SeedData.Prices().ToArray());
+            context.OrderItemPrices.AddRange(SeedData.OrderItemPrices().ToArray());
         }
     }
 }

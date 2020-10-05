@@ -1,22 +1,20 @@
 ﻿using Divergent.Finance.Data.Migrations;
 using Divergent.Finance.Data.Models;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Divergent.Finance.Data.Context
 {
     public class FinanceContext : DbContext
     {
-        public FinanceContext() : base("Divergent.Finance")
+        public FinanceContext(DbContextOptions options) : base(options)
         {
         }
 
-        public IDbSet<Price> Prices { get; set; }
-        public IDbSet<OrderItemPrice> OrderItemPrices { get; set; }
+        public DbSet<Price> Prices { get; set; }
+        public DbSet<OrderItemPrice> OrderItemPrices { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Database.SetInitializer(new DatabaseInitializer());
-
             modelBuilder.Entity<Price>();
             modelBuilder.Entity<OrderItemPrice>();
 
