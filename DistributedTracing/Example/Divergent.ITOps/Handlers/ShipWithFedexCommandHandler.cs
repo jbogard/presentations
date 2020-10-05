@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using Divergent.ITOps.Interfaces;
 using Divergent.ITOps.Messages.Commands;
+using Microsoft.Extensions.Logging;
 using NServiceBus;
 using NServiceBus.Logging;
 
@@ -11,24 +12,25 @@ namespace Divergent.ITOps.Handlers
     {
         private readonly IProvideShippingInfo _shippingProvider;
         private readonly IProvideCustomerInfo _customerProvider;
-        private static readonly ILog Log = LogManager.GetLogger<ShipWithFedexCommandHandler>();
+        private readonly ILogger<ShipWithFedexCommandHandler> _logger;
 
-        public ShipWithFedexCommandHandler(IProvideShippingInfo shippingProvider, IProvideCustomerInfo customerProvider)
+        public ShipWithFedexCommandHandler(IProvideShippingInfo shippingProvider, IProvideCustomerInfo customerProvider, ILogger<ShipWithFedexCommandHandler> logger)
         {
             _shippingProvider = shippingProvider;
             _customerProvider = customerProvider;
+            _logger = logger;
         }
 
         public async Task Handle(ShipWithFedexCommand message, IMessageHandlerContext context)
         {
-            Log.Info("Handle ShipWithFedexCommand");
+            _logger.LogInformation("Handle ShipWithFedexCommand");
 
             var shippingInfo = await _shippingProvider.GetPackageInfo(message.Products);
             var customerInfo = await _customerProvider.GetCustomerInfo(message.CustomerId);
 
             var fedExRequest = CreateFedexRequest(shippingInfo, customerInfo);
             await CallFedexWebService(fedExRequest);
-            Log.Info($"Order {message.OrderId} shipped with Fedex");
+            _logger.LogInformation($"Order {message.OrderId} shipped with Fedex");
         }
 
         private XDocument CreateFedexRequest(PackageInfo packageInfo, CustomerInfo customerInfo)
