@@ -1,37 +1,33 @@
-﻿using System;
-using System.Configuration;
-using System.Linq;
-using System.ServiceProcess;
-using System.Threading.Tasks;
+﻿using Divergent.ITOps.Messages.Commands;
+using ITOps.EndpointConfig;
+using Microsoft.Extensions.Hosting;
+using NServiceBus;
 
 namespace Divergent.Shipping
 {
-    static class Program
+    public class Program
     {
-        public async static Task Main(string[] args)
+        public static string EndpointName => "Divergent.Shipping";
+
+        public static void Main(string[] args)
         {
-            var host = new Host(ConfigurationManager.ConnectionStrings[Host.EndpointName].ToString());
+            var host = CreateHostBuilder(args).Build();
 
-            // pass this command line option to run as a windows service
-            if (args.Contains("--run-as-service"))
-            {
-                using (var windowsService = new WindowsService(host))
-                {
-                    ServiceBase.Run(windowsService);
-                    return;
-                }
-            }
-
-            Console.Title = Host.EndpointName;
-
-            var tcs = new TaskCompletionSource<object>();
-            Console.CancelKeyPress += (sender, e) => { tcs.SetResult(null); };
-
-            await host.Start();
-            await Console.Out.WriteLineAsync("Press Ctrl+C to exit...");
-
-            await tcs.Task;
-            await host.Stop();
+            host.Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseNServiceBus(context =>
+                {
+                    var endpoint = new EndpointConfiguration(EndpointName);
+
+                    endpoint.Configure(routing =>
+                    {
+                        routing.RouteToEndpoint(typeof(ShipWithFedexCommand), "Divergent.ITOps");
+                    });
+
+                    return endpoint;
+                });
     }
 }
