@@ -1,0 +1,40 @@
+﻿using System.Threading.Tasks;
+using Divergent.Sales.Messages.Events;
+using Divergent.Customers.Data.Context;
+using Divergent.Customers.Data.Models;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+namespace Divergent.Customers.Handlers
+{
+    public class OrderSubmittedHandler : NServiceBus.IHandleMessages<OrderSubmittedEvent>
+    {
+        private readonly CustomersContext _db;
+        private readonly ILogger<OrderSubmittedHandler> _log;
+
+        public OrderSubmittedHandler(CustomersContext db, ILogger<OrderSubmittedHandler> log)
+        {
+            _db = db;
+            _log = log;
+        }
+
+        public async Task Handle(OrderSubmittedEvent message, NServiceBus.IMessageHandlerContext context)
+        {
+            _log.LogInformation("Handling: OrderSubmittedEvent.");
+
+            var customer = await _db.Customers
+                .Include(c => c.Orders)
+                .Where(c => c.Id == message.CustomerId)
+                .SingleAsync();
+
+            customer.Orders.Add(new Order
+            {
+                CustomerId = message.CustomerId,
+                OrderId = message.OrderId
+            });
+
+            await _db.SaveChangesAsync();
+        }
+    }
+}
