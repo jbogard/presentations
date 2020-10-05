@@ -1,34 +1,50 @@
 ﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.Owin.Hosting;
-using Radical.Bootstrapper;
+using System.Diagnostics;
+using System.IO;
+using Divergent.Sales.Messages.Commands;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using NServiceBus;
 
 namespace Divergent.Sales.API
 {
-    class Program
+    public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.Title = MethodBase.GetCurrentMethod().DeclaringType.Namespace;
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 
-            var tcs = new TaskCompletionSource<object>();
-            Console.CancelKeyPress += (sender, e) => { tcs.SetResult(null); };
-
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
-
-            var bootstrapper = new WindsorBootstrapper(basePath, filter: "Divergent*.*");
-            var container = bootstrapper.Boot();
-
-            NServiceBusConfig.Configure(container);
-
-            using (WebApp.Start(new StartOptions("http://localhost:20185"), builder => WebApiConfig.Configure(builder, container)))
-            {
-                await Console.Out.WriteLineAsync("Web server is running.");
-                await Console.Out.WriteLineAsync("Press Ctrl+C to exit...");
-
-                await tcs.Task;
-            }
+            CreateHostBuilder(args).Build().Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseNServiceBus(context =>
+                {
+                    var config = new EndpointConfiguration("Sales.API");
+
+                    config.SendOnly();
+
+                    var transport = config.UseTransport<LearningTransport>();
+
+                    var routing = transport.Routing();
+
+                    routing.RouteToEndpoint(typeof(SubmitOrderCommand), "Divergent.Sales");
+
+                    config.UseSerialization<NewtonsoftSerializer>();
+                    config.UsePersistence<LearningPersistence>();
+
+                    config.SendFailedMessagesTo("error");
+
+                    config.Conventions()
+                        .DefiningCommandsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Command"))
+                        .DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Event"));
+
+                    return config;
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }

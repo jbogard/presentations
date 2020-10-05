@@ -1,16 +1,22 @@
-﻿using System.Data.Entity;
-using System.Data.Entity.Migrations;
+﻿using System.Linq;
 using Divergent.Sales.Data.Context;
 
 namespace Divergent.Sales.Data.Migrations
 {
-    public class DatabaseInitializer : CreateDatabaseIfNotExists<SalesContext>
+    public static class DatabaseInitializer 
     {
-        protected override void Seed(SalesContext context)
+        public static void Initialize(SalesContext context)
         {
-            context.Products.AddOrUpdate(k => k.Id, SeedData.Products().ToArray());
+            context.Database.EnsureCreated();
 
-            context.Orders.AddOrUpdate(k => k.Id, SeedData.Orders().ToArray());
+            if (context.Products.Any())
+            {
+                return;
+            }
+
+            context.Products.AddRange(SeedData.Products().ToArray());
+
+            context.Orders.AddRange(SeedData.Orders().ToArray());
         }
     }
 }

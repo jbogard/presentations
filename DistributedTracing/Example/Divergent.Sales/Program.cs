@@ -1,36 +1,58 @@
 ﻿using System;
-using System.Linq;
-using System.ServiceProcess;
-using System.Threading.Tasks;
+using Divergent.Sales.Data.Context;
+using Divergent.Sales.Data.Migrations;
+using ITOps.EndpointConfig;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NServiceBus;
 
 namespace Divergent.Sales
 {
-    static class Program
+    public class Program
     {
-        public async static Task Main(string[] args)
+        public static string EndpointName => "Divergent.Sales";
+
+        public static void Main(string[] args)
         {
-            var host = new Host();
+            var host = CreateHostBuilder(args).Build();
 
-            // pass this command line option to run as a windows service
-            if (args.Contains("--run-as-service"))
-            {
-                using (var windowsService = new WindowsService(host))
-                {
-                    ServiceBase.Run(windowsService);
-                    return;
-                }
-            }
+            CreateDbIfNotExists(host);
 
-            Console.Title = Host.EndpointName;
-
-            var tcs = new TaskCompletionSource<object>();
-            Console.CancelKeyPress += (sender, e) => { tcs.SetResult(null); };
-
-            await host.Start();
-            await Console.Out.WriteLineAsync("Press Ctrl+C to exit...");
-
-            await tcs.Task;
-            await host.Stop();
+            host.Run();
         }
+
+        private static void CreateDbIfNotExists(IHost host)
+        {
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+
+            try
+            {
+                var context = services.GetRequiredService<SalesContext>();
+                DatabaseInitializer.Initialize(context);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred creating the DB.");
+            }
+        }
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+                .ConfigureServices((builder, services) =>
+                {
+                    services.AddDbContext<SalesContext>(options =>
+                        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                })
+                .UseNServiceBus(context =>
+                {
+                    var endpoint = new EndpointConfiguration(EndpointName);
+                    endpoint.Configure();
+
+                    return endpoint;
+                });
     }
 }
