@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace Divergent.ITOps
 
         public static void Main(string[] args)
         {
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+            Activity.ForceDefaultIdFormat = true;
+
             CreateHostBuilder(args).Build().Run();
         }
 

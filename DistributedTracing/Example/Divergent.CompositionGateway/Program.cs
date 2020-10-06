@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.Extensions.Hosting;
 
@@ -8,6 +9,9 @@ namespace Divergent.CompositionGateway
     {
         public static void Main(string[] args)
         {
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+            Activity.ForceDefaultIdFormat = true;
+
             CreateHostBuilder(args).Build().Run();
         }
 

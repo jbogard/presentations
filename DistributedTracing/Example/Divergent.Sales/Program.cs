@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Divergent.Sales.Data.Context;
 using Divergent.Sales.Data.Migrations;
 using ITOps.EndpointConfig;
@@ -17,6 +18,9 @@ namespace Divergent.Sales
 
         public static void Main(string[] args)
         {
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+            Activity.ForceDefaultIdFormat = true;
+
             var host = CreateHostBuilder(args).Build();
 
             CreateDbIfNotExists(host);

@@ -13,6 +13,7 @@ namespace Divergent.Sales.API
         public static void Main(string[] args)
         {
             Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+            Activity.ForceDefaultIdFormat = true;
 
             CreateHostBuilder(args).Build().Run();
         }

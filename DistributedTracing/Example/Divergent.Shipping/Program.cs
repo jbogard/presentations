@@ -1,4 +1,5 @@
-﻿using Divergent.ITOps.Messages.Commands;
+﻿using System.Diagnostics;
+using Divergent.ITOps.Messages.Commands;
 using ITOps.EndpointConfig;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
@@ -11,6 +12,9 @@ namespace Divergent.Shipping
 
         public static void Main(string[] args)
         {
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+            Activity.ForceDefaultIdFormat = true;
+
             var host = CreateHostBuilder(args).Build();
 
             host.Run();

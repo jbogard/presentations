@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ namespace Divergent.Customers
 
         public static void Main(string[] args)
         {
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+            Activity.ForceDefaultIdFormat = true;
+
             var host = CreateHostBuilder(args).Build();
             
             CreateDbIfNotExists(host);
