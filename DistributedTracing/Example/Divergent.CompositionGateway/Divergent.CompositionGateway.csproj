@@ -6,6 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="0.6.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Exporter.Zipkin" Version="0.6.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="0.6.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="0.6.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="0.6.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="0.6.0-beta.1" />
   </ItemGroup>
 
   <ItemGroup>

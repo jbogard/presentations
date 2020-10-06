@@ -8,6 +8,8 @@ using ITOps.EndpointConfig;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
+using NServiceBus.Extensions.Diagnostics.OpenTelemetry;
+using OpenTelemetry.Trace;
 
 namespace Divergent.ITOps
 {
@@ -47,6 +49,22 @@ namespace Divergent.ITOps
                     {
                         serviceRegistrar.Register(builder, services);
                     }
+
+                    services.AddOpenTelemetryTracing(config => config
+                        .AddZipkinExporter(o =>
+                        {
+                            o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                            o.ServiceName = EndpointName;
+                        })
+                        .AddJaegerExporter(c =>
+                        {
+                            c.AgentHost = "localhost";
+                            c.AgentPort = 6831;
+                            c.ServiceName = EndpointName;
+                        })
+                        .AddNServiceBusInstrumentation(opt => opt.CaptureMessageBody = true)
+                        .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
+                    );
                 })
                 .UseNServiceBus(context =>
                 {

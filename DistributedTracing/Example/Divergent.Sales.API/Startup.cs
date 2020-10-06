@@ -1,10 +1,13 @@
-﻿using Divergent.Sales.Data.Context;
+﻿using System;
+using Divergent.Sales.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NServiceBus.Extensions.Diagnostics.OpenTelemetry;
+using OpenTelemetry.Trace;
 
 namespace Divergent.Sales.API
 {
@@ -26,6 +29,23 @@ namespace Divergent.Sales.API
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddCors();
+
+            services.AddOpenTelemetryTracing(config => config
+                .AddZipkinExporter(o =>
+                {
+                    o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+                    o.ServiceName = "Divergent.Sales.API";
+                })
+                .AddJaegerExporter(c =>
+                {
+                    c.AgentHost = "localhost";
+                    c.AgentPort = 6831;
+                    c.ServiceName = "Divergent.Sales.API";
+                })
+                .AddAspNetCoreInstrumentation()
+                .AddNServiceBusInstrumentation(opt => opt.CaptureMessageBody = true)
+                .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
