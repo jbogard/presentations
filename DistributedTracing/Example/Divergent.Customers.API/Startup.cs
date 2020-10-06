@@ -21,10 +21,12 @@ namespace Divergent.Customers.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<CustomersContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,6 +36,13 @@ namespace Divergent.Customers.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(policyBuilder =>
+            {
+                policyBuilder.AllowAnyOrigin();
+                policyBuilder.AllowAnyMethod();
+                policyBuilder.AllowAnyHeader();
+            });
 
             app.UseRouting();
 

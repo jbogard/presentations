@@ -14,7 +14,7 @@ namespace ITOps.ViewModelComposition.Gateway
             RouteValueDictionary dataTokens = null)
         {
             var route = new Route(
-                target: new RouteHandler(context => ComposableRouteHandler.HandleGetRequest(context)),
+                target: new RouteHandler(ComposableRouteHandler.HandleGetRequest),
                 routeTemplate: template,
                 defaults: defaults,
                 constraints: new RouteValueDictionary(new

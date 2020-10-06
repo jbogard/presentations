@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Divergent.Customers.Data\Divergent.Customers.Data.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
   </ItemGroup>
 

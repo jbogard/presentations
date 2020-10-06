@@ -20,7 +20,7 @@ namespace Divergent.Shipping.Sagas
             mapper.ConfigureMapping<PaymentSucceededEvent>(p => p.OrderId).ToSaga(s => s.OrderId);
         }
 
-        public async Task Handle(OrderSubmittedEvent message, IMessageHandlerContext context)
+        public Task Handle(OrderSubmittedEvent message, IMessageHandlerContext context)
         {
             Log.Info("Handle OrderSubmittedEvent");
 
@@ -30,15 +30,15 @@ namespace Divergent.Shipping.Sagas
             var projection = message.Products.Select(p => new ShippingSagaData.Product { Identifier = p });
             Data.Products = projection.ToList();
 
-            await ProcessOrder(context);
+            return ProcessOrder(context);
         }
 
-        public async Task Handle(PaymentSucceededEvent message, IMessageHandlerContext context)
+        public Task Handle(PaymentSucceededEvent message, IMessageHandlerContext context)
         {
             Log.Info("Handle PaymentSucceededEvent");
 
             Data.IsPaymentProcessed = true;
-            await ProcessOrder(context);
+            return ProcessOrder(context);
         }
 
         private async Task ProcessOrder(IMessageHandlerContext context)

@@ -15,7 +15,10 @@ namespace Divergent.Finance.Data.Migrations
             }
 
             context.Prices.AddRange(SeedData.Prices().ToArray());
+            
             context.OrderItemPrices.AddRange(SeedData.OrderItemPrices().ToArray());
+
+            context.SaveChanges();
         }
     }
 }

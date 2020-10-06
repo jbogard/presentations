@@ -64,7 +64,7 @@ namespace PaymentProviders
             }
 
             var result = response.Content.ReadAsAsync<PaymentResponse>();
-            Console.WriteLine($"Customer {result.Result.CustomerId} payment succesful? : {result.Result.PaymentSucceeded}");
+            Console.WriteLine($"Customer {result.Result.CustomerId} payment successful? : {result.Result.PaymentSucceeded}");
         }
     }
 }

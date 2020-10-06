@@ -20,10 +20,12 @@ namespace Divergent.Finance.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<FinanceContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +35,13 @@ namespace Divergent.Finance.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(policyBuilder =>
+            {
+                policyBuilder.AllowAnyOrigin();
+                policyBuilder.AllowAnyMethod();
+                policyBuilder.AllowAnyHeader();
+            });
 
             app.UseRouting();
 
