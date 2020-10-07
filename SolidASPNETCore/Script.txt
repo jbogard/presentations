@@ -117,7 +117,7 @@ SchoolContext.cs
         {
             return CloseTransaction(exception: null);
         }
-
+ 
         public async Task CloseTransaction(Exception exception)
         {
             try
