@@ -1,0 +1,16 @@
+Program.cs
+
+Add diagnostics, 
+
+DiagnosticListener.
+
+.AddAspNetCoreInstrumentation
+
+.AddSqlClientInstrumentation
+
+.AddHttpClientInstrumentation
+
+// 
+
+
+.AddNServiceBusInstrumentation
