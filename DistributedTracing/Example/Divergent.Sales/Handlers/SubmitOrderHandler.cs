@@ -35,7 +35,7 @@ namespace Divergent.Sales.Handlers
                 Product = products.Single(s => s.Id == p)
             }));
 
-            var order = new Data.Models.Order
+            var order = new Order
             {
                 CustomerId = message.CustomerId,
                 DateTimeUtc = DateTime.UtcNow,
