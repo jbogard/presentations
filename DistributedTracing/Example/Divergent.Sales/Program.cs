@@ -47,7 +47,7 @@ namespace Divergent.Sales
             }
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+            Host.CreateDefaultBuilder(args)
                 .ConfigureServices((builder, services) =>
                 {
                     services.AddDbContext<SalesContext>(options =>
