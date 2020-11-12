@@ -45,11 +45,8 @@ namespace Before.Services
                     dateExpiring = DateTime.Today.AddDays(offerType.DaysValid);
                     break;
                 case ExpirationType.Fixed:
-                    if (offerType.BeginDate != null)
-                        dateExpiring =
-                            offerType.BeginDate.Value.AddDays(offerType.DaysValid);
-                    else
-                        throw new InvalidOperationException();
+                    dateExpiring = offerType.BeginDate?.AddDays(offerType.DaysValid)
+                                   ?? throw new InvalidOperationException();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
