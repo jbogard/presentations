@@ -33,7 +33,7 @@ namespace Before.Services
 
             response.EnsureSuccessStatusCode();
 
-            await using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
             var value = await JsonSerializer.DeserializeAsync<int>(responseStream, cancellationToken: cancellationToken);
 
             // Calculate expiration date
