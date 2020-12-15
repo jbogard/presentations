@@ -1,5 +1,7 @@
 using System;
 using NServiceBus;
+using NServiceBus.Configuration.AdvancedExtensibility;
+using NServiceBus.Extensions.Diagnostics;
 
 namespace ITOps.EndpointConfig
 {
@@ -28,6 +30,13 @@ namespace ITOps.EndpointConfig
             endpointConfiguration.EnableInstallers();
 
             configureRouting?.Invoke(routing);
+
+            var settings = endpointConfiguration.GetSettings();
+
+            settings.Set<InstrumentationOptions>(new InstrumentationOptions
+            {
+                CaptureMessageBody = true
+            });
 
             return endpointConfiguration;
         }

@@ -25,7 +25,6 @@ namespace Divergent.CompositionGateway
                 {
                     c.AgentHost = "localhost";
                     c.AgentPort = 6831;
-                    c.ServiceName = "Divergent.CompositionGateway";
                 })
                 .AddAspNetCoreInstrumentation()
                 .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)

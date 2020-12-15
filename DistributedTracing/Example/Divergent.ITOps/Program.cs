@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.ServiceProcess;
-using System.Threading.Tasks;
 using Divergent.ITOps.Interfaces;
 using ITOps.EndpointConfig;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
-using NServiceBus.Extensions.Diagnostics.OpenTelemetry;
 using OpenTelemetry.Trace;
 
 namespace Divergent.ITOps
@@ -60,9 +57,8 @@ namespace Divergent.ITOps
                         {
                             c.AgentHost = "localhost";
                             c.AgentPort = 6831;
-                            c.ServiceName = EndpointName;
                         })
-                        .AddNServiceBusInstrumentation(opt => opt.CaptureMessageBody = true)
+                        .AddNServiceBusInstrumentation()
                         .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
                     );
                 })

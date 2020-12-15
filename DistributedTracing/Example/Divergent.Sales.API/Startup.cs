@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NServiceBus.Extensions.Diagnostics.OpenTelemetry;
 using OpenTelemetry.Trace;
 
 namespace Divergent.Sales.API
@@ -40,10 +39,9 @@ namespace Divergent.Sales.API
                 {
                     c.AgentHost = "localhost";
                     c.AgentPort = 6831;
-                    c.ServiceName = "Divergent.Sales.API";
                 })
                 .AddAspNetCoreInstrumentation()
-                .AddNServiceBusInstrumentation(opt => opt.CaptureMessageBody = true)
+                .AddNServiceBusInstrumentation()
                 .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
             );
         }

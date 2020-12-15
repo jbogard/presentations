@@ -40,7 +40,6 @@ namespace Divergent.Customers.API
                 {
                     c.AgentHost = "localhost";
                     c.AgentPort = 6831;
-                    c.ServiceName = "Divergent.Customers.API";
                 })
                 .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
                 .AddAspNetCoreInstrumentation()

@@ -5,7 +5,6 @@ using ITOps.EndpointConfig;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
-using NServiceBus.Extensions.Diagnostics.OpenTelemetry;
 using OpenTelemetry.Trace;
 
 namespace Divergent.Shipping
@@ -38,9 +37,8 @@ namespace Divergent.Shipping
                         {
                             c.AgentHost = "localhost";
                             c.AgentPort = 6831;
-                            c.ServiceName = EndpointName;
                         })
-                        .AddNServiceBusInstrumentation(opt => opt.CaptureMessageBody = true)
+                        .AddNServiceBusInstrumentation()
                         .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
                     );
                 })

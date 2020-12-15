@@ -39,7 +39,6 @@ namespace Divergent.Finance.API
                 {
                     c.AgentHost = "localhost";
                     c.AgentPort = 6831;
-                    c.ServiceName = "Divergent.Finance.API";
                 })
                 .AddAspNetCoreInstrumentation()
                 .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)

@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
-using NServiceBus.Extensions.Diagnostics.OpenTelemetry;
 using OpenTelemetry.Trace;
 
 namespace Divergent.Sales
@@ -63,9 +62,8 @@ namespace Divergent.Sales
                         {
                             c.AgentHost = "localhost";
                             c.AgentPort = 6831;
-                            c.ServiceName = EndpointName;
                         })
-                        .AddNServiceBusInstrumentation(opt => opt.CaptureMessageBody = true)
+                        .AddNServiceBusInstrumentation()
                         .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
                     );
                 })

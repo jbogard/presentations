@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Threading.Tasks;
 using Divergent.Finance.Data.Context;
 using Divergent.Finance.Data.Migrations;
 using Divergent.Finance.PaymentClient;
@@ -13,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
-using NServiceBus.Extensions.Diagnostics.OpenTelemetry;
 using OpenTelemetry.Trace;
 
 namespace Divergent.Finance
@@ -68,10 +64,9 @@ namespace Divergent.Finance
                         {
                             c.AgentHost = "localhost";
                             c.AgentPort = 6831;
-                            c.ServiceName = EndpointName;
                         })
                         .AddHttpClientInstrumentation()
-                        .AddNServiceBusInstrumentation(opt => opt.CaptureMessageBody = true)
+                        .AddNServiceBusInstrumentation()
                         .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
                     );
 
