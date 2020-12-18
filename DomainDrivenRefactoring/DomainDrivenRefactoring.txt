@@ -18,18 +18,6 @@ LONG VERSION
 - Make member non-static
 -- Undo, then make member non-static directly
 
-- Primitive obsession
--- Offer Expiration Type - sliding/absolute
--- Create enumeration classes (SmartEnum<ExpirationType>)
--- Make switch just use constants
--- Move method to enum class
--- Extract method and make method non-static for OfferType
--- Calculate based on double dispatch w/ offer type
-
-LONG VERSION
--- EF Core, use OnModelCreating, modelBuilder.Entity.Property(...).HasConversion()
-
-
 
 - Encapsulate collection
 -- For member -> offer
@@ -49,6 +37,18 @@ LONG VERSION
 - Private setters
 -- Removing Offer.MemberAssigned()
 
+MAYBE
+
+- Primitive obsession
+-- Offer Expiration Type - sliding/absolute
+-- Create enumeration classes (SmartEnum<ExpirationType>)
+-- Make switch just use constants
+-- Move method to enum class
+-- Extract method and make method non-static for OfferType
+-- Calculate based on double dispatch w/ offer type
+
+LONG VERSION
+-- EF Core, use OnModelCreating, modelBuilder.Entity.Property(...).HasConversion()
 
 
 
