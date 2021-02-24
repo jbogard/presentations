@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace Divergent.Finance.API
@@ -30,10 +31,10 @@ namespace Divergent.Finance.API
             services.AddCors();
 
             services.AddOpenTelemetryTracing(config => config
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Divergent.Finance.API"))
                 .AddZipkinExporter(o =>
                 {
                     o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
-                    o.ServiceName = "Divergent.Finance.API";
                 })
                 .AddJaegerExporter(c =>
                 {
@@ -41,7 +42,7 @@ namespace Divergent.Finance.API
                     c.AgentPort = 6831;
                 })
                 .AddAspNetCoreInstrumentation()
-                .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
+                .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
             );
         }
 

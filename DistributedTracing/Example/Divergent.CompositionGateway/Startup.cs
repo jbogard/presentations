@@ -3,6 +3,7 @@ using ITOps.ViewModelComposition;
 using ITOps.ViewModelComposition.Gateway;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace Divergent.CompositionGateway
@@ -16,10 +17,10 @@ namespace Divergent.CompositionGateway
             services.AddCors();
 
             services.AddOpenTelemetryTracing(config => config
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Divergent.CompositionGateway"))
                 .AddZipkinExporter(o =>
                 {
                     o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
-                    o.ServiceName = "Divergent.CompositionGateway";
                 })
                 .AddJaegerExporter(c =>
                 {
@@ -27,7 +28,7 @@ namespace Divergent.CompositionGateway
                     c.AgentPort = 6831;
                 })
                 .AddAspNetCoreInstrumentation()
-                .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
+                .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
             );
         }
 

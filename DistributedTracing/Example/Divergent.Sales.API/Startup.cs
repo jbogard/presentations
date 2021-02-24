@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace Divergent.Sales.API
@@ -30,10 +31,10 @@ namespace Divergent.Sales.API
             services.AddCors();
 
             services.AddOpenTelemetryTracing(config => config
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Divergent.Sales.API"))
                 .AddZipkinExporter(o =>
                 {
                     o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
-                    o.ServiceName = "Divergent.Sales.API";
                 })
                 .AddJaegerExporter(c =>
                 {
@@ -42,7 +43,7 @@ namespace Divergent.Sales.API
                 })
                 .AddAspNetCoreInstrumentation()
                 .AddNServiceBusInstrumentation()
-                .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
+                .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
             );
         }
 

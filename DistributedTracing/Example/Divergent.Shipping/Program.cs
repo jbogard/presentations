@@ -5,6 +5,7 @@ using ITOps.EndpointConfig;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace Divergent.Shipping
@@ -28,10 +29,10 @@ namespace Divergent.Shipping
                 .ConfigureServices(services =>
                 {
                     services.AddOpenTelemetryTracing(config => config
+                        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(EndpointName))
                         .AddZipkinExporter(o =>
                         {
                             o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
-                            o.ServiceName = EndpointName;
                         })
                         .AddJaegerExporter(c =>
                         {
@@ -39,7 +40,7 @@ namespace Divergent.Shipping
                             c.AgentPort = 6831;
                         })
                         .AddNServiceBusInstrumentation()
-                        .AddSqlClientInstrumentation(opt => opt.SetTextCommandContent = true)
+                        .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
                     );
                 })
                 .UseNServiceBus(context =>
