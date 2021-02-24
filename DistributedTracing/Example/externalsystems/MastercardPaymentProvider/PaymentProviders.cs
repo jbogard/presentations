@@ -11,9 +11,9 @@ namespace PaymentProviders
 
         public PaymentProviders()
         {
-            Get["/"] = x => "Hello World";
+            Get("/", x => "Hello World");
 
-            Post["/api/unreliable/processpayment/"] = parameters =>
+            Post("/api/unreliable/processpayment/", parameters =>
             {
                 var item = this.Bind<PaymentRequest>();
 
@@ -27,9 +27,9 @@ namespace PaymentProviders
                 };
 
                 return Response.AsJson(response);
-            };
+            });
 
-            Post["/api/reliable/processpayment/"] = parameters =>
+            Post("/api/reliable/processpayment/", parameters =>
             {
                 var item = this.Bind<PaymentRequest>();
 
@@ -40,7 +40,7 @@ namespace PaymentProviders
                 };
 
                 return Response.AsJson(response);
-            };
+            });
         }
     }
 

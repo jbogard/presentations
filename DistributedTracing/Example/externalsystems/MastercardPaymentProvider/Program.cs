@@ -13,10 +13,10 @@ namespace PaymentProviders
         {
             var config = new HostConfiguration { UrlReservations = { CreateAutomatically = true } };
 
-            using (var host = new NancyHost(new Uri("http://localhost:1234"), new DefaultNancyBootstrapper(), config))
+            using (var host = new NancyHost(new Uri("http://localhost:12345"), new DefaultNancyBootstrapper(), config))
             {
                 host.Start();
-                Console.WriteLine("Running on http://localhost:1234");
+                Console.WriteLine("Running on http://localhost:12345");
                 Console.WriteLine("[1] Test unreliable, but cheap payment provider.");
                 Console.WriteLine("[2] Test reliable, but expensive payment provider.");
 
@@ -48,7 +48,7 @@ namespace PaymentProviders
 
             using (var httpClient = new HttpClient())
             {
-                httpClient.BaseAddress = new Uri("http://127.0.0.1:1234/");
+                httpClient.BaseAddress = new Uri("http://127.0.0.1:12345/");
                 var msg = new PaymentRequest
                 {
                     CustomerId = 12,
