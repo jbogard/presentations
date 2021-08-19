@@ -1,9 +1,16 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Before", "Before\Before.csproj", "{51D226B4-59B6-4BBA-A28A-66EF2DF71078}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Before", "Before\Before.csproj", "{51D226B4-59B6-4BBA-A28A-66EF2DF71078}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "After", "After\After.csproj", "{E6ACF2E0-55C8-4A11-AD9B-CD4C2E599C2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "After", "After\After.csproj", "{E6ACF2E0-55C8-4A11-AD9B-CD4C2E599C2A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E98E87EB-EAAF-462A-8A69-230B7714F7E2}"
+	ProjectSection(SolutionItems) = preProject
+		DomainDrivenRefactoring.txt = DomainDrivenRefactoring.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,5 +29,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64179C65-B365-42E2-B21B-895EDFE478F2}
 	EndGlobalSection
 EndGlobal
