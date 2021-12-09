@@ -8,25 +8,28 @@ using MediatR;
 
 namespace Before.Services
 {
-    public class AssignOfferHandler : IRequestHandler<AssignOfferRequest>
+    public interface IOfferValueCalculator
     {
-        private readonly AppDbContext _appDbContext;
+        Task<int> Calculate(
+            Member member, 
+            OfferType offerType, 
+            CancellationToken cancellationToken);
+    }
+
+    public class WebServiceOfferValueCalculator : IOfferValueCalculator
+    {
         private readonly HttpClient _httpClient;
 
-        public AssignOfferHandler(
-            AppDbContext appDbContext,
-            HttpClient httpClient)
+        public WebServiceOfferValueCalculator(HttpClient httpClient)
         {
-            _appDbContext = appDbContext;
             _httpClient = httpClient;
         }
 
-        public async Task<Unit> Handle(AssignOfferRequest request, CancellationToken cancellationToken)
+        public async Task<int> Calculate(
+            Member member, 
+            OfferType offerType, 
+            CancellationToken cancellationToken)
         {
-            var member = await _appDbContext.Members.FindAsync(request.MemberId, cancellationToken);
-            var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId, cancellationToken);
-
-            // Calculate offer value
             var response = await _httpClient.GetAsync(
                 $"/calculate-offer-value?email={member.Email}&offerType={offerType.Name}",
                 cancellationToken);
@@ -35,33 +38,30 @@ namespace Before.Services
 
             await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
             var value = await JsonSerializer.DeserializeAsync<int>(responseStream, cancellationToken: cancellationToken);
+            return value;
+        }
+    }
 
-            // Calculate expiration date
-            DateTime dateExpiring;
+    public class AssignOfferHandler : IRequestHandler<AssignOfferRequest>
+    {
+        private readonly AppDbContext _appDbContext;
+        private readonly IOfferValueCalculator _offerValueCalculator;
 
-            switch (offerType.ExpirationType)
-            {
-                case ExpirationType.Assignment:
-                    dateExpiring = DateTime.Today.AddDays(offerType.DaysValid);
-                    break;
-                case ExpirationType.Fixed:
-                    dateExpiring = offerType.BeginDate?.AddDays(offerType.DaysValid)
-                                   ?? throw new InvalidOperationException();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+        public AssignOfferHandler(
+            AppDbContext appDbContext, IOfferValueCalculator offerValueCalculator)
+        {
+            _appDbContext = appDbContext;
+            _offerValueCalculator = offerValueCalculator;
+        }
 
-            // Assign offer
-            var offer = new Offer
-            {
-                MemberAssigned = member,
-                Type = offerType,
-                Value = value,
-                DateExpiring = dateExpiring
-            };
-            member.AssignedOffers.Add(offer);
-            member.NumberOfActiveOffers++;
+        public async Task<Unit> Handle(AssignOfferRequest request, CancellationToken cancellationToken)
+        {
+            var member = await _appDbContext.Members.FindAsync(request.MemberId, cancellationToken);
+            var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId, cancellationToken);
+
+            var value = await _offerValueCalculator.Calculate(member, offerType, cancellationToken);
+
+            var offer = member.AssignOffer(offerType, value);
 
             await _appDbContext.Offers.AddAsync(offer, cancellationToken);
 

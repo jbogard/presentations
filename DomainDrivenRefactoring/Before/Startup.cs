@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Before.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +19,8 @@ namespace Before
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup));
+
+            services.AddHttpClient<IOfferValueCalculator, WebServiceOfferValueCalculator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

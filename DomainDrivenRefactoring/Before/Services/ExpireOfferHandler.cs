@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Before.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +20,7 @@ namespace Before.Services
                 .Include(m => m.AssignedOffers)
                 .SingleOrDefaultAsync(m => m.Id == request.MemberId, cancellationToken);
 
-            var offer = member.AssignedOffers.SingleOrDefault(o => o.Id == request.OfferId)
-                ?? throw new ArgumentException("Offer not found.", nameof(request.OfferId));
-
-            offer.DateExpiring = DateTime.Today;
-            member.NumberOfActiveOffers--;
+            member.ExpireOffer(request.OfferId);
 
             await _appDbContext.SaveChangesAsync(cancellationToken);
 
