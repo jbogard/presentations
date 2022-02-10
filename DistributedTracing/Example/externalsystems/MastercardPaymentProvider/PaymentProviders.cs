@@ -1,24 +1,19 @@
-﻿using System;
-using Nancy;
-using Nancy.ModelBinding;
-using HttpStatusCode = Nancy.HttpStatusCode;
+﻿using Carter;
 
 namespace PaymentProviders
 {
-    public class PaymentProviders : NancyModule
+    public class PaymentProviders : ICarterModule
     {
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
 
-        public PaymentProviders()
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            Get("/", x => "Hello World");
+            app.MapGet("/", () => "Hello World");
 
-            Post("/api/unreliable/processpayment/", parameters =>
+            app.MapPost("/api/unreliable/processpayment/", (PaymentRequest item) =>
             {
-                var item = this.Bind<PaymentRequest>();
-
                 if (_random.Next(3) == 0)
-                    return HttpStatusCode.BadRequest;
+                    return Results.BadRequest();
 
                 var response = new PaymentResponse
                 {
@@ -26,20 +21,18 @@ namespace PaymentProviders
                     PaymentSucceeded = _random.Next(2) != 0
                 };
 
-                return Response.AsJson(response);
+                return Results.Ok(response);
             });
 
-            Post("/api/reliable/processpayment/", parameters =>
+            app.MapPost("/api/reliable/processpayment/", (PaymentRequest item) =>
             {
-                var item = this.Bind<PaymentRequest>();
-
                 var response = new PaymentResponse
                 {
                     CustomerId = item.CustomerId,
                     PaymentSucceeded = true
                 };
 
-                return Response.AsJson(response);
+                return response;
             });
         }
     }
