@@ -1,0 +1,117 @@
+const string serviceName = "MyCompany.MyProduct.MyLibrary";
+
+// logging
+using var loggerFactory = LoggerFactory.Create(builder =>
+{
+    builder.AddOpenTelemetry(options => options
+        .AddConsoleExporter());
+});
+
+var logger = loggerFactory.CreateLogger<Program>();
+logger.LogInformation("Hello from {country} it's {time}.", "USA", DateTime.Now);
+
+
+// tracing
+
+ActivitySource MyActivitySource = new(serviceName);
+
+using var tracerProvider = Sdk.CreateTracerProviderBuilder()
+    .SetSampler(new AlwaysOnSampler())
+    .AddSource(serviceName)
+    .AddConsoleExporter()
+    .Build();
+
+using var activity = MyActivitySource.StartActivity("SayHello");
+activity?.SetTag("foo", 1);
+activity?.SetTag("bar", "Hello, World!");
+activity?.SetTag("baz", new int[] { 1, 2, 3 });
+
+//metrics
+
+var myMeter = new Meter(serviceName, "1.0");
+var myFruitCounter = myMeter.CreateCounter<long>("MyFruitCounter");
+
+using var meterProvider = Sdk.CreateMeterProviderBuilder()
+    .AddMeter(serviceName)
+    .AddConsoleExporter()
+    .Build();
+
+myFruitCounter.Add(1, new("name", "apple"), new("color", "red"));
+myFruitCounter.Add(2, new("name", "lemon"), new("color", "yellow"));
+myFruitCounter.Add(1, new("name", "lemon"), new("color", "yellow"));
+myFruitCounter.Add(2, new("name", "apple"), new("color", "green"));
+myFruitCounter.Add(5, new("name", "apple"), new("color", "red"));
+myFruitCounter.Add(4, new("name", "lemon"), new("color", "yellow"));
+
+
+
+// all done
+
+// See https://aka.ms/new-console-template for more information
+
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using Microsoft.Extensions.Logging;
+using OpenTelemetry;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
+
+const string serviceName = "MyCompany.MyProduct.MyLibrary";
+
+var myMeter = new Meter(serviceName, "1.0");
+var myFruitCounter = myMeter.CreateCounter<long>("MyFruitCounter");
+
+using var meterProvider = Sdk.CreateMeterProviderBuilder()
+    .AddMeter(serviceName)
+    .AddConsoleExporter()
+    .Build();
+
+myFruitCounter.Add(1, new("name", "apple"), new("color", "red"));
+myFruitCounter.Add(2, new("name", "lemon"), new("color", "yellow"));
+myFruitCounter.Add(1, new("name", "lemon"), new("color", "yellow"));
+myFruitCounter.Add(2, new("name", "apple"), new("color", "green"));
+myFruitCounter.Add(5, new("name", "apple"), new("color", "red"));
+myFruitCounter.Add(4, new("name", "lemon"), new("color", "yellow"));
+
+using var loggerFactory = LoggerFactory.Create(builder =>
+{
+    builder.AddOpenTelemetry(options => options
+        .AddConsoleExporter());
+});
+
+var logger = loggerFactory.CreateLogger<Program>();
+logger.LogInformation("Hello from {country} it's {time}.", "USA", DateTime.Now);
+
+ActivitySource MyActivitySource = new(serviceName);
+
+using var tracerProvider = Sdk.CreateTracerProviderBuilder()
+    .SetSampler(new AlwaysOnSampler())
+    .AddSource(serviceName)
+    .AddConsoleExporter()
+    .Build();
+
+using var activity = MyActivitySource.StartActivity("SayHello");
+activity?.SetTag("foo", 1);
+activity?.SetTag("bar", "Hello, World!");
+activity?.SetTag("baz", new int[] { 1, 2, 3 });
+
+logger.LogInformation("Hello from {country} it's {time} again.", "USA", DateTime.Now);
+
+
+## DiagnosticsPoC
+
+- Show dependencies, code
+- Run just the web app
+- Show rabbit
+- Run the whole thing, show zipkin and jaeger
+
+var activityFeature = HttpContext.Features.Get<IHttpActivityFeature>();
+
+activityFeature?.Activity.AddBaggage("operation.id", command.Id.ToString());
+
+
+var activityFeature = HttpContext.Features.Get<IHttpActivityFeature>();
+
+activityFeature?.Activity.AddBaggage("operation.id", @event.Id.ToString());
+
