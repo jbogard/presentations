@@ -9,66 +9,65 @@ using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace Divergent.Finance.API
+namespace Divergent.Finance.API;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        Configuration = configuration;
+    }
 
-        public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers().AddNewtonsoftJson();
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers().AddNewtonsoftJson();
 
-            services.AddDbContext<FinanceContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<FinanceContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
-            services.AddCors();
+        services.AddCors();
 
-            services.AddOpenTelemetryTracing(config => config
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Divergent.Finance.API"))
-                .AddZipkinExporter(o =>
-                {
-                    o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
-                })
-                .AddJaegerExporter(c =>
-                {
-                    c.AgentHost = "localhost";
-                    c.AgentPort = 6831;
-                })
-                .AddAspNetCoreInstrumentation()
-                .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
-            );
-        }
+        services.AddOpenTelemetryTracing(config => config
+            .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Divergent.Finance.API"))
+            .AddZipkinExporter(o =>
+            {
+                o.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+            })
+            .AddJaegerExporter(c =>
+            {
+                c.AgentHost = "localhost";
+                c.AgentPort = 6831;
+            })
+            .AddAspNetCoreInstrumentation()
+            .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
+        );
+    }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseCors(policyBuilder =>
-            {
-                policyBuilder.AllowAnyOrigin();
-                policyBuilder.AllowAnyMethod();
-                policyBuilder.AllowAnyHeader();
-            });
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseDeveloperExceptionPage();
         }
+
+        app.UseCors(policyBuilder =>
+        {
+            policyBuilder.AllowAnyOrigin();
+            policyBuilder.AllowAnyMethod();
+            policyBuilder.AllowAnyHeader();
+        });
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }

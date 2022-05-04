@@ -1,51 +1,50 @@
 ﻿using Carter;
 
-namespace PaymentProviders
+namespace PaymentProviders;
+
+public class PaymentProviders : ICarterModule
 {
-    public class PaymentProviders : ICarterModule
-    {
-        private readonly Random _random = new();
+    private readonly Random _random = new();
 
-        public void AddRoutes(IEndpointRouteBuilder app)
+    public void AddRoutes(IEndpointRouteBuilder app)
+    {
+        app.MapGet("/", () => "Hello World");
+
+        app.MapPost("/api/unreliable/processpayment/", (PaymentRequest item) =>
         {
-            app.MapGet("/", () => "Hello World");
+            if (_random.Next(3) == 0)
+                return Results.BadRequest();
 
-            app.MapPost("/api/unreliable/processpayment/", (PaymentRequest item) =>
+            var response = new PaymentResponse
             {
-                if (_random.Next(3) == 0)
-                    return Results.BadRequest();
+                CustomerId = item.CustomerId,
+                PaymentSucceeded = _random.Next(2) != 0
+            };
 
-                var response = new PaymentResponse
-                {
-                    CustomerId = item.CustomerId,
-                    PaymentSucceeded = _random.Next(2) != 0
-                };
+            return Results.Ok(response);
+        });
 
-                return Results.Ok(response);
-            });
-
-            app.MapPost("/api/reliable/processpayment/", (PaymentRequest item) =>
+        app.MapPost("/api/reliable/processpayment/", (PaymentRequest item) =>
+        {
+            var response = new PaymentResponse
             {
-                var response = new PaymentResponse
-                {
-                    CustomerId = item.CustomerId,
-                    PaymentSucceeded = true
-                };
+                CustomerId = item.CustomerId,
+                PaymentSucceeded = true
+            };
 
-                return response;
-            });
-        }
+            return response;
+        });
     }
+}
 
-    public class PaymentRequest
-    {
-        public int CustomerId { get; set; }
-        public double Amount { get; set; }
-    }
+public class PaymentRequest
+{
+    public int CustomerId { get; set; }
+    public double Amount { get; set; }
+}
 
-    public class PaymentResponse
-    {
-        public int CustomerId { get; set; }
-        public bool PaymentSucceeded { get; set; }
-    }
+public class PaymentResponse
+{
+    public int CustomerId { get; set; }
+    public bool PaymentSucceeded { get; set; }
 }

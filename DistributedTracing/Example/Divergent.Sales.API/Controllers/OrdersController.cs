@@ -7,50 +7,49 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Divergent.Sales.API.Controllers
+namespace Divergent.Sales.API.Controllers;
+
+[Route("api/orders")]
+[ApiController]
+public class OrdersController : ControllerBase
 {
-    [Route("api/orders")]
-    [ApiController]
-    public class OrdersController : ControllerBase
+    private readonly IMessageSession _endpoint;
+    private readonly SalesContext _db;
+
+    public OrdersController(IMessageSession endpoint, SalesContext db)
     {
-        private readonly IMessageSession _endpoint;
-        private readonly SalesContext _db;
+        _endpoint = endpoint;
+        _db = db;
+    }
 
-        public OrdersController(IMessageSession endpoint, SalesContext db)
+    [HttpPost("createOrder")]
+    public async Task<dynamic> CreateOrder(dynamic payload)
+    {
+        var customerId = int.Parse((string)payload.customerId);
+        var productIds = ((IEnumerable<dynamic>)payload.products)
+            .Select(product => int.Parse((string)product.productId))
+            .ToList();
+
+        await _endpoint.Send(new SubmitOrderCommand
         {
-            _endpoint = endpoint;
-            _db = db;
-        }
+            CustomerId = customerId,
+            Products = productIds
+        });
 
-        [HttpPost("createOrder")]
-        public async Task<dynamic> CreateOrder(dynamic payload)
-        {
-            var customerId = int.Parse((string)payload.customerId);
-            var productIds = ((IEnumerable<dynamic>)payload.products)
-                .Select(product => int.Parse((string)product.productId))
-                .ToList();
+        return payload;
+    }
 
-            await _endpoint.Send(new SubmitOrderCommand
+    [HttpGet("")]
+    public IEnumerable<dynamic> Get()
+    {
+        return _db.Orders
+            .Select(order => new
             {
-                CustomerId = customerId,
-                Products = productIds
-            });
-
-            return payload;
-        }
-
-        [HttpGet("")]
-        public IEnumerable<dynamic> Get()
-        {
-            return _db.Orders
-                .Select(order => new
-                {
-                    order.Id,
-                    order.CustomerId,
-                    ProductIds = order.Items.Select(item => item.Product.Id).ToList(),
-                    ItemsCount = order.Items.Count
-                })
-                .ToList();
-        }
+                order.Id,
+                order.CustomerId,
+                ProductIds = order.Items.Select(item => item.Product.Id).ToList(),
+                ItemsCount = order.Items.Count
+            })
+            .ToList();
     }
 }

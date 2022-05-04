@@ -6,35 +6,34 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Divergent.Customers.Handlers
+namespace Divergent.Customers.Handlers;
+
+public class OrderSubmittedHandler : NServiceBus.IHandleMessages<OrderSubmittedEvent>
 {
-    public class OrderSubmittedHandler : NServiceBus.IHandleMessages<OrderSubmittedEvent>
+    private readonly CustomersContext _db;
+    private readonly ILogger<OrderSubmittedHandler> _log;
+
+    public OrderSubmittedHandler(CustomersContext db, ILogger<OrderSubmittedHandler> log)
     {
-        private readonly CustomersContext _db;
-        private readonly ILogger<OrderSubmittedHandler> _log;
+        _db = db;
+        _log = log;
+    }
 
-        public OrderSubmittedHandler(CustomersContext db, ILogger<OrderSubmittedHandler> log)
+    public async Task Handle(OrderSubmittedEvent message, NServiceBus.IMessageHandlerContext context)
+    {
+        _log.LogInformation("Handling: OrderSubmittedEvent.");
+
+        var customer = await _db.Customers
+            .Include(c => c.Orders)
+            .Where(c => c.Id == message.CustomerId)
+            .SingleAsync();
+
+        customer.Orders.Add(new Order
         {
-            _db = db;
-            _log = log;
-        }
+            CustomerId = message.CustomerId,
+            OrderId = message.OrderId
+        });
 
-        public async Task Handle(OrderSubmittedEvent message, NServiceBus.IMessageHandlerContext context)
-        {
-            _log.LogInformation("Handling: OrderSubmittedEvent.");
-
-            var customer = await _db.Customers
-                .Include(c => c.Orders)
-                .Where(c => c.Id == message.CustomerId)
-                .SingleAsync();
-
-            customer.Orders.Add(new Order
-            {
-                CustomerId = message.CustomerId,
-                OrderId = message.OrderId
-            });
-
-            await _db.SaveChangesAsync();
-        }
+        await _db.SaveChangesAsync();
     }
 }

@@ -2,25 +2,24 @@
 using Divergent.Sales.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Divergent.Sales.Data.Context
+namespace Divergent.Sales.Data.Context;
+
+public class SalesContext : DbContext
 {
-    public class SalesContext : DbContext
+    public SalesContext(DbContextOptions options) : base(options)
     {
-        public SalesContext(DbContextOptions options) : base(options)
-        {
-        }
+    }
 
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Order> Orders { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Order>()
-                .HasMany(e => e.Items)
-                .WithOne(i => i.Order)
-                .IsRequired();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Order>()
+            .HasMany(e => e.Items)
+            .WithOne(i => i.Order)
+            .IsRequired();
 
-            base.OnModelCreating(modelBuilder);
-        }
+        base.OnModelCreating(modelBuilder);
     }
 }

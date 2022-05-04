@@ -8,51 +8,50 @@ using Divergent.Finance.Data.Models;
 using Divergent.Finance.Messages.Commands;
 using Microsoft.Extensions.Logging;
 
-namespace Divergent.Finance.Handlers
+namespace Divergent.Finance.Handlers;
+
+public class OrderSubmittedHandler : IHandleMessages<OrderSubmittedEvent>
 {
-    public class OrderSubmittedHandler : IHandleMessages<OrderSubmittedEvent>
+    private readonly FinanceContext _db;
+    private readonly ILogger<OrderSubmittedHandler> _logger;
+
+    public OrderSubmittedHandler(FinanceContext db, ILogger<OrderSubmittedHandler> logger)
     {
-        private readonly FinanceContext _db;
-        private readonly ILogger<OrderSubmittedHandler> _logger;
+        _db = db;
+        _logger = logger;
+    }
 
-        public OrderSubmittedHandler(FinanceContext db, ILogger<OrderSubmittedHandler> logger)
+    public async Task Handle(OrderSubmittedEvent message, IMessageHandlerContext context)
+    {
+        _logger.LogInformation("Handle OrderSubmittedEvent");
+
+        double amount = 0;
+
+        var query = from price in _db.Prices
+            where message.Products.Contains(price.ProductId)
+            select price;
+
+        foreach (var price in query)
         {
-            _db = db;
-            _logger = logger;
-        }
-
-        public async Task Handle(OrderSubmittedEvent message, IMessageHandlerContext context)
-        {
-            _logger.LogInformation("Handle OrderSubmittedEvent");
-
-            double amount = 0;
-
-            var query = from price in _db.Prices
-                        where message.Products.Contains(price.ProductId)
-                        select price;
-
-            foreach (var price in query)
+            var op = new OrderItemPrice
             {
-                var op = new OrderItemPrice
-                {
-                    OrderId = message.OrderId,
-                    ItemPrice = price.ItemPrice,
-                    ProductId = price.ProductId
-                };
-
-                amount += price.ItemPrice;
-
-                await _db.OrderItemPrices.AddAsync(op);
-            }
-
-            await _db.SaveChangesAsync();
-
-            await context.SendLocal(new InitiatePaymentProcessCommand
-            {
-                CustomerId = message.CustomerId,
                 OrderId = message.OrderId,
-                Amount = amount
-            });
+                ItemPrice = price.ItemPrice,
+                ProductId = price.ProductId
+            };
+
+            amount += price.ItemPrice;
+
+            await _db.OrderItemPrices.AddAsync(op);
         }
+
+        await _db.SaveChangesAsync();
+
+        await context.SendLocal(new InitiatePaymentProcessCommand
+        {
+            CustomerId = message.CustomerId,
+            OrderId = message.OrderId,
+            Amount = amount
+        });
     }
 }

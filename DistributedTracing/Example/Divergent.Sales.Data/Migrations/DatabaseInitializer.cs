@@ -2,46 +2,45 @@
 using Divergent.Sales.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Divergent.Sales.Data.Migrations
+namespace Divergent.Sales.Data.Migrations;
+
+public static class DatabaseInitializer 
 {
-    public static class DatabaseInitializer 
+    public static void Initialize(SalesContext context)
     {
-        public static void Initialize(SalesContext context)
+        context.Database.EnsureCreated();
+
+        if (context.Products.Any())
         {
-            context.Database.EnsureCreated();
+            return;
+        }
 
-            if (context.Products.Any())
-            {
-                return;
-            }
+        context.Products.AddRange(SeedData.Products().ToArray());
 
-            context.Products.AddRange(SeedData.Products().ToArray());
+        context.Database.OpenConnection();
+        try
+        {
+            context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Products ON");
+            context.SaveChanges();
+            context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Products OFF");
+        }
+        finally
+        {
+            context.Database.CloseConnection();
+        }
 
-            context.Database.OpenConnection();
-            try
-            {
-                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Products ON");
-                context.SaveChanges();
-                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Products OFF");
-            }
-            finally
-            {
-                context.Database.CloseConnection();
-            }
+        context.Orders.AddRange(SeedData.Orders().ToArray());
 
-            context.Orders.AddRange(SeedData.Orders().ToArray());
-
-            context.Database.OpenConnection();
-            try
-            {
-                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Orders ON");
-                context.SaveChanges();
-                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Orders OFF");
-            }
-            finally
-            {
-                context.Database.CloseConnection();
-            }
+        context.Database.OpenConnection();
+        try
+        {
+            context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Orders ON");
+            context.SaveChanges();
+            context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Orders OFF");
+        }
+        finally
+        {
+            context.Database.CloseConnection();
         }
     }
 }

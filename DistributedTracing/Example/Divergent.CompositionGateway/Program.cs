@@ -1,25 +1,16 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Divergent.CompositionGateway
+namespace Divergent.CompositionGateway;
+
+public class Program
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
-            Activity.ForceDefaultIdFormat = true;
+    public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
 
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }

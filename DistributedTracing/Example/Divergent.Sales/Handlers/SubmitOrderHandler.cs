@@ -9,50 +9,49 @@ using Divergent.Sales.Messages.Events;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 
-namespace Divergent.Sales.Handlers
+namespace Divergent.Sales.Handlers;
+
+public class SubmitOrderHandler : IHandleMessages<SubmitOrderCommand>
 {
-    public class SubmitOrderHandler : IHandleMessages<SubmitOrderCommand>
+    private readonly SalesContext _db;
+    private readonly ILogger<SubmitOrderHandler> _log;
+
+    public SubmitOrderHandler(SalesContext db, ILogger<SubmitOrderHandler> log)
     {
-        private readonly SalesContext _db;
-        private readonly ILogger<SubmitOrderHandler> _log;
+        _db = db;
+        _log = log;
+    }
 
-        public SubmitOrderHandler(SalesContext db, ILogger<SubmitOrderHandler> log)
+    public async Task Handle(SubmitOrderCommand message, IMessageHandlerContext context)
+    {
+        _log.LogInformation("Handle SubmitOrderCommand");
+
+        var items = new List<Item>();
+
+        var products = _db.Products.ToList();
+
+        message.Products.ForEach(p => items.Add(new Item
         {
-            _db = db;
-            _log = log;
-        }
+            Product = products.Single(s => s.Id == p)
+        }));
 
-        public async Task Handle(SubmitOrderCommand message, IMessageHandlerContext context)
+        var order = new Order
         {
-            _log.LogInformation("Handle SubmitOrderCommand");
+            CustomerId = message.CustomerId,
+            DateTimeUtc = DateTime.UtcNow,
+            Items = items,
+            State = "New"
+        };
 
-            var items = new List<Item>();
+        await _db.Orders.AddAsync(order);
+        await _db.SaveChangesAsync();
 
-            var products = _db.Products.ToList();
-
-            message.Products.ForEach(p => items.Add(new Item
-            {
-                Product = products.Single(s => s.Id == p)
-            }));
-
-            var order = new Order
-            {
-                CustomerId = message.CustomerId,
-                DateTimeUtc = DateTime.UtcNow,
-                Items = items,
-                State = "New"
-            };
-
-            await _db.Orders.AddAsync(order);
-            await _db.SaveChangesAsync();
-
-            // Publish event
-            await context.Publish(new OrderSubmittedEvent
-            {
-                OrderId = order.Id,
-                CustomerId = message.CustomerId,
-                Products = message.Products,
-            });
-        }
+        // Publish event
+        await context.Publish(new OrderSubmittedEvent
+        {
+            OrderId = order.Id,
+            CustomerId = message.CustomerId,
+            Products = message.Products,
+        });
     }
 }
