@@ -9,7 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Carter" Version="6.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus" Version="1.2.0-rc3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
   </ItemGroup>
 
 </Project>

@@ -7,10 +7,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Divergent.Customers.Data\Divergent.Customers.Data.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
-    <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.1.0" />
-    <PackageReference Include="OpenTelemetry.Exporter.Zipkin" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
+    <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.2.0-rc3" />
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus" Version="1.2.0-rc3" />
+    <PackageReference Include="OpenTelemetry.Exporter.Zipkin" Version="1.2.0-rc3" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc9" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9" />
     <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.0.0-rc9" />
