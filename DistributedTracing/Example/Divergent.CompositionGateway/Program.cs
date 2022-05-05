@@ -6,4 +6,8 @@ var host = Host.CreateDefaultBuilder(args)
         webBuilder.UseStartup<Startup>();
     }).Build();
 
+var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
+
+Console.Title = hostEnvironment.ApplicationName;
+
 host.Run();
