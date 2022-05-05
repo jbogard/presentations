@@ -15,6 +15,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+Console.Title = app.Environment.ApplicationName;
+
 app.MapCarter();
 
 app.Run();

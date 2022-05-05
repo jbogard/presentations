@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
-using Divergent.Sales.Messages.Events;
+﻿using Divergent.Sales.Messages.Events;
 using Divergent.Customers.Data.Context;
 using Divergent.Customers.Data.Models;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Divergent.Customers.Handlers;
 

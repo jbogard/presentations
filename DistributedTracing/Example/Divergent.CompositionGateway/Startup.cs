@@ -1,8 +1,5 @@
-﻿using System;
-using ITOps.ViewModelComposition;
+﻿using ITOps.ViewModelComposition;
 using ITOps.ViewModelComposition.Gateway;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 

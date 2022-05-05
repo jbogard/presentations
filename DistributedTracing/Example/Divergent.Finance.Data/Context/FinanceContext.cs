@@ -1,5 +1,4 @@
-﻿using Divergent.Finance.Data.Migrations;
-using Divergent.Finance.Data.Models;
+﻿using Divergent.Finance.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Divergent.Finance.Data.Context;

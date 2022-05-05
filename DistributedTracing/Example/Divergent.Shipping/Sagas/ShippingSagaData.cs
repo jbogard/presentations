@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NServiceBus;
+﻿using NServiceBus;
 
 namespace Divergent.Shipping.Sagas;
 

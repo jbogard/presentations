@@ -1,5 +1,4 @@
-﻿using Divergent.Sales.Data.Migrations;
-using Divergent.Sales.Data.Models;
+﻿using Divergent.Sales.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Divergent.Sales.Data.Context;

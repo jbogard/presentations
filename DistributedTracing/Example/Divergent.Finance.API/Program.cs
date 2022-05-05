@@ -1,19 +1,13 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+﻿using Divergent.Finance.API;
 
-namespace Divergent.Finance.API;
-
-public class Program
-{
-    public static void Main(string[] args)
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
     {
-        CreateHostBuilder(args).Build().Run();
-    }
+        webBuilder.UseStartup<Startup>();
+    }).Build();
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
-}
+var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
+
+Console.Title = hostEnvironment.ApplicationName;
+
+host.Run();

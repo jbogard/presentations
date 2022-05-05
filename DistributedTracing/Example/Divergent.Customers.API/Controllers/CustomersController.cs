@@ -1,7 +1,4 @@
 ﻿using Divergent.Customers.Data.Context;
-using System.Collections.Generic;
-using System.Linq;
-using Divergent.Customers.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using Divergent.ITOps.Interfaces;
 using Divergent.ITOps.Messages.Commands;
-using Microsoft.Extensions.Logging;
 using NServiceBus;
-using NServiceBus.Logging;
 
 namespace Divergent.ITOps.Handlers;
 

@@ -1,41 +1,38 @@
-﻿using Divergent.Sales.Messages.Commands;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+﻿using Divergent.Sales.API;
+using Divergent.Sales.Messages.Commands;
 using NServiceBus;
 
-namespace Divergent.Sales.API;
+var host = Host.CreateDefaultBuilder(args)
+    .UseNServiceBus(_ =>
+    {
+        var config = new EndpointConfiguration("Sales.API");
 
-public class Program
-{
-    public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
+        config.SendOnly();
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .UseNServiceBus(context =>
-            {
-                var config = new EndpointConfiguration("Sales.API");
+        var transport = config.UseTransport<LearningTransport>();
 
-                config.SendOnly();
+        var routing = transport.Routing();
 
-                var transport = config.UseTransport<LearningTransport>();
+        routing.RouteToEndpoint(typeof(SubmitOrderCommand), "Divergent.Sales");
 
-                var routing = transport.Routing();
+        config.UseSerialization<NewtonsoftSerializer>();
+        config.UsePersistence<LearningPersistence>();
 
-                routing.RouteToEndpoint(typeof(SubmitOrderCommand), "Divergent.Sales");
+        config.SendFailedMessagesTo("error");
 
-                config.UseSerialization<NewtonsoftSerializer>();
-                config.UsePersistence<LearningPersistence>();
+        config.Conventions()
+            .DefiningCommandsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Command"))
+            .DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Event"));
 
-                config.SendFailedMessagesTo("error");
+        return config;
+    })
+    .ConfigureWebHostDefaults(webBuilder =>
+    {
+        webBuilder.UseStartup<Startup>();
+    }).Build();
 
-                config.Conventions()
-                    .DefiningCommandsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Command"))
-                    .DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Event"));
+var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
 
-                return config;
-            })
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
-}
+Console.Title = hostEnvironment.ApplicationName;
+
+host.Run();

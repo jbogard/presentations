@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Divergent.Sales.Data.Context;
+﻿using Divergent.Sales.Data.Context;
 using Divergent.Sales.Data.Models;
 using Divergent.Sales.Messages.Commands;
 using Divergent.Sales.Messages.Events;
-using Microsoft.Extensions.Logging;
 using NServiceBus;
 
 namespace Divergent.Sales.Handlers;

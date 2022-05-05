@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+﻿using Divergent.Customers.API;
 
-namespace Divergent.Customers.API;
+var host = Host.CreateDefaultBuilder()
+    .ConfigureWebHostDefaults(webBuilder =>
+    {
+        webBuilder.UseStartup<Startup>();
+    }).Build();
 
-public class Program
-{
-    public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
+var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
-}
+Console.Title = hostEnvironment.ApplicationName;
+
+host.Run();
