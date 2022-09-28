@@ -1,0 +1,14 @@
+﻿@page
+@model AdventureWorksDistributed.UI.Pages.Products.IndexModel
+
+@{
+    ViewData["Title"] = "View Products";
+}
+
+<h2>@Model.Category.Name</h2>
+
+@foreach (var subcategory in Model.Category.ProductSubcategory)
+{
+    <p><a asp-page="/Products/List" asp-route-id="@subcategory.ProductSubcategoryId">@subcategory.Name</a></p>
+}
+

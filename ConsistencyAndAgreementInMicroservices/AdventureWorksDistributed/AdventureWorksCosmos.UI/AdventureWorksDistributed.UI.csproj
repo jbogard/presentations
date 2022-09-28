@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AdventureWorksCosmos.Core\AdventureWorksDistributed.Core.csproj" />
+    <ProjectReference Include="..\AdventureWorksCosmos.Products\AdventureWorksDistributed.Products.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.Cart.Contracts\AdventureWorksDistributed.Cart.Contracts.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.Orders.Contracts\AdventureWorksDistributed.Orders.Contracts.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,31 @@
+﻿@page
+@using AdventureWorksDistributed.Orders.Contracts
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model AdventureWorksDistributed.UI.Pages.Orders.ShowModel
+@{
+    ViewData["Title"] = "View Order";
+}
+
+<h2>View Order</h2>
+
+<p>Order total: $@Html.DisplayFor(m => m.Order.Total)</p>
+<p>@Html.DisplayFor(m => m.Order.Status)</p>
+<p>@Html.DisplayFor(m => m.Order.CustomerFirstName)</p>
+<p>@Html.DisplayFor(m => m.Order.CustomerMiddleName)</p>
+<p>@Html.DisplayFor(m => m.Order.CustomerLastName)</p>
+
+
+@if (Model.Order.Status == Status.New)
+{
+    <form asp-controller="Order" asp-action="Reject" asp-route-id="@Model.Order.Id" method="post">
+        <input type="submit" value="Reject"/>
+    </form>
+    <form asp-controller="Order" asp-action="Approve" asp-route-id="@Model.Order.Id" method="post">
+        <input type="submit" value="Approve"/>
+    </form>
+}
+
+@foreach (var orderItem in Model.Order.Items)
+{
+    <p>@orderItem.ProductName</p>
+}

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="NServiceBus" Version="7.7.4" />
+    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
+    <PackageReference Include="NServiceBus.Persistence.CosmosDB" Version="1.1.1" />
+    <PackageReference Include="NServiceBus.RabbitMQ" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdventureWorksCosmos.Core\AdventureWorksDistributed.Core.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.Fulfillment.Contracts\AdventureWorksDistributed.Fulfillment.Contracts.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.Orders.Contracts\AdventureWorksDistributed.Orders.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

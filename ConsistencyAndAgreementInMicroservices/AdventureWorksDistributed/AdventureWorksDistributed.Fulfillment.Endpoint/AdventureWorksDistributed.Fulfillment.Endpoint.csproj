@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-AdventureWorksDistributed.Fulfillment.Endpoint-48D2217A-5ACD-4BED-B8E0-5CE78B3591F9</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.18.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="NServiceBus" Version="7.7.4" />
+    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
+    <PackageReference Include="NServiceBus.Persistence.CosmosDB" Version="1.1.1" />
+    <PackageReference Include="NServiceBus.RabbitMQ" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdventureWorksDistributed.Fulfillment.Contracts\AdventureWorksDistributed.Fulfillment.Contracts.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.Inventory.Contracts\AdventureWorksDistributed.Inventory.Contracts.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.Orders.Contracts\AdventureWorksDistributed.Orders.Contracts.csproj" />
+  </ItemGroup>
+</Project>

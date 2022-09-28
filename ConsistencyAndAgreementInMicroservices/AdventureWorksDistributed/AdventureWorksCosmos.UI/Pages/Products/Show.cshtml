@@ -1,0 +1,11 @@
+﻿@page
+@model AdventureWorksDistributed.UI.Pages.Products.ShowModel
+@{
+    ViewData["Title"] = "View Product";
+}
+
+<h2>View @Model.Product.Name</h2>
+
+<h3>@Model.Product.ListPrice.ToString("c")</h3>
+<p>@Model.Product.ProductModel.ProductModelProductDescriptionCulture.First().ProductDescription.Description</p>
+<p>@Html.ActionLink("Add to Cart", "AddItem", "Cart", new { id = Model.Product.ProductId })</p>

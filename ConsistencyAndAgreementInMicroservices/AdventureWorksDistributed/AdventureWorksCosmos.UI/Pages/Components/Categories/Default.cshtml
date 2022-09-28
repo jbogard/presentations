@@ -1,0 +1,9 @@
+﻿@model List<AdventureWorksDistributed.Products.Models.ProductCategory>
+
+<ul class="nav navbar-nav">
+    @foreach (var category in Model)
+    {
+        <li><a asp-page="/Products/Index" asp-route-id="@category.ProductCategoryId">@category.Name</a></li>
+    }
+</ul>
+

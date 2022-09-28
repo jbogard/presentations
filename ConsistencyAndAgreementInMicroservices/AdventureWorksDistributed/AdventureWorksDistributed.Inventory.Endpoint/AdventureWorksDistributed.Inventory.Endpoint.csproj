@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-AdventureWorksDistributed.Inventory.Endpoint-C878949D-52E9-4F91-AAF1-894B91094C45</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="NServiceBus" Version="7.7.4" />
+    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
+    <PackageReference Include="NServiceBus.Persistence.CosmosDB" Version="1.1.1" />
+    <PackageReference Include="NServiceBus.RabbitMQ" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdventureWorksCosmos.Core\AdventureWorksDistributed.Core.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.Inventory.Contracts\AdventureWorksDistributed.Inventory.Contracts.csproj" />
+  </ItemGroup>
+</Project>

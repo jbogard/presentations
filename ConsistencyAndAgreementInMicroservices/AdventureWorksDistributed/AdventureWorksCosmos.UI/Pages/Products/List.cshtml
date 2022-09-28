@@ -1,0 +1,15 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model AdventureWorksDistributed.UI.Pages.Products.ListModel
+@{
+    ViewData["Title"] = "View Subcategory";
+}
+
+<h2>@Model.Subcategory.Name</h2>
+
+@foreach (var product in Model.Subcategory.Product)
+{
+    <p><a asp-page="/Products/Show" asp-route-id="@product.ProductId">@product.Name</a> - @product.ListPrice.ToString("c")
+        <a asp-controller="Cart" asp-action="AddItem" asp-route-id="@product.ProductId">[Add to Cart]</a>
+    </p>
+}
