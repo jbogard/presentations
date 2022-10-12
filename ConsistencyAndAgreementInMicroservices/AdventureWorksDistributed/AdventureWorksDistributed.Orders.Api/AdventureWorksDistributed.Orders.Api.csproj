@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="NServiceBus" Version="7.7.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="NServiceBus" Version="7.8.0" />
     <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
-    <PackageReference Include="NServiceBus.Persistence.CosmosDB" Version="1.1.1" />
-    <PackageReference Include="NServiceBus.RabbitMQ" Version="7.0.0" />
+    <PackageReference Include="NServiceBus.Persistence.CosmosDB" Version="1.2.0" />
+    <PackageReference Include="NServiceBus.RabbitMQ" Version="7.0.3" />
   </ItemGroup>
 
   <ItemGroup>
