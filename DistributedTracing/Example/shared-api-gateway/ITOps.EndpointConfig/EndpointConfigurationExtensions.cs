@@ -1,7 +1,6 @@
 using System;
 using NServiceBus;
 using NServiceBus.Configuration.AdvancedExtensibility;
-using NServiceBus.Extensions.Diagnostics;
 
 namespace ITOps.EndpointConfig
 {
@@ -11,7 +10,7 @@ namespace ITOps.EndpointConfig
             this EndpointConfiguration endpointConfiguration,
             Action<RoutingSettings<LearningTransport>> configureRouting = null)
         {
-            endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
+            endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
             endpointConfiguration.Recoverability().Delayed(c => c.NumberOfRetries(0));
 
             var transport = endpointConfiguration.UseTransport<LearningTransport>();
@@ -28,15 +27,9 @@ namespace ITOps.EndpointConfig
             conventions.DefiningEventsAs(t => t.Namespace != null && t.Namespace.StartsWith("Divergent") && t.Namespace.EndsWith("Events") && t.Name.EndsWith("Event"));
 
             endpointConfiguration.EnableInstallers();
+            endpointConfiguration.EnableOpenTelemetry();
 
             configureRouting?.Invoke(routing);
-
-            var settings = endpointConfiguration.GetSettings();
-
-            settings.Set<InstrumentationOptions>(new InstrumentationOptions
-            {
-                CaptureMessageBody = true
-            });
 
             return endpointConfiguration;
         }

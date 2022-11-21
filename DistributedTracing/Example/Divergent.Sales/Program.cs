@@ -25,7 +25,7 @@ var host = Host.CreateDefaultBuilder((string[])args)
                 c.AgentHost = "localhost";
                 c.AgentPort = 6831;
             })
-            .AddNServiceBusInstrumentation()
+            .AddSource("NServiceBus.Core")
             .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
         );
     })

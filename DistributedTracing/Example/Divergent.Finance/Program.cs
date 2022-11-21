@@ -28,7 +28,7 @@ var host = Host.CreateDefaultBuilder(args)
                 c.AgentPort = 6831;
             })
             .AddHttpClientInstrumentation()
-            .AddNServiceBusInstrumentation()
+            .AddSource("NServiceBus.Core")
             .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
         );
 

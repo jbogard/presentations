@@ -15,7 +15,7 @@ var host = Host.CreateDefaultBuilder(args)
 
         routing.RouteToEndpoint(typeof(SubmitOrderCommand), "Divergent.Sales");
 
-        config.UseSerialization<NewtonsoftSerializer>();
+        config.UseSerialization<NewtonsoftJsonSerializer>();
         config.UsePersistence<LearningPersistence>();
 
         config.SendFailedMessagesTo("error");

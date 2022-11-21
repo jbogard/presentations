@@ -36,7 +36,7 @@ public class Startup
                 c.AgentPort = 6831;
             })
             .AddAspNetCoreInstrumentation()
-            .AddNServiceBusInstrumentation()
+            .AddSource("NServiceBus.Core")
             .AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
         );
     }
