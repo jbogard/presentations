@@ -1,5 +1,6 @@
 using AdventureWorksDistributed.Inventory.Contracts;
 using AdventureWorksDistributed.Orders.Contracts;
+using AdventureWorksDistributed.PartitionKeys;
 using Microsoft.Azure.Cosmos;
 using NServiceBus;
 
@@ -15,10 +16,10 @@ IHost host = Host.CreateDefaultBuilder(args)
         var routing = transport.Routing();
 
         routing.RouteToEndpoint(
-            typeof(IProvideProductId).Assembly,
+            typeof(StockRequest).Assembly,
             "AdventureWorksDistributed.Inventory");
         routing.RouteToEndpoint(
-            typeof(IProvideOrderId).Assembly,
+            typeof(OrderCreated).Assembly,
             "AdventureWorksDistributed.Orders");
 
         var persistence = endpointConfiguration.UsePersistence<CosmosPersistence>()

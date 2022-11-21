@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdventureWorksDistributed.Cart.Contracts\AdventureWorksDistributed.Cart.Contracts.csproj" />
+    <ProjectReference Include="..\AdventureWorksDistributed.PartitionKeys\AdventureWorksDistributed.PartitionKeys.csproj" />
   </ItemGroup>
 
 </Project>

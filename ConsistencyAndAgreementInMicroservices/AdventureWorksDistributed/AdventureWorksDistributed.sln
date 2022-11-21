@@ -20,23 +20,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Products", "Products", "{D7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fulfillment", "Fulfillment", "{395709BD-D1CA-464E-AAD9-D3B37BCF3148}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.Fulfillment.Endpoint", "AdventureWorksDistributed.Fulfillment.Endpoint\AdventureWorksDistributed.Fulfillment.Endpoint.csproj", "{6FD58174-5531-4AF8-A6DF-AD19EBDA207B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Fulfillment.Endpoint", "AdventureWorksDistributed.Fulfillment.Endpoint\AdventureWorksDistributed.Fulfillment.Endpoint.csproj", "{6FD58174-5531-4AF8-A6DF-AD19EBDA207B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.Fulfillment.Contracts", "AdventureWorksDistributed.Fulfillment.Contracts\AdventureWorksDistributed.Fulfillment.Contracts.csproj", "{EDCFF3F4-82FD-419B-81A4-9D871B187812}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Fulfillment.Contracts", "AdventureWorksDistributed.Fulfillment.Contracts\AdventureWorksDistributed.Fulfillment.Contracts.csproj", "{EDCFF3F4-82FD-419B-81A4-9D871B187812}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inventory", "Inventory", "{A93086C2-B124-4515-ADF2-71E22C1BFB02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.Inventory.Endpoint", "AdventureWorksDistributed.Inventory.Endpoint\AdventureWorksDistributed.Inventory.Endpoint.csproj", "{3B50324D-BB78-452B-8F79-3737204CFA20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Inventory.Endpoint", "AdventureWorksDistributed.Inventory.Endpoint\AdventureWorksDistributed.Inventory.Endpoint.csproj", "{3B50324D-BB78-452B-8F79-3737204CFA20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.Inventory.Contracts", "AdventureWorksDistributed.Inventory.Contracts\AdventureWorksDistributed.Inventory.Contracts.csproj", "{7696B44C-CDBF-4537-A1F9-1190400B60BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Inventory.Contracts", "AdventureWorksDistributed.Inventory.Contracts\AdventureWorksDistributed.Inventory.Contracts.csproj", "{7696B44C-CDBF-4537-A1F9-1190400B60BA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orders", "Orders", "{EF703F86-1A94-461B-A1AA-17564F6D2680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.Orders.Api", "AdventureWorksDistributed.Orders.Api\AdventureWorksDistributed.Orders.Api.csproj", "{66CF4658-79B0-45EA-8B49-8B276F11E1B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Orders.Api", "AdventureWorksDistributed.Orders.Api\AdventureWorksDistributed.Orders.Api.csproj", "{66CF4658-79B0-45EA-8B49-8B276F11E1B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.Orders.Contracts", "AdventureWorksDistributed.Orders.Contracts\AdventureWorksDistributed.Orders.Contracts.csproj", "{F80A256C-EA88-41B4-8D80-81A7F99529AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Orders.Contracts", "AdventureWorksDistributed.Orders.Contracts\AdventureWorksDistributed.Orders.Contracts.csproj", "{F80A256C-EA88-41B4-8D80-81A7F99529AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.Cart.Contracts", "AdventureWorksDistributed.Cart.Contracts\AdventureWorksDistributed.Cart.Contracts.csproj", "{25FC705C-DBA9-4AB4-8977-48B39EFEC06D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Cart.Contracts", "AdventureWorksDistributed.Cart.Contracts\AdventureWorksDistributed.Cart.Contracts.csproj", "{25FC705C-DBA9-4AB4-8977-48B39EFEC06D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.PartitionKeys", "AdventureWorksDistributed.PartitionKeys\AdventureWorksDistributed.PartitionKeys.csproj", "{AF3BACA0-A3D1-4B9A-8090-67911773A882}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,6 +86,10 @@ Global
 		{25FC705C-DBA9-4AB4-8977-48B39EFEC06D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25FC705C-DBA9-4AB4-8977-48B39EFEC06D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25FC705C-DBA9-4AB4-8977-48B39EFEC06D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF3BACA0-A3D1-4B9A-8090-67911773A882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF3BACA0-A3D1-4B9A-8090-67911773A882}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF3BACA0-A3D1-4B9A-8090-67911773A882}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF3BACA0-A3D1-4B9A-8090-67911773A882}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
-﻿using NServiceBus;
+﻿using AdventureWorksDistributed.PartitionKeys;
+using NServiceBus;
 
 namespace AdventureWorksDistributed.Orders.Contracts;
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="NServiceBus" Version="7.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdventureWorksDistributed.PartitionKeys\AdventureWorksDistributed.PartitionKeys.csproj" />
   </ItemGroup>
 
 </Project>

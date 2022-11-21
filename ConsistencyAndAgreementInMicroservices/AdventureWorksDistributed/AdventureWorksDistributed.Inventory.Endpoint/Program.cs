@@ -1,5 +1,6 @@
 using AdventureWorksDistributed.Core.Infrastructure;
 using AdventureWorksDistributed.Inventory.Contracts;
+using AdventureWorksDistributed.PartitionKeys;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
@@ -38,7 +39,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             .ExtractPartitionKeyFromMessage<IProvideProductId>(
                 provideProductId => new PartitionKey(provideProductId.ProductId.ToString()));
 
-        //endpointConfiguration.EnableOutbox();
+        endpointConfiguration.EnableOutbox();
 
         endpointConfiguration.EnableInstallers();
 

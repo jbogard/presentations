@@ -1,5 +1,5 @@
 using AdventureWorksDistributed.Core.Infrastructure;
-using AdventureWorksDistributed.Orders.Contracts;
+using AdventureWorksDistributed.PartitionKeys;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;

@@ -1,4 +1,4 @@
-﻿using AdventureWorksDistributed.Orders.Contracts;
+﻿using AdventureWorksDistributed.PartitionKeys;
 using NServiceBus;
 
 namespace AdventureWorksDistributed.Inventory.Contracts;
