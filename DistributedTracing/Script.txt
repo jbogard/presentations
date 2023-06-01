@@ -99,19 +99,126 @@ activity?.SetTag("baz", new int[] { 1, 2, 3 });
 logger.LogInformation("Hello from {country} it's {time} again.", "USA", DateTime.Now);
 
 
-## DiagnosticsPoC
 
-- Show dependencies, code
-- Run just the web app
-- Show rabbit
-- Run the whole thing, show zipkin and jaeger
+
+
+var honeycombOptions = context.Configuration.GetHoneycombOptions();
+
+services.AddOpenTelemetry()
+    .WithTracing(builder =>
+    {
+        builder
+            .ConfigureResource(resource => resource.AddService(Program.EndpointName))
+            .AddHoneycomb(honeycombOptions)
+            .AddZipkinExporter(o => { o.Endpoint = new Uri("http://localhost:9411/api/v2/spans"); })
+            .AddJaegerExporter(c =>
+            {
+                c.AgentHost = "localhost";
+                c.AgentPort = 6831;
+            });
+    })
+    ;
+
+.AddAspNetCoreInstrumentation()
+
+.AddSqlClientInstrumentation()
+
+endpointConfiguration.EnableOpenTelemetry();
+
+.AddSource("NServiceBus.Core")
+
+.AddHttpClientInstrumentation()
+
+mongoClientSettings.ClusterConfigurator = cb =>
+    cb.Subscribe(new DiagnosticsActivityEventSubscriber(
+        new InstrumentationOptions
+        {
+            CaptureCommandText = true
+        }));
+
+.AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources")
+
+mongoClientSettings.ClusterConfigurator = cb =>
+    cb.Subscribe(new DiagnosticsActivityEventSubscriber());
+
+
+.AddSqlClientInstrumentation(opt => opt.SetDbStatementForText = true)
+
+mongoClientSettings.ClusterConfigurator = cb =>
+    cb.Subscribe(new DiagnosticsActivityEventSubscriber(
+        new InstrumentationOptions
+        {
+            CaptureCommandText = true
+        }));
+
+
+
+
+
 
 var activityFeature = HttpContext.Features.Get<IHttpActivityFeature>();
 
-activityFeature?.Activity.AddBaggage("operation.id", command.Id.ToString());
+activityFeature?.Activity.AddTag("operation.id", command.Id.ToString());
+
+
 
 
 var activityFeature = HttpContext.Features.Get<IHttpActivityFeature>();
 
-activityFeature?.Activity.AddBaggage("operation.id", @event.Id.ToString());
+activityFeature?.Activity.AddTag("operation.id", @event.Id.ToString());
+
+
+AddBaggage
+
+var listener = new ActivityListener
+{
+    ShouldListenTo = _ => true,
+    ActivityStopped = activity =>
+    {
+        foreach (var (key, value) in activity.Baggage)
+        {
+            activity.AddTag(key, value);
+        }
+    }
+};
+ActivitySource.AddActivityListener(listener);
+
+if (context.Extensions.TryGet(out Activity currentActivity))
+{
+    currentActivity.AddTag("code.randomvalue", next);
+}
+
+
+
+.WithMetrics(builder =>
+    {
+        builder
+            .ConfigureResource(resource => resource.AddService(Program.EndpointName))
+            .AddAspNetCoreInstrumentation()
+            .AddMeter("NServiceBus.Core")
+            .AddPrometheusExporter(options =>
+            {
+                options.ScrapeResponseCacheDurationMilliseconds = 0;
+            });
+    })
+
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
+
+webHostBuilder.Configure(app =>
+{
+    app.UseOpenTelemetryPrometheusScrapingEndpoint();
+});
+
+
+
+            .ConfigureLogging(builder =>
+            {
+                builder.AddOpenTelemetry(options =>
+                {
+                    options.AddConsoleExporter();
+                });
+            })
+
+
 
