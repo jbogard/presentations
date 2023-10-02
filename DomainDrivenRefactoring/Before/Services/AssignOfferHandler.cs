@@ -21,7 +21,7 @@ namespace Before.Services
             _httpClient = httpClient;
         }
 
-        public async Task<Unit> Handle(AssignOfferRequest request, CancellationToken cancellationToken)
+        public async Task Handle(AssignOfferRequest request, CancellationToken cancellationToken)
         {
             var member = await _appDbContext.Members.FindAsync(request.MemberId, cancellationToken);
             var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId, cancellationToken);
@@ -66,8 +66,6 @@ namespace Before.Services
             await _appDbContext.Offers.AddAsync(offer, cancellationToken);
 
             await _appDbContext.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
     }
 }

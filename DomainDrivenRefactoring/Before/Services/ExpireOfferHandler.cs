@@ -13,7 +13,7 @@ namespace Before.Services
 
         public ExpireOfferHandler(AppDbContext appDbContext) => _appDbContext = appDbContext;
 
-        public async Task<Unit> Handle(ExpireOfferRequest request, CancellationToken cancellationToken)
+        public async Task Handle(ExpireOfferRequest request, CancellationToken cancellationToken)
         {
             var member = await _appDbContext.Members
                 .Include(m => m.AssignedOffers)
@@ -26,8 +26,6 @@ namespace Before.Services
             member.NumberOfActiveOffers--;
 
             await _appDbContext.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
     }
 }
