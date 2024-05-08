@@ -1,0 +1,64 @@
+Refactorings:
+- Compose method
+-- Method for calculate offer value, expiration date, assign offer, and save offer
+-- Let's go to each method
+- Extract class
+-- Extract class from method (CalculateOfferValue -> OfferValueCalculator)
+- Rename method (CalculateOfferValue -> Calculate)
+- Extract interface
+- Field, use base type where possible
+- Introduce parameter
+-- Also add the DI configuration (Maybe)
+
+SHORT VERSION
+- Make member non-static (Calculate Expiration Date)
+
+LONG VERSION
+- Move member (Calculate expiration date -> OfferType)
+- Make member non-static
+-- Undo, then make member non-static directly
+
+
+- Encapsulate collection
+-- For member -> offer
+-- Want to have bi-directional relationship
+-- Bunch of actions I don't support
+-- Member.AddOffer
+--- Extract method, make method non-static
+
+- Encapsulated operations
+-- Member.AssignOffer()
+- Double dispatch
+-- calculating discount percentage
+
+- Introduce constructor
+-- Adding Member to offer ctor
+-- inlining value
+- Private setters
+-- Removing Offer.MemberAssigned()
+
+MAYBE
+
+- Primitive obsession
+-- Offer Expiration Type - sliding/absolute
+-- Create enumeration classes (SmartEnum<ExpirationType>)
+-- Make switch just use constants
+-- Move method to enum class
+-- Extract method and make method non-static for OfferType
+-- Calculate based on double dispatch w/ offer type
+
+LONG VERSION
+-- EF Core, use OnModelCreating, modelBuilder.Entity.Property(...).HasConversion()
+
+
+
+
+
+
+
+
+
+
+
+
+
