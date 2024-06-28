@@ -84,4 +84,60 @@ public class OfferService
 
         await _appDbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task ReassignOffers(Guid originalMemberId, Guid targetMemberId, CancellationToken cancellationToken)
+    {
+        var originalMember = await _appDbContext.Members
+            .Include(m => m.AssignedOffers)
+            .ThenInclude(offer => offer.Type)
+            .SingleOrDefaultAsync(m => m.Id == originalMemberId, cancellationToken);
+
+        var targetMember = await _appDbContext.Members
+            .Include(m => m.AssignedOffers)
+            .ThenInclude(offer => offer.Type)
+            .SingleOrDefaultAsync(m => m.Id == targetMemberId, cancellationToken);
+
+        foreach (var offer in originalMember.AssignedOffers)
+        {
+            // Calculate offer value
+            var response = await _httpClient.GetAsync(
+                $"/calculate-offer-value?email={targetMember.Email}&offerType={offer.Type.Name}",
+                cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            var value = await JsonSerializer.DeserializeAsync<int>(responseStream, cancellationToken: cancellationToken);
+            
+            var dateExpiring = offer.DateExpiring;
+
+            // Calculate offer-type specific values
+            if (offer.Type is FixedOfferType fixedOfferType)
+            {
+                value = (int) Math.Round(value * fixedOfferType.Multiplier);
+            }
+            else if (offer.Type is AssignmentOfferType assignmentOfferType)
+            {
+                if (assignmentOfferType.CanExtend)
+                {
+                    dateExpiring = DateTime.Today.AddDays(assignmentOfferType.DaysValid);
+                }
+            }
+
+            // Assign new offer to target member
+            var targetOffer = new Offer
+            {
+                MemberAssigned = targetMember,
+                DateExpiring = dateExpiring,
+                Type = offer.Type,
+                Value = value
+            };
+            targetMember.AssignedOffers.Add(targetOffer);
+            targetMember.NumberOfActiveOffers++;
+            
+            await _appDbContext.Offers.AddAsync(targetOffer, cancellationToken);
+        }
+
+        await _appDbContext.SaveChangesAsync(cancellationToken);
+    }
 }

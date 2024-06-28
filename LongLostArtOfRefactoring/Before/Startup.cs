@@ -39,5 +39,6 @@ public class Startup
         var offerService = app.ApplicationServices.GetRequiredService<OfferService>();
         offerService.AssignOffer(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
         offerService.ExpireOffer(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
+        offerService.ReassignOffers(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
     }
 }
