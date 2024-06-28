@@ -1,9 +1,8 @@
 using System;
 
-namespace Before.Model
+namespace Before.Model;
+
+public abstract class Entity
 {
-    public abstract class Entity
-    {
-        public Guid Id { get; protected set; }
-    }
+    public Guid Id { get; protected set; }
 }

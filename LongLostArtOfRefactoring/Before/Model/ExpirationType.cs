@@ -1,8 +1,7 @@
-namespace Before.Model
+namespace Before.Model;
+
+public enum ExpirationType
 {
-    public enum ExpirationType
-    {
-        Assignment = 1,
-        Fixed = 2
-    }
+    Assignment = 1,
+    Fixed = 2
 }

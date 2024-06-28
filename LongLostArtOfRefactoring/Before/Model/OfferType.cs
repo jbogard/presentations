@@ -1,12 +1,11 @@
 using System;
 
-namespace Before.Model
+namespace Before.Model;
+
+public class OfferType
 {
-	public class OfferType
-	{
-		public string Name { get; set; }
-		public ExpirationType ExpirationType { get; set; }
-		public int DaysValid { get; set; }
-		public DateTime? BeginDate { get; set; }
-	}
+	public string Name { get; set; }
+	public ExpirationType ExpirationType { get; set; }
+	public int DaysValid { get; set; }
+	public DateTime? BeginDate { get; set; }
 }

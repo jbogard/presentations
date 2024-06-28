@@ -1,23 +1,22 @@
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 
-namespace After.Services
+namespace After.Services;
+
+public class AssignOfferHandler
 {
-    public class AssignOfferHandler : IRequestHandler<AssignOfferRequest>
-    {
-        private readonly AppDbContext _appDbContext;
-        private readonly IOfferValueCalculator _offerValueCalculator;
+    private readonly AppDbContext _appDbContext;
+    private readonly IOfferValueCalculator _offerValueCalculator;
 
-        public AssignOfferHandler(
-            AppDbContext appDbContext, IOfferValueCalculator offerValueCalculator)
-        {
+    public AssignOfferHandler(
+        AppDbContext appDbContext, IOfferValueCalculator offerValueCalculator)
+    {
             _appDbContext = appDbContext;
             _offerValueCalculator = offerValueCalculator;
         }
 
-        public async Task Handle(AssignOfferRequest request, CancellationToken cancellationToken)
-        {
+    public async Task Handle(AssignOfferRequest request, CancellationToken cancellationToken)
+    {
             var member = await _appDbContext.Members.FindAsync(request.MemberId, cancellationToken);
 
             var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId, cancellationToken);
@@ -28,6 +27,4 @@ namespace After.Services
 
             await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-    }
-
 }
