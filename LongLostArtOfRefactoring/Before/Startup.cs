@@ -15,7 +15,7 @@ public class Startup
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<OfferService>();
+        services.AddTransient<OfferReassigner>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,9 +36,9 @@ public class Startup
             });
         });
 
-        var offerService = app.ApplicationServices.GetRequiredService<OfferService>();
-        offerService.AssignOffer(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
-        offerService.ExpireOffer(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
+        var offerService = app.ApplicationServices.GetRequiredService<OfferReassigner>();
+        offerService.OfferAssigner.AssignOffer(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
+        offerService.OfferExpirer.ExpireOffer(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
         offerService.ReassignOffers(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None);
     }
 }

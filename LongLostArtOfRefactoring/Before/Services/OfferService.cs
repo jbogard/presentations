@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Before.Services;
 
-public class OfferService
+public class OfferAssigner
 {
     private readonly AppDbContext _appDbContext;
     private readonly HttpClient _httpClient;
 
-    public OfferService(
+    public OfferAssigner(
         AppDbContext appDbContext,
         HttpClient httpClient)
     {
@@ -22,39 +22,27 @@ public class OfferService
         _httpClient = httpClient;
     }
 
- 
-    public async Task AssignOffer(Guid memberId, Guid offerTypeId, CancellationToken cancellationToken)
+    public async Task Assign(Guid memberId, Guid offerTypeId, CancellationToken cancellationToken)
     {
-        var member = await _appDbContext.Members.FindAsync(memberId, cancellationToken);
-        var offerType = await _appDbContext.OfferTypes.FindAsync(offerTypeId, cancellationToken);
+        var member = await _appDbContext.Members.FindAsync([memberId], cancellationToken);
+        var offerType = await _appDbContext.OfferTypes.FindAsync([offerTypeId], cancellationToken);
 
         // Calculate offer value
-        var response = await _httpClient.GetAsync(
-            $"/calculate-offer-value?email={member.Email}&offerType={offerType.Name}",
-            cancellationToken);
-
-        response.EnsureSuccessStatusCode();
-
-        await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        var value = await JsonSerializer.DeserializeAsync<int>(responseStream, cancellationToken: cancellationToken);
+        var value = await CalculateOfferValue(member, offerType, cancellationToken);
 
         // Calculate expiration date
-        DateTime dateExpiring;
-
-        switch (offerType.ExpirationType)
-        {
-            case ExpirationType.Assignment:
-                dateExpiring = DateTime.Today.AddDays(offerType.DaysValid);
-                break;
-            case ExpirationType.Fixed:
-                dateExpiring = offerType.BeginDate?.AddDays(offerType.DaysValid)
-                               ?? throw new InvalidOperationException();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        var dateExpiring = offerType.CalculateExpirationDate();
 
         // Assign offer
+        var offer = AssignOffer(member, offerType, value, dateExpiring);
+
+        await _appDbContext.Offers.AddAsync(offer, cancellationToken);
+
+        await _appDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static Offer AssignOffer(Member member, OfferType offerType, int value, DateTime dateExpiring)
+    {
         var offer = new Offer
         {
             MemberAssigned = member,
@@ -64,12 +52,32 @@ public class OfferService
         };
         member.AssignedOffers.Add(offer);
         member.NumberOfActiveOffers++;
-
-        await _appDbContext.Offers.AddAsync(offer, cancellationToken);
-
-        await _appDbContext.SaveChangesAsync(cancellationToken);
+        return offer;
     }
-    
+
+    private async Task<int> CalculateOfferValue(Member member, OfferType offerType, CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.GetAsync(
+            $"/calculate-offer-value?email={member.Email}&offerType={offerType.Name}",
+            cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var value = await JsonSerializer.DeserializeAsync<int>(responseStream, cancellationToken: cancellationToken);
+        return value;
+    }
+}
+
+public class OfferExpirer
+{
+    private readonly AppDbContext _appDbContext;
+
+    public OfferExpirer(AppDbContext appDbContext)
+    {
+        _appDbContext = appDbContext;
+    }
+
     public async Task ExpireOffer(Guid memberId, Guid offerId, CancellationToken cancellationToken)
     {
         var member = await _appDbContext.Members
@@ -83,6 +91,20 @@ public class OfferService
         member.NumberOfActiveOffers--;
 
         await _appDbContext.SaveChangesAsync(cancellationToken);
+    }
+}
+
+public class OfferReassigner
+{
+    private readonly AppDbContext _appDbContext;
+    private readonly HttpClient _httpClient;
+
+    public OfferReassigner(
+        AppDbContext appDbContext,
+        HttpClient httpClient)
+    {
+        _appDbContext = appDbContext;
+        _httpClient = httpClient;
     }
 
     public async Task ReassignOffers(Guid originalMemberId, Guid targetMemberId, CancellationToken cancellationToken)
