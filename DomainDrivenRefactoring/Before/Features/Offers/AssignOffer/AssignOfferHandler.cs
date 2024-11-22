@@ -5,16 +5,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Before.Model;
 using Before.Services;
-using MediatR;
 
 namespace Before.Features.Offers.AssignOffer
 {
-    public class AssignOfferHandler : IRequestHandler<AssignOfferRequest>
+    public class AssignOfferService
     {
         private readonly AppDbContext _appDbContext;
         private readonly HttpClient _httpClient;
 
-        public AssignOfferHandler(
+        public AssignOfferService(
             AppDbContext appDbContext,
             HttpClient httpClient)
         {
@@ -22,10 +21,10 @@ namespace Before.Features.Offers.AssignOffer
             _httpClient = httpClient;
         }
 
-        public async Task Handle(AssignOfferRequest request, CancellationToken cancellationToken)
+        public async Task Assign(AssignOfferRequest request, CancellationToken cancellationToken)
         {
-            var member = await _appDbContext.Members.FindAsync(request.MemberId, cancellationToken);
-            var offerType = await _appDbContext.OfferTypes.FindAsync(request.OfferTypeId, cancellationToken);
+            var member = await _appDbContext.Members.FindAsync([request.MemberId], cancellationToken);
+            var offerType = await _appDbContext.OfferTypes.FindAsync([request.OfferTypeId], cancellationToken);
 
             // Calculate offer value
             var response = await _httpClient.GetAsync(

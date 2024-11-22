@@ -3,18 +3,17 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Before.Services;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Before.Features.Offers.ExpireOffer
 {
-    public class ExpireOfferHandler : IRequestHandler<ExpireOfferRequest>
+    public class ExpireOfferService
     {
         private readonly AppDbContext _appDbContext;
 
-        public ExpireOfferHandler(AppDbContext appDbContext) => _appDbContext = appDbContext;
+        public ExpireOfferService(AppDbContext appDbContext) => _appDbContext = appDbContext;
 
-        public async Task Handle(ExpireOfferRequest request, CancellationToken cancellationToken)
+        public async Task Expire(ExpireOfferRequest request, CancellationToken cancellationToken)
         {
             var member = await _appDbContext.Members
                 .Include(m => m.AssignedOffers)
