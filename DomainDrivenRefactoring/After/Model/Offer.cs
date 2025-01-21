@@ -9,7 +9,10 @@ namespace After.Model
         public DateTime DateExpiring { get; private set; }
         public int Value { get; private set; }
 
-        public Offer(Member memberAssigned, OfferType type, int value)
+        public Offer(
+            Member memberAssigned, 
+            OfferType type, 
+            int value)
         {
             MemberAssigned = memberAssigned;
             Type = type;
