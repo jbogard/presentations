@@ -1,11 +1,9 @@
 using System;
-using MediatR;
 
-namespace After.Services
+namespace After.Services;
+
+public class AssignOfferRequest
 {
-    public class AssignOfferRequest : IRequest
-    {
-        public Guid MemberId { get; set; }
-        public Guid OfferTypeId { get; set; }
-    }
+    public Guid MemberId { get; set; }
+    public Guid OfferTypeId { get; set; }
 }

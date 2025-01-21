@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using After.Model;
 
-namespace After.Services
+namespace After.Services;
+
+public interface IOfferValueCalculator
 {
-    public interface IOfferValueCalculator
-    {
-        Task<int> Calculate(Member member, OfferType offerType);
-    }
+    Task<int> Calculate(Member member, OfferType offerType);
 }
