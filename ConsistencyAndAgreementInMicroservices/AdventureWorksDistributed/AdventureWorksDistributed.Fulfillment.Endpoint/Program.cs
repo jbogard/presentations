@@ -13,6 +13,8 @@ IHost host = Host.CreateDefaultBuilder(args)
             .ConnectionString("host=localhost")
             .UseConventionalRoutingTopology(QueueType.Classic);
 
+        endpointConfiguration.UseSerialization<SystemJsonSerializer>();
+
         var routing = transport.Routing();
 
         routing.RouteToEndpoint(

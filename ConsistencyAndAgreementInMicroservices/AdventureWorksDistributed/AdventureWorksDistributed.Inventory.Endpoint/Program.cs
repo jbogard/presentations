@@ -9,7 +9,7 @@ using NServiceBus;
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        var CosmosUrl = "https://localhost:8081/";
+        var CosmosUrl = "http://localhost:8081/";
         var CosmosKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
         var client = new DocumentClient(new Uri(CosmosUrl), CosmosKey, new JsonSerializerSettings
@@ -28,6 +28,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         endpointConfiguration.UseTransport<RabbitMQTransport>()
             .ConnectionString("host=localhost")
             .UseConventionalRoutingTopology(QueueType.Classic);
+
+        endpointConfiguration.UseSerialization<SystemJsonSerializer>();
 
         var persistence = endpointConfiguration.UsePersistence<CosmosPersistence>()
             .CosmosClient(new CosmosClient(context.Configuration.GetConnectionString("Cosmos")))

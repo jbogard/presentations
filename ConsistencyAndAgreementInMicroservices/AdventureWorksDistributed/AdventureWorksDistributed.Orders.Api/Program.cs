@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var CosmosUrl = "https://localhost:8081/";
+var CosmosUrl = "http://localhost:8081/";
 var CosmosKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
 var client = new DocumentClient(new Uri(CosmosUrl), CosmosKey, new JsonSerializerSettings
@@ -30,6 +30,8 @@ builder.Services.AddTransient(typeof(IDocumentDbRepository<>), typeof(DocumentDb
 builder.Host.UseNServiceBus(context =>
 {
     var endpointConfiguration = new EndpointConfiguration("AdventureWorksDistributed.Orders");
+
+    endpointConfiguration.UseSerialization<SystemJsonSerializer>();
 
     endpointConfiguration.UseTransport<RabbitMQTransport>()
         .ConnectionString("host=localhost")

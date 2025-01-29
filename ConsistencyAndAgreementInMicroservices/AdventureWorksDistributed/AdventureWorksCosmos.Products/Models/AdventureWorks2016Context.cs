@@ -85,7 +85,7 @@ namespace AdventureWorksDistributed.Products.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=.\;Database=AdventureWorks2016;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(@"Server=localhost,60767;Database=AdventureWorks2022;User Id=sa;Password=P@ssw0rd!;");
             }
         }
 

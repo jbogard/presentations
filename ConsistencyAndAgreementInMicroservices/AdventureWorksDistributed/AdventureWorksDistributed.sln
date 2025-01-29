@@ -9,13 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Core", "AdventureWorksCosmos.Core\AdventureWorksDistributed.Core.csproj", "{1739EFFB-63CB-4897-973D-970E9AC6652F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4CC0FC44-E093-460C-A19A-9A19F1DEB8B9}"
-	ProjectSection(SolutionItems) = preProject
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		Directory.Build.props = Directory.Build.props
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Products", "Products", "{D7B70959-56D1-4023-9116-087D26559C8A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fulfillment", "Fulfillment", "{395709BD-D1CA-464E-AAD9-D3B37BCF3148}"
@@ -39,6 +32,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureWorksDistributed.Cart.Contracts", "AdventureWorksDistributed.Cart.Contracts\AdventureWorksDistributed.Cart.Contracts.csproj", "{25FC705C-DBA9-4AB4-8977-48B39EFEC06D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.PartitionKeys", "AdventureWorksDistributed.PartitionKeys\AdventureWorksDistributed.PartitionKeys.csproj", "{AF3BACA0-A3D1-4B9A-8090-67911773A882}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureWorksDistributed.AppHost", "AdventureWorksDistributed.AppHost\AdventureWorksDistributed.AppHost.csproj", "{C3E3B551-FF2F-4F4B-89A9-EF519EA6837E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +85,10 @@ Global
 		{AF3BACA0-A3D1-4B9A-8090-67911773A882}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF3BACA0-A3D1-4B9A-8090-67911773A882}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF3BACA0-A3D1-4B9A-8090-67911773A882}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3E3B551-FF2F-4F4B-89A9-EF519EA6837E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3E3B551-FF2F-4F4B-89A9-EF519EA6837E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3E3B551-FF2F-4F4B-89A9-EF519EA6837E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3E3B551-FF2F-4F4B-89A9-EF519EA6837E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

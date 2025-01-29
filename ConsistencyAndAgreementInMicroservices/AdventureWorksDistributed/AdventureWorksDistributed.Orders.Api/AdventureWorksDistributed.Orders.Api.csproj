@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-    <PackageReference Include="NServiceBus" Version="7.8.0" />
-    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
-    <PackageReference Include="NServiceBus.Persistence.CosmosDB" Version="1.2.0" />
-    <PackageReference Include="NServiceBus.RabbitMQ" Version="7.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="NServiceBus" Version="9.2.4" />
+    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="3.0.1" />
+    <PackageReference Include="NServiceBus.Persistence.CosmosDB" Version="3.0.1" />
+    <PackageReference Include="NServiceBus.RabbitMQ" Version="9.2.0" />
   </ItemGroup>
 
   <ItemGroup>
