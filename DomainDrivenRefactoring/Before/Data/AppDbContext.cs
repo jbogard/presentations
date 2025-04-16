@@ -1,7 +1,7 @@
 ﻿using Before.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Before.Services
+namespace Before.Data
 {
     public class AppDbContext : DbContext
     {

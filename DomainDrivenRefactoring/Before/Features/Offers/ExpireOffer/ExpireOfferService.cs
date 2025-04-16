@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Before.Services;
+using Before.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Before.Features.Offers.ExpireOffer

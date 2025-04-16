@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Before.Model;
-using Before.Services;
+using Before.Data;
 
 namespace Before.Features.Offers.AssignOffer
 {
