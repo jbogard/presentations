@@ -1,0 +1,1 @@
+{"Name":"Auto/RetryBatches/ByStatus","Version":54003,"Collections":["RetryBatches"],"LockMode":0,"Priority":1,"State":0,"MapFields":[{"Name":"Status","Indexing":"Default","Aggregation":0,"Spatial":null,"HasSuggestions":false,"HasQuotedName":false,}]}

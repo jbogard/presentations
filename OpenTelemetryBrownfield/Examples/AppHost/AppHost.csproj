@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>c631915d-3ac3-4aa3-8ce6-dc152920b839</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.MongoDB" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" />
+    <PackageReference Include="PracticalOtel.OtelCollector.Aspire" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChildWorkerService\ChildWorkerService.csproj" />
+    <ProjectReference Include="..\WebApplication\WebApplication.csproj" />
+    <ProjectReference Include="..\WorkerService\WorkerService.csproj" />
+  </ItemGroup>
+</Project>

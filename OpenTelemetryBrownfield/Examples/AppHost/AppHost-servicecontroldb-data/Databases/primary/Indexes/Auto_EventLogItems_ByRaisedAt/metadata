@@ -1,0 +1,1 @@
+{"Name":"Auto/EventLogItems/ByRaisedAt","Version":54003,"Collections":["EventLogItems"],"LockMode":0,"Priority":1,"State":0,"MapFields":[{"Name":"RaisedAt","Indexing":"Default","Aggregation":0,"Spatial":null,"HasSuggestions":false,"HasQuotedName":false,}]}
