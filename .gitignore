@@ -10,6 +10,7 @@ Thumbs.db
 *.suo
 *.user
 *.sln.docstates
+AppHost-servicecontroldb-data
 
 # Build results
 
