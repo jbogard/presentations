@@ -17,8 +17,6 @@ builder.AddContainer("jaeger", "jaegertracing/all-in-one")
 
 #endregion
 
-AddTraceLens(builder);
-
 var rmqPassword = builder.AddParameter("messaging-password");
 var dbPassword = builder.AddParameter("db-password");
 
@@ -36,7 +34,7 @@ var sql = builder.AddSqlServer("sql", password: dbPassword)
     .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("sqldata");
 
-ConfigureParticularServicePlatform(builder, broker);
+//ConfigureParticularServicePlatform(builder, broker);
 
 var web = builder
     .AddProject<Projects.WebApplication>("web")
@@ -67,22 +65,6 @@ logger.LogInformation(builder.Configuration["AppHost:OtlpApiKey"]);
 logger.LogInformation(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
 application.Run();
-
-static ContainerResource AddTraceLens(IDistributedApplicationBuilder builder)
-{
-    var tracelensDb = builder.AddPostgres("tracelenspgsql").AddDatabase("tracelensdb");
-
-    var plantUml = builder.AddContainer("plantuml", "plantuml/plantuml-server", tag: "tomcat")
-        .WithHttpEndpoint(6080, 8080, name: "plantuml");
-
-    var tracelens = builder.AddContainer("tracelens", "rogeralsing/tracelens")
-        .WithHttpEndpoint(6001, 5001, name: "tracelens")
-        .WithHttpEndpoint(6317, 4317, name: "otel")
-        .WithEnvironment("PlantUml__RemoteUrl",plantUml.GetEndpoint("plantuml"))
-        .WithReference(tracelensDb, "DefaultConnection");
-        
-    return tracelens.Resource;
-}
 
 static void ConfigureParticularServicePlatform(IDistributedApplicationBuilder builder,
     IResourceBuilder<RabbitMQServerResource> rabbitMqResource)
