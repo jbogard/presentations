@@ -24,17 +24,13 @@ exporters:
     endpoint: http://host.docker.internal:5317
     tls:
       insecure: true
-  otlp/tracelens:
-    endpoint: http://host.docker.internal:6317
-    tls:
-      insecure: true
     
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/aspire, zipkin, otlp/jaeger, otlp/tracelens]
+      exporters: [otlp/aspire, zipkin, otlp/jaeger]
     metrics:
       receivers: [otlp]
       processors: [batch]
