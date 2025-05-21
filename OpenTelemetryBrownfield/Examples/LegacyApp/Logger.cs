@@ -2,15 +2,28 @@ using System.IO;
 using System.Reflection;
 using log4net;
 using log4net.Config;
+using Microsoft.Extensions.Logging;
 
 namespace LegacyApp
 {
-    public static class Logger
+    public class Logger
     {
         private static readonly ILog Log;
 
+        #region Step 2
+
+        // private static ILogger<Logger> InnerLogger;
+
+        #endregion
+
         static Logger()
         {
+            #region Step 1
+            // var loggerFactory = new LoggerFactory();
+            // loggerFactory.AddLog4Net("log4net.config", true);
+            // InnerLogger = loggerFactory.CreateLogger<Logger>();
+            #endregion
+
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
@@ -31,6 +44,10 @@ namespace LegacyApp
             {
                 Log.InfoFormat(message, args);
             }
+
+            #region Step 3
+            //InnerLogger.LogInformation(message, args);
+            #endregion
         }
 
         public static void Warning(string message, params object[] args)
