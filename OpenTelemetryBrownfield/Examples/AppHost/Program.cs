@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddContainer("zipkin", "openzipkin/zipkin")
-    .WithEndpoint(9411, 9411);
+    .WithHttpEndpoint(9411, 9411);
 
 builder.AddContainer("jaeger", "jaegertracing/all-in-one")
     .WithHttpEndpoint(16686, targetPort: 16686, name: "jaegerPortal")
