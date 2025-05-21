@@ -1,10 +1,21 @@
+using System.IO;
+using System.Reflection;
 using log4net;
+using log4net.Config;
 
 namespace LegacyApp
 {
     public static class Logger
     {
-        private static ILog Log = LogManager.GetLogger("LegacyApp");
+        private static readonly ILog Log;
+
+        static Logger()
+        {
+            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+
+            Log = LogManager.GetLogger("LegacyApp");
+        }
 
         public static void Debug(string message, params object[] args)
         {

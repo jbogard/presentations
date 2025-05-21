@@ -1,3 +1,4 @@
+using System;
 using log4net;
 
 namespace LegacyApp
@@ -9,6 +10,8 @@ namespace LegacyApp
             var service = new MyAwesomeService();
 
             service.DoAwesomeThings();
+
+            Console.ReadKey();
         }
     }
 }
