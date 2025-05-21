@@ -21,4 +21,13 @@
     <ProjectReference Include="..\WebApplication\WebApplication.csproj" />
     <ProjectReference Include="..\WorkerService\WorkerService.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="AppHost-servicecontroldb-data\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="AppHost-servicecontroldb-data\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="AppHost-servicecontroldb-data\**" />
+  </ItemGroup>
 </Project>

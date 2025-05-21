@@ -26,7 +26,11 @@ recoverability.Delayed(i => i.NumberOfRetries(0));
 
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
-endpointConfiguration.EnableOpenTelemetry();
+#region Enable OTel
+
+//endpointConfiguration.EnableOpenTelemetry();
+
+#endregion
 
 endpointConfiguration.ConnectToServicePlatformDefaults();
 

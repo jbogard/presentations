@@ -35,44 +35,46 @@ namespace Microsoft.Extensions.Hosting
 
         public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
         {
-            builder.Logging.AddOpenTelemetry(logging =>
-            {
-                logging.IncludeFormattedMessage = true;
-                logging.IncludeScopes = true;
-            });
+            #region Add OTel Logging
+            // builder.Logging.AddOpenTelemetry(logging =>
+            // {
+            //     logging.IncludeFormattedMessage = true;
+            //     logging.IncludeScopes = true;
+            // });
+            #endregion
 
-            var compositeTextMapPropagator = new CompositeTextMapPropagator(new TextMapPropagator[]
-            {
-                new TraceContextPropagator(),
-                new BaggagePropagator()
-            });
-            Sdk.SetDefaultTextMapPropagator(compositeTextMapPropagator);
-
+            #region Add OTel Tracing
+            // builder.Services.AddOpenTelemetry()
+            //     .WithTracing(tracing =>
+            //     {
+            //         if (builder.Environment.IsDevelopment())
+            //         {
+            //             // We want to view all traces in development
+            //             tracing.SetSampler(new AlwaysOnSampler());
+            //         }
+            //
+            //         tracing.AddAspNetCoreInstrumentation()
+            //             .AddGrpcClientInstrumentation()
+            //             .AddHttpClientInstrumentation()
+            //             .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
+            //             .AddSource("NServiceBus.*")
+            //             .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources");
+            //
+            //         tracing.AddProcessor(new CopyBaggageToTagsProcessor());
+            //     });
+            #endregion
             
-            builder.Services.AddOpenTelemetry()
-                .WithMetrics(metrics =>
-                {
-                    metrics.AddRuntimeInstrumentation()
-                           .AddBuiltInMeters()
-                           .AddMeter("NServiceBus.*");
-                })
-                .WithTracing(tracing =>
-                {
-                    if (builder.Environment.IsDevelopment())
-                    {
-                        // We want to view all traces in development
-                        tracing.SetSampler(new AlwaysOnSampler());
-                    }
+            #region Add OTel Metrics
 
-                    tracing.AddAspNetCoreInstrumentation()
-                        .AddGrpcClientInstrumentation()
-                        .AddHttpClientInstrumentation()
-                        .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
-                        .AddSource("NServiceBus.*")
-                        .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources");
-
-                    tracing.AddProcessor(new CopyBaggageToTagsProcessor());
-                });
+            // builder.Services.AddOpenTelemetry()
+            //     .WithMetrics(metrics =>
+            //     {
+            //         metrics.AddRuntimeInstrumentation()
+            //             .AddBuiltInMeters()
+            //             .AddMeter("NServiceBus.*");
+            //     });
+            
+            #endregion
             
             builder.AddOpenTelemetryExporters();
 
@@ -90,8 +92,10 @@ namespace Microsoft.Extensions.Hosting
                 builder.Services.ConfigureOpenTelemetryTracerProvider(tracing => tracing.AddOtlpExporter());
             }
 
+            #region Enable Zipkin Exporter
             // This exports directly instead of using the OTel collector
             //builder.Services.AddOpenTelemetry().WithTracing(tracing => tracing.AddZipkinExporter());
+            #endregion
 
             return builder;
         }

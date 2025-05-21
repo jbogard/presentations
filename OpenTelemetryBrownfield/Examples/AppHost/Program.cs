@@ -10,8 +10,12 @@ builder.AddContainer("jaeger", "jaegertracing/all-in-one")
     .WithHttpEndpoint(16686, targetPort: 16686, name: "jaegerPortal")
     .WithHttpEndpoint(5317, targetPort: 4317, name: "jaegerEndpoint");
 
-builder.AddOpenTelemetryCollector("collector", "config.yaml")
-    .WithAppForwarding();
+#region Enable OTel Collector with forwarding
+
+// builder.AddOpenTelemetryCollector("collector", "config.yaml")
+//     .WithAppForwarding();
+
+#endregion
 
 AddTraceLens(builder);
 

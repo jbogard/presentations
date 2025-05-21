@@ -33,7 +33,11 @@ public class SaySomethingController : ControllerBase
             Id = Guid.NewGuid()
         };
 
-        Activity.Current?.AddBaggage("operation.id", command.Id.ToString());
+        #region Add Tag to current activity
+
+        //Activity.Current?.AddTag("operation.id", command.Id.ToString());
+
+        #endregion
 
         await _messageSession.Send(command);
 
@@ -51,8 +55,12 @@ public class SaySomethingController : ControllerBase
 
         _logger.LogInformation("Publishing message {message} with {id}", @event.Message, @event.Id);
 
-        Activity.Current?.AddBaggage("operation.id", @event.Id.ToString());
+        #region Add Tag to current activity
+        
+        //Activity.Current?.AddTag("operation.id", @event.Id.ToString());
 
+        #endregion
+        
         await _messageSession.Publish(@event);
 
         return Accepted(@event.Id);

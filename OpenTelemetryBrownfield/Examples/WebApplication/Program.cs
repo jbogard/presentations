@@ -21,7 +21,11 @@ endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
 
 endpointConfiguration.EnableInstallers();
 
-endpointConfiguration.EnableOpenTelemetry();
+#region Enable Otel
+
+//endpointConfiguration.EnableOpenTelemetry();
+
+#endregion
 
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
@@ -37,8 +41,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<WeatherContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sqldata")));
-
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddHostedService<DbInitializer>();
 
