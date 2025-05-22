@@ -26,16 +26,23 @@ recoverability.Delayed(i => i.NumberOfRetries(0));
 
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
-endpointConfiguration.EnableOpenTelemetry();
+#region Enable OTel
 
-endpointConfiguration.ConnectToServicePlatformDefaults();
+//endpointConfiguration.EnableOpenTelemetry();
+
+#endregion
 
 builder.UseNServiceBus(endpointConfiguration);
 
 builder.AddServiceDefaults();
 
 builder.Services.AddHostedService<Mongo2GoService>();
-builder.AddMongoDBClient("mongo");
+
+#region Enable Mongo Tracing
+
+builder.AddMongoDBClient("mongo", configureSettings: settings => settings.DisableTracing = true);
+
+#endregion
 
 var host = builder.Build();
 

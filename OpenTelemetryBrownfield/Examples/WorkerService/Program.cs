@@ -22,11 +22,11 @@ endpointConfiguration.UsePersistence<LearningPersistence>();
 
 endpointConfiguration.EnableInstallers();
 
-endpointConfiguration.EnableOpenTelemetry();
+#region Enable Otel
+//endpointConfiguration.EnableOpenTelemetry();
+#endregion
 
 endpointConfiguration.AuditProcessedMessagesTo("audit");
-
-endpointConfiguration.ConnectToServicePlatformDefaults();
 
 builder.UseNServiceBus(endpointConfiguration);
 

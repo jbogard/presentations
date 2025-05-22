@@ -4,16 +4,18 @@ using Microsoft.Extensions.Logging;
 var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddContainer("zipkin", "openzipkin/zipkin")
-    .WithEndpoint(9411, 9411);
+    .WithHttpEndpoint(9411, 9411);
 
 builder.AddContainer("jaeger", "jaegertracing/all-in-one")
     .WithHttpEndpoint(16686, targetPort: 16686, name: "jaegerPortal")
     .WithHttpEndpoint(5317, targetPort: 4317, name: "jaegerEndpoint");
 
-builder.AddOpenTelemetryCollector("collector", "config.yaml")
-    .WithAppForwarding();
+#region Enable OTel Collector with forwarding
 
-AddTraceLens(builder);
+// builder.AddOpenTelemetryCollector("collector", "config.yaml")
+//     .WithAppForwarding();
+
+#endregion
 
 var rmqPassword = builder.AddParameter("messaging-password");
 var dbPassword = builder.AddParameter("db-password");
@@ -32,7 +34,7 @@ var sql = builder.AddSqlServer("sql", password: dbPassword)
     .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("sqldata");
 
-ConfigureParticularServicePlatform(builder, broker);
+//ConfigureParticularServicePlatform(builder, broker);
 
 var web = builder
     .AddProject<Projects.WebApplication>("web")
@@ -63,22 +65,6 @@ logger.LogInformation(builder.Configuration["AppHost:OtlpApiKey"]);
 logger.LogInformation(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
 application.Run();
-
-static ContainerResource AddTraceLens(IDistributedApplicationBuilder builder)
-{
-    var tracelensDb = builder.AddPostgres("tracelenspgsql").AddDatabase("tracelensdb");
-
-    var plantUml = builder.AddContainer("plantuml", "plantuml/plantuml-server", tag: "tomcat")
-        .WithHttpEndpoint(6080, 8080, name: "plantuml");
-
-    var tracelens = builder.AddContainer("tracelens", "rogeralsing/tracelens")
-        .WithHttpEndpoint(6001, 5001, name: "tracelens")
-        .WithHttpEndpoint(6317, 4317, name: "otel")
-        .WithEnvironment("PlantUml__RemoteUrl",plantUml.GetEndpoint("plantuml"))
-        .WithReference(tracelensDb, "DefaultConnection");
-        
-    return tracelens.Resource;
-}
 
 static void ConfigureParticularServicePlatform(IDistributedApplicationBuilder builder,
     IResourceBuilder<RabbitMQServerResource> rabbitMqResource)

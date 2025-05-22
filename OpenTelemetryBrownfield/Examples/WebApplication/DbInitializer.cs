@@ -9,8 +9,12 @@ namespace WebApplication;
 public class DbInitializer : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
-    public const string ActivitySourceName = "Migrations";
-    private static readonly ActivitySource ActivitySource = new(ActivitySourceName);
+    
+    #region Create Activity Source
+    // public const string ActivitySourceName = "Migrations";
+    // private static readonly ActivitySource ActivitySource = new(ActivitySourceName);
+    #endregion
+    
     private static readonly string[] Summaries =
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -23,7 +27,11 @@ public class DbInitializer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        using var activity = ActivitySource.StartActivity(name: "Migrating database", ActivityKind.Client);
+        #region Start Activity
+
+        //using var activity = ActivitySource.StartActivity(name: "Migrating database", ActivityKind.Client);
+
+        #endregion
 
         try
         {
@@ -36,7 +44,12 @@ public class DbInitializer : BackgroundService
         }
         catch (Exception ex)
         {
-            activity?.RecordException(ex);
+            #region Record Activity exception
+
+            //activity?.RecordException(ex);
+
+            #endregion
+            
             throw;
         }
     }
