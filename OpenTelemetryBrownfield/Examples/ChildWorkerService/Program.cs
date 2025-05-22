@@ -32,14 +32,17 @@ endpointConfiguration.AuditProcessedMessagesTo("audit");
 
 #endregion
 
-endpointConfiguration.ConnectToServicePlatformDefaults();
-
 builder.UseNServiceBus(endpointConfiguration);
 
 builder.AddServiceDefaults();
 
 builder.Services.AddHostedService<Mongo2GoService>();
-builder.AddMongoDBClient("mongo");
+
+#region Enable Mongo Tracing
+
+builder.AddMongoDBClient("mongo", configureSettings: settings => settings.DisableTracing = true);
+
+#endregion
 
 var host = builder.Build();
 

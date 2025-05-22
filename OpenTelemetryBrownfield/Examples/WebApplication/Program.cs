@@ -29,8 +29,6 @@ endpointConfiguration.EnableInstallers();
 
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
-endpointConfiguration.ConnectToServicePlatformDefaults();
-
 builder.UseNServiceBus(endpointConfiguration);
 
 builder.AddServiceDefaults();

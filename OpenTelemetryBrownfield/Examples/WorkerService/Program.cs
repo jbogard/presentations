@@ -28,8 +28,6 @@ endpointConfiguration.EnableInstallers();
 
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
-endpointConfiguration.ConnectToServicePlatformDefaults();
-
 builder.UseNServiceBus(endpointConfiguration);
 
 builder.Services.AddHttpClient("web", client => client.BaseAddress = new Uri("https://web"));
