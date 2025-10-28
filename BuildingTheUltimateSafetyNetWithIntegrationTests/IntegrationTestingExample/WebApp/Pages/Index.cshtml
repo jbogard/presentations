@@ -1,0 +1,22 @@
+@page
+@model WebApp.Pages.Index
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+    @foreach(var item in Model.Items)
+    {
+        <p>@item.Name</p>
+    }
+</div>
+</body>
+</html>
