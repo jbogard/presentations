@@ -38,6 +38,7 @@ public class GetByIdTests(WebAppFixture App, ITestOutputHelper Output)
         
         // Assert
         response.ShouldNotBeNull();
+        response.Id.ShouldBe(todoItem.Id);
     }
 }
 #endregion

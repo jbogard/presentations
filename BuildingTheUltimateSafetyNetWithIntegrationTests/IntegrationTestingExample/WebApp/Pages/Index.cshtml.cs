@@ -9,11 +9,13 @@ public class Index(IMediator mediator) : PageModel
 {
     public class Request : IRequest<IEnumerable<TodoItem>> { }
     
-    public class Handler(WebAppDbContext dbContext) : IRequestHandler<Request, IEnumerable<TodoItem>>
+    public class Handler(WebAppDbContext dbContext)
+        : IRequestHandler<Request, IEnumerable<TodoItem>>
     {
         public async Task<IEnumerable<TodoItem>> Handle(Request request, CancellationToken cancellationToken)
         {
-            return await dbContext.TodoItems.OrderBy(item => item.Id).ToListAsync(cancellationToken);
+            return await dbContext.TodoItems
+                .OrderBy(item => item.Id).ToListAsync(cancellationToken);
         }
     }
     

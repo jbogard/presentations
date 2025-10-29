@@ -60,7 +60,7 @@ public class WebAppTestBase : TestBase<WebAppFixture>, IDisposable
         return ExecuteScopeAsync(sp =>
         {
             var mediator = sp.GetRequiredService<IMediator>();
-
+    
             return mediator.Send(request);
         });
     }

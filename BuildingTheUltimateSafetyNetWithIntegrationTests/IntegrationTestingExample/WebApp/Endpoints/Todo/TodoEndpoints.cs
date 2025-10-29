@@ -36,7 +36,8 @@ public class GetByIdEndpoint(WebAppDbContext db) : EndpointWithoutRequest<TodoIt
     {
         var todoItemId = Route<long>("Id");
         
-        var item =  await db.TodoItems.SingleOrDefaultAsync(t => t.Id == todoItemId, ct);
+        var item =  await db.TodoItems
+            .SingleOrDefaultAsync(t => t.Id == todoItemId, ct);
         
         if (item == null)
         {

@@ -20,18 +20,18 @@ builder.AddNpgsqlDbContext<WebAppDbContext>(connectionName: "appdb", configureDb
 {
     options.UseSeeding((db, _) =>
     {
-            var todoItems = db.Set<TodoItem>();
+        var todoItems = db.Set<TodoItem>();
 
-            if (!todoItems.Any())
-            {
-                todoItems.Add(new TodoItem { Name = "Todo item 1" });
-                todoItems.Add(new TodoItem { Name = "Todo item 2" });
-                todoItems.Add(new TodoItem { Name = "Todo item 3" });
-                todoItems.Add(new TodoItem { Name = "Todo item 4" });
-                todoItems.Add(new TodoItem { Name = "Todo item 5" });
-            }
+        if (!todoItems.Any())
+        {
+            todoItems.Add(new TodoItem { Name = "Todo item 1" });
+            todoItems.Add(new TodoItem { Name = "Todo item 2" });
+            todoItems.Add(new TodoItem { Name = "Todo item 3" });
+            todoItems.Add(new TodoItem { Name = "Todo item 4" });
+            todoItems.Add(new TodoItem { Name = "Todo item 5" });
+        }
 
-            db.SaveChanges();
+        db.SaveChanges();
     });
 });
 #endregion

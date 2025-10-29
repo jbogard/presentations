@@ -111,7 +111,7 @@ public class WebAppFixture : AppFixture<Program>, ITestOutputHelperAccessor
     public class FakeWeatherForecastClient : IWeatherForecastClient
     {
         public static readonly WeatherForecast WeatherForecast = new(DateOnly.FromDateTime(DateTime.UtcNow), 34, "Sunny");
-
+    
         public Task<IEnumerable<WeatherForecast>?> GetAsync()
         {
             return Task.FromResult<IEnumerable<WeatherForecast>?>([
