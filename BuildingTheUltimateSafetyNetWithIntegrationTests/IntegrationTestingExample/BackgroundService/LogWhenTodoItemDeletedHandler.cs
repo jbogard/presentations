@@ -1,4 +1,6 @@
-namespace WebApp.Infrastructure;
+using Messages;
+
+namespace BackgroundService;
 
 public class LogWhenTodoItemDeletedHandler(ILogger<LogWhenTodoItemDeletedHandler> logger)
     : IHandleMessages<TodoItemDeletedEvent>

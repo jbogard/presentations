@@ -1,7 +1,7 @@
+using Data;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
 
 namespace WebApp.Pages;
 

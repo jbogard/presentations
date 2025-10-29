@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ServiceDiscovery;
+using Npgsql;
+using NpgsqlTypes;
+using NServiceBus.Extensions.IntegrationTesting;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -127,4 +131,48 @@ public static class Extensions
 
         return app;
     }
+    
+    public static void UseNServiceBusWithConfiguration(
+        this IHostApplicationBuilder builder,
+        string endpointName,
+        string postgresConnectionStringName)
+    {
+        var endpointConfiguration = new EndpointConfiguration(endpointName);
+
+        if (builder.Configuration.GetValue("IsAutomatedTest", false))
+        {
+            endpointConfiguration.ConfigureTestEndpoint(transport =>
+                transport.Transport.TransportTransactionMode = TransportTransactionMode.ReceiveOnly
+            );
+            
+            var scanner = endpointConfiguration.AssemblyScanner();
+            scanner.ExcludeAssemblies("xunit.runner.utility.netcoreapp10.dll");
+        }
+        else
+        {
+            endpointConfiguration.UseTransport<LearningTransport>();
+        }
+
+
+        var dbConnectionString = builder.Configuration.GetConnectionString(postgresConnectionStringName);
+        var persistence = endpointConfiguration.UsePersistence<SqlPersistence>();
+        var dialect = persistence.SqlDialect<SqlDialect.PostgreSql>();
+        dialect.JsonBParameterModifier(
+            modifier: parameter =>
+            {
+                var npgsqlParameter = (NpgsqlParameter)parameter;
+                npgsqlParameter.NpgsqlDbType = NpgsqlDbType.Jsonb;
+            });
+
+        persistence.ConnectionBuilder(() => new NpgsqlConnection(dbConnectionString));
+
+        endpointConfiguration.UseSerialization<SystemJsonSerializer>();
+
+        endpointConfiguration.EnableInstallers();
+
+        endpointConfiguration.EnableOpenTelemetry();
+
+        builder.UseNServiceBus(endpointConfiguration);
+    }
+
 }

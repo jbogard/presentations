@@ -1,4 +1,6 @@
-namespace WebApp.Infrastructure;
+using NServiceBus;
+
+namespace Messages;
 
 public class TodoItemDeletedEvent : IEvent
 {

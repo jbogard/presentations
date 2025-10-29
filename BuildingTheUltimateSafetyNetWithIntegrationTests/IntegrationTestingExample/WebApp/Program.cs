@@ -1,3 +1,4 @@
+using Data;
 using FastEndpoints;
 using FastEndpoints.Security;
 using Hangfire;
@@ -6,13 +7,15 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
 using Scalar.AspNetCore;
-using WebApp.Data;
 using WebApp.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+builder.Services.AddOpenApi();
+
+#region Example 2
 builder.AddNpgsqlDbContext<WebAppDbContext>(connectionName: "appdb", configureDbContextOptions: options =>
 {
     options.UseSeeding((db, _) =>
@@ -31,56 +34,81 @@ builder.AddNpgsqlDbContext<WebAppDbContext>(connectionName: "appdb", configureDb
             db.SaveChanges();
     });
 });
+#endregion
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+#region Example 2
+builder.Services.AddFastEndpoints();
+#endregion
 
-builder.Services.AddRazorPages();
-
+#region Example 3
 builder.Services
     .AddAuthenticationJwtBearer(s =>
     {
         s.SigningKey = "A super super super secret token signing key";
     })
-    .AddAuthorization()
-    .AddFastEndpoints();
+    .AddAuthorization();
+#endregion
 
+#region Example 4
 builder.Services.AddHttpClient<IWeatherForecastClient, WeatherForecastClient>(
     static client => client.BaseAddress = new("https+http://externalapi"));
+#endregion
+
+#region Example 5
+builder.Services.AddRazorPages();
 
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<Program>();
 });
+#endregion
 
-builder.Services.AddHangfire(config =>
-    config.UsePostgreSqlStorage(c =>
-    {
-        c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("appdb"));
-    }));
+#region Example 6
+var isAutomatedTest = builder.Configuration.GetValue<bool?>("IsAutomatedTest")
+                      ?? false;
 
-builder.Services.AddHangfireServer();
+if (!isAutomatedTest)
+{
+    builder.Services.AddHangfire(config =>
+        config.UsePostgreSqlStorage(c =>
+        {
+            c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("appdb"));
+        }));
 
-UseNServiceBusWithConfiguration(builder, "webapp", "appdb");
+    builder.Services.AddHangfireServer();
+}
+#endregion
+
+#region Example 7
+if (!isAutomatedTest)
+{
+    builder.UseNServiceBusWithConfiguration("webapp", "appdb");
+}
+#endregion
 
 var app = builder.Build();
 
-app.UseFastEndpoints();
-
 app.MapDefaultEndpoints();
 
+#region Example 2
+app.UseFastEndpoints();
+#endregion
+
+#region Example 5
 app.MapStaticAssets();
 
 app.MapRazorPages()
     .WithStaticAssets();
+#endregion
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+    #region Example 6
     app.UseHangfireDashboard();
+    #endregion
 }
 
 app.UseHttpsRedirection();
@@ -104,67 +132,54 @@ app.MapGet("/weatherforecast", () =>
     })
     .WithName("GetWeatherForecast");
 
+#region Example 2
 SeedDatabase(app);
+#endregion
+
+#region Example 6
 ConfigureHangfireJobs(builder, app);
-    
+#endregion
+     
 app.Run();
 
-
+#region Example 2
 static void SeedDatabase(WebApplication app)
 {
+    var isAutomatedTest = app.Configuration.GetValue<bool?>("IsAutomatedTest")
+                          ?? false;
+    
+    if (isAutomatedTest)
+        return;
+    
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<WebAppDbContext>();
     var strategy = db.Database.CreateExecutionStrategy();
 
     strategy.Execute(() => { db.Database.EnsureCreated(); });
 }
+#endregion
 
+#region Example 6
 static void ConfigureHangfireJobs(IHostApplicationBuilder builder, IHost host)
 {
-    var enableHangfire = builder.Configuration.GetValue<bool>("EnableHangfire");
+    var isAutomatedTest = builder.Configuration.GetValue<bool?>("IsAutomatedTest")
+        ?? false;
 
-    if (enableHangfire)
-    {
-        var recurringJob = host.Services.GetRequiredService<IRecurringJobManager>();
+    if (isAutomatedTest) 
+        return;
+    
+    var recurringJob = host.Services.GetRequiredService<IRecurringJobManager>();
 
-        recurringJob.AddOrUpdate<TodoWreckerJob>("todowreckerjob", job => job.DoWork(CancellationToken.None),
-            "*/30 * * * * *");
-    }
+    recurringJob.AddOrUpdate<TodoWreckerJob>("todowreckerjob", job => job.DoWork(CancellationToken.None),
+        "*/30 * * * * *");
 }
-
-static void UseNServiceBusWithConfiguration(
-    IHostApplicationBuilder builder, 
-    string endpointName,
-    string postgresConnectionStringName)
-    {
-        var endpointConfiguration = new EndpointConfiguration(endpointName);
-
-        // RabbitMQ Transport: https://docs.particular.net/transports/rabbitmq/
-        endpointConfiguration.UseTransport<LearningTransport>();
-        
-        var dbConnectionString = builder.Configuration.GetConnectionString(postgresConnectionStringName);
-        var persistence = endpointConfiguration.UsePersistence<SqlPersistence>();
-        var dialect = persistence.SqlDialect<SqlDialect.PostgreSql>();
-        dialect.JsonBParameterModifier(
-            modifier: parameter =>
-            {
-                var npgsqlParameter = (NpgsqlParameter)parameter;
-                npgsqlParameter.NpgsqlDbType = NpgsqlDbType.Jsonb;
-            });
-        
-        persistence.ConnectionBuilder(() => new NpgsqlConnection(dbConnectionString));
-        
-        endpointConfiguration.UseSerialization<SystemJsonSerializer>();
-
-        endpointConfiguration.EnableInstallers();
-        
-        endpointConfiguration.EnableOpenTelemetry();
-        
-        builder.UseNServiceBus(endpointConfiguration);
-    }
-
+#endregion
 
 public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+#region Example 1
+public partial class Program { }
+#endregion

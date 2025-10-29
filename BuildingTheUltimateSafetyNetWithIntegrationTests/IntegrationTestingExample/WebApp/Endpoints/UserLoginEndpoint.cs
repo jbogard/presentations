@@ -1,3 +1,4 @@
+#region Example 3
 using FastEndpoints;
 using FastEndpoints.Security;
 using Microsoft.AspNetCore.Identity.Data;
@@ -32,3 +33,4 @@ public class UserLoginEndpoint : Endpoint<LoginRequest>
             ThrowError("The supplied credentials are invalid!");
     }
 }
+#endregion

@@ -1,5 +1,5 @@
+using Data;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
 
 namespace WebApp.Infrastructure;
 

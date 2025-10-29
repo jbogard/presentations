@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApp.Data;
+namespace Data;
 
 public class WebAppDbContext(DbContextOptions<WebAppDbContext> options) : DbContext(options)
 {

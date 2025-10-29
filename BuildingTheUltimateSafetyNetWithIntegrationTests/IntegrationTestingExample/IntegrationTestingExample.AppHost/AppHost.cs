@@ -13,4 +13,7 @@ builder.AddProject<Projects.WebApp>("webapp")
     .WithReference(appdb)
     .WithReference(externalApi);
 
+builder.AddProject<Projects.BackgroundService>("backgroundservice")
+    .WithReference(appdb);
+
 builder.Build().Run();

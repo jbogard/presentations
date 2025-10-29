@@ -1,4 +1,4 @@
-namespace WebApp.Data;
+namespace Data;
 
 public class TodoItem
 {

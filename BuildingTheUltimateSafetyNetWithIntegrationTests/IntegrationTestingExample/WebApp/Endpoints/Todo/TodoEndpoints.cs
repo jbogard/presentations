@@ -1,9 +1,12 @@
+using Data;
 using FastEndpoints;
+using Messages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
 using WebApp.Infrastructure;
 
 namespace WebApp.Endpoints.Todo;
+
+#region Example 2
 
 public class GetEndpoint(WebAppDbContext db) : EndpointWithoutRequest<TodoItem[]>
 {
@@ -45,7 +48,9 @@ public class GetByIdEndpoint(WebAppDbContext db) : EndpointWithoutRequest<TodoIt
         await Send.OkAsync(item, ct);
     }
 }
+#endregion
 
+#region Example 3
 public class PutEndpoint(WebAppDbContext db) : Endpoint<PutEndpoint.Request>
 {
     public class Request
@@ -80,8 +85,10 @@ public class PutEndpoint(WebAppDbContext db) : Endpoint<PutEndpoint.Request>
         await Send.OkAsync(item, ct);
     }
 }
+#endregion
 
-public class PostEndpoint(WebAppDbContext db, IWeatherForecastClient client) : Endpoint<PostEndpoint.Request>
+#region Example 4
+public class PostEndpoint(WebAppDbContext db, IWeatherForecastClient client) : Endpoint<PostEndpoint.Request, TodoItem>
 {
     public class Request
     {
@@ -114,7 +121,9 @@ public class PostEndpoint(WebAppDbContext db, IWeatherForecastClient client) : E
         await Send.OkAsync(item, ct);
     }
 }
+#endregion
 
+#region Example 7
 public class DeleteEndpoint(WebAppDbContext db, IMessageSession messageSession) : EndpointWithoutRequest
 {
     public override void Configure()
@@ -142,3 +151,4 @@ public class DeleteEndpoint(WebAppDbContext db, IMessageSession messageSession) 
         await Send.NoContentAsync(ct);
     }
 }
+#endregion
