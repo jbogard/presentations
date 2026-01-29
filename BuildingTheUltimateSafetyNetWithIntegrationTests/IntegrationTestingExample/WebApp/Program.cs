@@ -82,7 +82,7 @@ if (!isAutomatedTest)
 #region Example 7
 if (!isAutomatedTest)
 {
-    builder.UseNServiceBusWithConfiguration("webapp", "appdb");
+    //builder.UseNServiceBusWithConfiguration("webapp", "appdb");
 }
 #endregion
 

@@ -2,6 +2,7 @@
 
 using Data;
 using FastEndpoints;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApp.Endpoints.Todo;
 using Xunit.Abstractions;
@@ -22,6 +23,8 @@ public class GetByIdTests(WebAppFixture App, ITestOutputHelper Output)
             
             await dbContext.SaveChangesAsync();
         });
+
+        this.App.Services.GetRequiredService<GetByIdEndpoint>();
         
         // Act
         TodoItem? response = null;

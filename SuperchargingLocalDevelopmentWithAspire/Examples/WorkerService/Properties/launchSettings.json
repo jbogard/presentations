@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "WorkerService": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "metrics",
+      "applicationUrl": "http://localhost:5002",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
