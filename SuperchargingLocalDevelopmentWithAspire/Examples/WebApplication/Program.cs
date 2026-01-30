@@ -1,30 +1,33 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication;
-using WebApplication.ExternalApi;
+//using WebApplication.ExternalApi;
 using WorkerService.Messages;
 
 var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder();
 
-const string EndpointName = "NsbActivities.WebApplication";
+#region Messaging Configuration
+// const string EndpointName = "NsbActivities.WebApplication";
+//
+// var endpointConfiguration = new EndpointConfiguration(EndpointName);
+//
+// var transport = new RabbitMQTransport(
+//     RoutingTopology.Conventional(QueueType.Quorum),
+//     builder.Configuration.GetConnectionString("broker")
+// );
+// var transportSettings = endpointConfiguration.UseTransport(transport);
+//
+// transportSettings.RouteToEndpoint(typeof(SaySomething).Assembly, "NsbActivities.WorkerService");
+//
+// endpointConfiguration.UsePersistence<LearningPersistence>();
+// endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
+//
+// endpointConfiguration.EnableInstallers();
+//
+// endpointConfiguration.AuditProcessedMessagesTo("audit");
+//
+// builder.UseNServiceBus(endpointConfiguration);
 
-var endpointConfiguration = new EndpointConfiguration(EndpointName);
-
-var transport = new RabbitMQTransport(
-    RoutingTopology.Conventional(QueueType.Quorum),
-    builder.Configuration.GetConnectionString("broker")
-);
-var transportSettings = endpointConfiguration.UseTransport(transport);
-
-transportSettings.RouteToEndpoint(typeof(SaySomething).Assembly, "NsbActivities.WorkerService");
-
-endpointConfiguration.UsePersistence<LearningPersistence>();
-endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
-
-endpointConfiguration.EnableInstallers();
-
-endpointConfiguration.AuditProcessedMessagesTo("audit");
-
-builder.UseNServiceBus(endpointConfiguration);
+#endregion
 
 builder.AddServiceDefaults();
 
@@ -35,17 +38,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WeatherContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sqldata")));
 
-builder.Services.AddHttpClient<ExternalApiClient>(client =>
-{
-    client.BaseAddress = new Uri("https+http://externalapi");
-});
+#region External API client
+// builder.Services.AddHttpClient<ExternalApiClient>(client =>
+// {
+//     client.BaseAddress = new Uri("https+http://externalapi");
+// });
+#endregion
 
 builder.Services.AddHostedService<DbInitializer>();
 
 var app = builder.Build();
-
-app.Logger.LogInformation(builder.Configuration.GetConnectionString("broker"));
-app.Logger.LogInformation(builder.Configuration.GetConnectionString("sqldata"));
 
 app.MapDefaultEndpoints();
 
