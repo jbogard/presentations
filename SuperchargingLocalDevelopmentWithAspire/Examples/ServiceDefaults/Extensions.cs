@@ -36,43 +36,43 @@ namespace Microsoft.Extensions.Hosting
         public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
         {
             #region Add OTel Logging
-            // builder.Logging.AddOpenTelemetry(logging =>
-            // {
-            //     logging.IncludeFormattedMessage = true;
-            //     logging.IncludeScopes = true;
-            // });
+            builder.Logging.AddOpenTelemetry(logging =>
+            {
+                logging.IncludeFormattedMessage = true;
+                logging.IncludeScopes = true;
+            });
             #endregion
 
             #region Add OTel Tracing
-            // builder.Services.AddOpenTelemetry()
-            //     .WithTracing(tracing =>
-            //     {
-            //         if (builder.Environment.IsDevelopment())
-            //         {
-            //             // We want to view all traces in development
-            //             tracing.SetSampler(new AlwaysOnSampler());
-            //         }
-            //
-            //         tracing.AddAspNetCoreInstrumentation()
-            //             .AddGrpcClientInstrumentation()
-            //             .AddHttpClientInstrumentation()
-            //             .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
-            //             .AddSource("NServiceBus.*")
-            //             .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources");
-            //
-            //         tracing.AddProcessor(new CopyBaggageToTagsProcessor());
-            //     });
+            builder.Services.AddOpenTelemetry()
+                .WithTracing(tracing =>
+                {
+                    if (builder.Environment.IsDevelopment())
+                    {
+                        // We want to view all traces in development
+                        tracing.SetSampler(new AlwaysOnSampler());
+                    }
+            
+                    tracing.AddAspNetCoreInstrumentation()
+                        .AddGrpcClientInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
+                        .AddSource("NServiceBus.*")
+                        .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources");
+            
+                    tracing.AddProcessor(new CopyBaggageToTagsProcessor());
+                });
             #endregion
             
             #region Add OTel Metrics
 
-            // builder.Services.AddOpenTelemetry()
-            //     .WithMetrics(metrics =>
-            //     {
-            //         metrics.AddRuntimeInstrumentation()
-            //             .AddBuiltInMeters()
-            //             .AddMeter("NServiceBus.*");
-            //     });
+            builder.Services.AddOpenTelemetry()
+                .WithMetrics(metrics =>
+                {
+                    metrics.AddRuntimeInstrumentation()
+                        .AddBuiltInMeters()
+                        .AddMeter("NServiceBus.*");
+                });
             
             #endregion
             

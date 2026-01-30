@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -24,7 +25,26 @@ var mongo = builder.AddMongoDB("mongo")
 var sql = builder.AddSqlServer("sql", password: dbPassword)
     .WithDataVolume()
     .WithLifetime(ContainerLifetime.Persistent)
-    .AddDatabase("sqldata");
+    .AddDatabase("sqldata")
+    .WithCommand(
+        name: $"migrate-sql-db",
+        displayName: "Migrate",
+        executeCommand: async cmd =>
+        {
+            var process = new Process();
+            process.StartInfo.WorkingDirectory = $"../WebApplication";
+            process.StartInfo.FileName = "dotnet";
+            process.StartInfo.Arguments = "ef database update";
+            process.StartInfo.UseShellExecute = true;
+
+            process.Start();
+
+            await process.WaitForExitAsync(cmd.CancellationToken);
+
+            return CommandResults.Success();
+        },
+        commandOptions: new CommandOptions { IconName = "ArrowSquareUpRight" }
+    );;
 
 var externalApi = builder
     .AddProject<ExternalApi>("externalapi")

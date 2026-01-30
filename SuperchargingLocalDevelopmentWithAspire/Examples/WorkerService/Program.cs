@@ -22,10 +22,6 @@ endpointConfiguration.UsePersistence<LearningPersistence>();
 
 endpointConfiguration.EnableInstallers();
 
-#region Enable Otel
-//endpointConfiguration.EnableOpenTelemetry();
-#endregion
-
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
 builder.UseNServiceBus(endpointConfiguration);

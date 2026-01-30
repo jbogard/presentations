@@ -22,12 +22,6 @@ endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
 
 endpointConfiguration.EnableInstallers();
 
-#region Enable Otel
-
-//endpointConfiguration.EnableOpenTelemetry();
-
-#endregion
-
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
 builder.UseNServiceBus(endpointConfiguration);

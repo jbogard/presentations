@@ -27,12 +27,6 @@ recoverability.Delayed(i => i.NumberOfRetries(0));
 
 endpointConfiguration.AuditProcessedMessagesTo("audit");
 
-#region Enable OTel
-
-//endpointConfiguration.EnableOpenTelemetry();
-
-#endregion
-
 builder.UseNServiceBus(endpointConfiguration);
 
 builder.AddServiceDefaults();
