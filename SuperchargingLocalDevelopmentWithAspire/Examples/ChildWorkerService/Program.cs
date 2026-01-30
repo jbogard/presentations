@@ -1,4 +1,7 @@
 using ChildWorkerService;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 const string EndpointName = "NsbActivities.ChildWorkerService";
 
@@ -7,8 +10,6 @@ var builder = Host.CreateApplicationBuilder(args);
 var endpointConfiguration = new EndpointConfiguration(EndpointName);
 
 endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
-
-Console.WriteLine(builder.Configuration.GetConnectionString("broker"));
 
 var transport = new RabbitMQTransport(
     RoutingTopology.Conventional(QueueType.Quorum),
@@ -37,6 +38,7 @@ builder.UseNServiceBus(endpointConfiguration);
 builder.AddServiceDefaults();
 
 builder.Services.AddHostedService<Mongo2GoService>();
+BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
 #region Enable Mongo Tracing
 
