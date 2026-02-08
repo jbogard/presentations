@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication;
+using WebApplication.ExternalApi;
 //using WebApplication.ExternalApi;
 using WorkerService.Messages;
 
@@ -36,13 +37,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<WeatherContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sqldata")));
+    options.UseSqlServer(
+        builder.Configuration
+            .GetConnectionString("sqldata")));
 
 #region External API client
-// builder.Services.AddHttpClient<ExternalApiClient>(client =>
-// {
-//     client.BaseAddress = new Uri("https+http://externalapi");
-// });
+builder.Services.AddHttpClient<ExternalApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https+http://externalapi");
+});
 #endregion
 
 builder.Services.AddHostedService<DbInitializer>();
