@@ -4,12 +4,11 @@ using Data;
 using IntegrationTests.Endpoints;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Jobs;
 
-public class TodoWreckerJobTests(WebAppFixture App, ITestOutputHelper Output)
-    : WebAppTestBase(App, Output)
+public class TodoWreckerJobTests(WebAppFixture App)
+    : WebAppTestBase(App)
 {
     [Fact]
     public async Task Wrecker_wrecks_all_items()

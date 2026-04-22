@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireSharedProject>true</IsAspireSharedProject>
@@ -10,19 +10,19 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App"/>
 
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0"/>
-    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.0"/>
-    <PackageReference Include="Npgsql" Version="9.0.3" />
-    <PackageReference Include="NServiceBus" Version="9.2.7" />
-    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="3.0.1" />
-    <PackageReference Include="NServiceBus.Extensions.IntegrationTesting" Version="4.0.1" />
-    <PackageReference Include="NServiceBus.Persistence.Sql" Version="8.2.0" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0"/>
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0"/>
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0"/>
-    <PackageReference Include="OpenTelemetry.Instrumentation.Hangfire" Version="1.13.0-beta.1" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0"/>
-    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0"/>
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.5.0"/>
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="10.5.0"/>
+    <PackageReference Include="Npgsql" Version="10.0.2" />
+    <PackageReference Include="NServiceBus" Version="10.1.3" />
+    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="4.0.0" />
+    <PackageReference Include="NServiceBus.Extensions.IntegrationTesting" Version="5.0.0" />
+    <PackageReference Include="NServiceBus.Persistence.Sql" Version="9.0.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3"/>
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.2"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.Hangfire" Version="1.15.1-beta.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.15.1"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1"/>
   </ItemGroup>
 
 </Project>

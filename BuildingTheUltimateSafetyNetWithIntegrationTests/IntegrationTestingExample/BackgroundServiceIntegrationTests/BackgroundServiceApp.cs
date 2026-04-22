@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Testcontainers.PostgreSql;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace BackgroundServiceIntegrationTests;
 
@@ -26,7 +25,7 @@ public class BackgroundServiceApp : IAsyncLifetime, ITestOutputHelperAccessor
 
     public void SetOutputHelper(ITestOutputHelper value) => OutputHelper = value;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         _dbContainer = new PostgreSqlBuilder().Build();
         await _dbContainer.StartAsync();
@@ -63,7 +62,7 @@ public class BackgroundServiceApp : IAsyncLifetime, ITestOutputHelperAccessor
             );
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         if (_app == null)
         {

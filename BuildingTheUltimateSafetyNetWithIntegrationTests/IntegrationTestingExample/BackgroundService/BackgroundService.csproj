@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-BackgroundService-2292496d-6d61-49fa-aa24-33ed504d362f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8"/>
-    <PackageReference Include="Npgsql" Version="9.0.3" />
-    <PackageReference Include="NServiceBus" Version="9.2.7" />
-    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="3.0.1" />
-    <PackageReference Include="NServiceBus.Persistence.Sql" Version="8.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7"/>
+    <PackageReference Include="Npgsql" Version="10.0.2" />
+    <PackageReference Include="NServiceBus" Version="10.1.3" />
+    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="4.0.0" />
+    <PackageReference Include="NServiceBus.Persistence.Sql" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

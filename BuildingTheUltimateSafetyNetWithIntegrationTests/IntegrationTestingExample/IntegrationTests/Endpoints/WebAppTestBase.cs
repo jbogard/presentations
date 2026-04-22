@@ -5,20 +5,17 @@ using FastEndpoints.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Endpoints;
 
 public class WebAppTestBase : TestBase<WebAppFixture>, IDisposable
 {
     protected WebAppFixture App { get; }
-    protected ITestOutputHelper Output { get; }
 
-    protected WebAppTestBase(WebAppFixture app, ITestOutputHelper output)
+    protected WebAppTestBase(WebAppFixture app)
     {
         App = app;
-        Output = output;
-        app.SetOutputHelper(output);
+        app.SetOutputHelper(Output);
     }
     
     public void Dispose()

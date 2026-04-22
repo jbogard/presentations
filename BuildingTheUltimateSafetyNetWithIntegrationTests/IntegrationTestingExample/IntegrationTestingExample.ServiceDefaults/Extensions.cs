@@ -170,8 +170,6 @@ public static class Extensions
 
         endpointConfiguration.EnableInstallers();
 
-        endpointConfiguration.EnableOpenTelemetry();
-
         builder.UseNServiceBus(endpointConfiguration);
     }
 

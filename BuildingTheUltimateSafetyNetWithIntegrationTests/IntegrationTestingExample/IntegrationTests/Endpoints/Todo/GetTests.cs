@@ -4,12 +4,11 @@ using Data;
 using FastEndpoints;
 using Shouldly;
 using WebApp.Endpoints.Todo;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Endpoints.Todo;
 
-public class GetTests(WebAppFixture App, ITestOutputHelper Output)
-    : WebAppTestBase(App, Output)
+public class GetTests(WebAppFixture App)
+    : WebAppTestBase(App)
 {
     [Fact]
     public async Task Get_returns_all_items()

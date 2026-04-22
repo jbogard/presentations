@@ -5,12 +5,11 @@ using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using WebApp.Endpoints.Todo;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Endpoints.Todo;
 
-public class GetByIdTests(WebAppFixture App, ITestOutputHelper Output)
-    : WebAppTestBase(App, Output)
+public class GetByIdTests(WebAppFixture App)
+    : WebAppTestBase(App)
 {
     [Fact]
     public async Task Get_returns_single_item()

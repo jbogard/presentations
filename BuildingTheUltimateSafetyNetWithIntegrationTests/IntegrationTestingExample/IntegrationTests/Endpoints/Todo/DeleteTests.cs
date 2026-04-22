@@ -6,12 +6,11 @@ using Messages;
 using NServiceBus.Testing;
 using Shouldly;
 using WebApp.Endpoints.Todo;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Endpoints.Todo;
 
-public class DeleteTests(WebAppFixture App, ITestOutputHelper Output)
-    : WebAppTestBase(App, Output)
+public class DeleteTests(WebAppFixture App)
+    : WebAppTestBase(App)
 {
     [Fact]
     public async Task Delete_deletes_item_and_publishes_event()

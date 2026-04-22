@@ -4,12 +4,11 @@ using Data;
 using FastEndpoints;
 using Shouldly;
 using WebApp.Endpoints.Todo;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Endpoints.Todo;
 
-public class PostTests(WebAppFixture App, ITestOutputHelper Output)
-    : WebAppTestBase(App, Output)
+public class PostTests(WebAppFixture App)
+    : WebAppTestBase(App)
 {
     [Fact]
     public async Task Post_updates_with_weather()

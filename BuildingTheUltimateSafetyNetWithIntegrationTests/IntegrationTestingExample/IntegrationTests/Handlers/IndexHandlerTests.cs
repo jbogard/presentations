@@ -3,12 +3,11 @@
 using Data;
 using IntegrationTests.Endpoints;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Handlers;
 
-public class IndexHandlerTests(WebAppFixture App, ITestOutputHelper Output)
-    : WebAppTestBase(App, Output)
+public class IndexHandlerTests(WebAppFixture App)
+    : WebAppTestBase(App)
 {
     [Fact]
     public async Task Get_returns_all_items()

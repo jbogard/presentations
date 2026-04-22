@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using NServiceBus.Testing;
 using Testcontainers.PostgreSql;
 using WebApp.Infrastructure;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Endpoints;
 
@@ -28,7 +27,7 @@ public class WebAppFixture : AppFixture<Program>, ITestOutputHelperAccessor
 
     public void SetOutputHelper(ITestOutputHelper value) => OutputHelper = value;
 
-    protected override async Task PreSetupAsync()
+    protected override async ValueTask PreSetupAsync()
     {
         _dbContainer = new PostgreSqlBuilder().Build();
         await _dbContainer.StartAsync();
@@ -99,7 +98,7 @@ public class WebAppFixture : AppFixture<Program>, ITestOutputHelperAccessor
     }
  
     #region Example 3
-    protected override Task SetupAsync()
+    protected override ValueTask SetupAsync()
     {
         AuthClient = Client.WithJwtBearerToken();
     

@@ -4,12 +4,11 @@ using Data;
 using FastEndpoints;
 using Shouldly;
 using WebApp.Endpoints.Todo;
-using Xunit.Abstractions;
 
 namespace IntegrationTests.Endpoints.Todo;
 
-public class PutByIdTests(WebAppFixture App, ITestOutputHelper Output)
-    : WebAppTestBase(App, Output)
+public class PutByIdTests(WebAppFixture App)
+    : WebAppTestBase(App)
 {
     [Fact]
     public async Task Put_updates_single_item()

@@ -2,7 +2,6 @@ using Communication.HandlerIntegrationTests;
 using Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace BackgroundServiceIntegrationTests.Handlers;
 
