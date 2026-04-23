@@ -125,7 +125,7 @@ public class PostEndpoint(WebAppDbContext db, IWeatherForecastClient client) : E
 #endregion
 
 #region Example 7
-public class DeleteEndpoint(WebAppDbContext db, IMessageSession messageSession) : EndpointWithoutRequest
+public class DeleteEndpoint(WebAppDbContext db) : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -146,6 +146,7 @@ public class DeleteEndpoint(WebAppDbContext db, IMessageSession messageSession) 
         
         if (count > 0)
         {
+            var messageSession = HttpContext.RequestServices.GetRequiredService<IMessageSession>();
             await messageSession.Publish(new TodoItemDeletedEvent { Id = todoItemId }, ct);
         }
         

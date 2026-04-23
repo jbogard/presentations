@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IntegrationTests.Endpoints;
 
-public class WebAppTestBase : TestBase<WebAppFixture>, IDisposable
+public abstract class WebAppTestBase : TestBase<WebAppFixture>, IDisposable
 {
     protected WebAppFixture App { get; }
 

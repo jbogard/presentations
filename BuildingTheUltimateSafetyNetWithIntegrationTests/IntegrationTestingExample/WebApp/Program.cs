@@ -21,7 +21,7 @@ builder.AddNpgsqlDbContext<WebAppDbContext>(connectionName: "appdb", configureDb
     options.UseSeeding((db, _) =>
     {
         var todoItems = db.Set<TodoItem>();
-
+        
         if (!todoItems.Any())
         {
             todoItems.Add(new TodoItem { Name = "Todo item 1" });
@@ -30,7 +30,7 @@ builder.AddNpgsqlDbContext<WebAppDbContext>(connectionName: "appdb", configureDb
             todoItems.Add(new TodoItem { Name = "Todo item 4" });
             todoItems.Add(new TodoItem { Name = "Todo item 5" });
         }
-
+        
         db.SaveChanges();
     });
 });
@@ -82,7 +82,7 @@ if (!isAutomatedTest)
 #region Example 7
 if (!isAutomatedTest)
 {
-    //builder.UseNServiceBusWithConfiguration("webapp", "appdb");
+    builder.UseNServiceBusWithConfiguration("webapp", "appdb");
 }
 #endregion
 
@@ -181,5 +181,5 @@ public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 }
 
 #region Example 1
-public partial class Program { }
+//public partial class Program { }
 #endregion
