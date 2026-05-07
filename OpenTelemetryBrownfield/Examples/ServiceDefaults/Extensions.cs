@@ -87,9 +87,7 @@ namespace Microsoft.Extensions.Hosting
 
             if (useOtlpExporter)
             {
-                builder.Services.Configure<OpenTelemetryLoggerOptions>(logging => logging.AddOtlpExporter());
-                builder.Services.ConfigureOpenTelemetryMeterProvider(metrics => metrics.AddOtlpExporter());
-                builder.Services.ConfigureOpenTelemetryTracerProvider(tracing => tracing.AddOtlpExporter());
+                builder.Services.AddOpenTelemetry().UseOtlpExporter();
             }
 
             #region Enable Zipkin Exporter
