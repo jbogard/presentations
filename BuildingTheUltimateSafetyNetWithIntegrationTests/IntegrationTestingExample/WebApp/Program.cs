@@ -16,24 +16,7 @@ builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
 
 #region Example 2
-builder.AddNpgsqlDbContext<WebAppDbContext>(connectionName: "appdb", configureDbContextOptions: options =>
-{
-    options.UseSeeding((db, _) =>
-    {
-        var todoItems = db.Set<TodoItem>();
-        
-        if (!todoItems.Any())
-        {
-            todoItems.Add(new TodoItem { Name = "Todo item 1" });
-            todoItems.Add(new TodoItem { Name = "Todo item 2" });
-            todoItems.Add(new TodoItem { Name = "Todo item 3" });
-            todoItems.Add(new TodoItem { Name = "Todo item 4" });
-            todoItems.Add(new TodoItem { Name = "Todo item 5" });
-        }
-        
-        db.SaveChanges();
-    });
-});
+builder.AddNpgsqlDbContext<WebAppDbContext>(connectionName: "appdb");
 #endregion
 
 #region Example 2
@@ -155,7 +138,36 @@ static void SeedDatabase(WebApplication app)
     var db = scope.ServiceProvider.GetRequiredService<WebAppDbContext>();
     var strategy = db.Database.CreateExecutionStrategy();
 
-    strategy.Execute(() => { db.Database.EnsureCreated(); });
+    strategy.Execute(() =>
+    {
+        // Aspire pre-creates the `appdb` database, so EnsureCreated() is a no-op
+        // and won't create our tables. We can't drop the DB (Hangfire/NServiceBus
+        // have already installed their schemas into it), so detect the missing
+        // table and apply just our model script.
+        if (!db.Database.EnsureCreated())
+        {
+            var hasTodoItems = db.Database
+                .SqlQueryRaw<int>("""SELECT 1 AS "Value" FROM information_schema.tables WHERE table_name = 'TodoItems'""")
+                .AsEnumerable().Any();
+
+            if (!hasTodoItems)
+            {
+                db.Database.ExecuteSqlRaw(db.Database.GenerateCreateScript());
+            }
+        }
+
+        if (!db.TodoItems.Any())
+        {
+            db.TodoItems.AddRange(
+                new TodoItem { Name = "Todo item 1" },
+                new TodoItem { Name = "Todo item 2" },
+                new TodoItem { Name = "Todo item 3" },
+                new TodoItem { Name = "Todo item 4" },
+                new TodoItem { Name = "Todo item 5" });
+
+            db.SaveChanges();
+        }
+    });
 }
 #endregion
 
