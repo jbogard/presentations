@@ -26,7 +26,7 @@ public class GetTests(WebAppFixture App)
         
         // Assert
         response.IsSuccessStatusCode.ShouldBeTrue();
-        result.Length.ShouldBeGreaterThanOrEqualTo(2); 
+        result.Length.ShouldBeGreaterThanOrEqualTo(2);
         // Considering other tests might have added items
     }
 }

@@ -56,7 +56,13 @@ namespace Microsoft.Extensions.Hosting
             //         tracing.AddAspNetCoreInstrumentation()
             //             .AddGrpcClientInstrumentation()
             //             .AddHttpClientInstrumentation()
-            //             .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
+            //             .AddEntityFrameworkCoreInstrumentation(options =>
+            //             {
+            //                 options.EnrichWithIDbCommand = (activity, command) =>
+            //                 {
+            //                     activity.SetTag("db.statement", command.CommandText);
+            //                 };
+            //             })
             //             .AddSource("NServiceBus.*")
             //             .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources");
             //
